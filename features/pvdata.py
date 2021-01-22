@@ -51,7 +51,9 @@
     ]
 """
 
+import datetime
 import time
+import os
 from features.smamodbus import get_pv_data
 
 pv_last_update = 0
@@ -71,6 +73,7 @@ def run(emparts, config):
         return
 
     pv_last_update = time.time()
+    output_file = config.get('output_file')
     registers = eval(config.get('registers'))
 
     pv_data = []
@@ -85,11 +88,17 @@ def run(emparts, config):
             print("PV: no data")
         return
 
-    timestamp = time.time()
+    timestamp = datetime.datetime.now().isoformat()
     for i in pv_data:
         i['timestamp'] = timestamp
         if pv_debug > 0:
             print("PV:" + format(i))
+        if output_file:
+            if not os.path.exists(output_file):
+                with open(output_file, 'w') as f:
+                    f.write(';'.join(f'"{k}"' for k, v in i.items()) + '\n')
+            with open(output_file, 'a') as f:
+                f.write(';'.join(f'"{v}"' for k, v in i.items()) + '\n')
 
 
 def stopping(emparts, config):

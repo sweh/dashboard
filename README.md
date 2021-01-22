@@ -19,15 +19,9 @@ configparser (SafeConfigParser)
 signal
 
 ```
-apt install python3-pip
-```
-Feature pvdata reqires pymodbus
-```
-sudo pip install pymodbus
-```
-or
-```
-sudo pip3 install pymodbus
+python3 -m venv .
+bin/pip install -r requirements.txt
+bin/python sma-daemon.py run|start
 ```
 
 ## Configuration
