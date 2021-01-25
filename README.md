@@ -21,11 +21,11 @@ signal
 ```
 python3 -m venv .
 bin/pip install -r requirements.txt
-bin/python sma-daemon.py run|start
+bin/python webserver.py -c config
 ```
 
 ## Configuration
-create a config file in /etc/smaemd/config<br>
+create a config file /etc/smaemd/config<br>
 Use UTF-8 encoded configfile<br>
 Example:
 ```

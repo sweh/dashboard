@@ -61,21 +61,26 @@
                 }
             });
 
-            var consumption = inv['AC Power'] + batt['AC Power'] + inv['Power from grid'] - inv['Power to grid']
-            var batterypower = 0 - batt['AC Power'];
+            var panelpower = inv['AC Power'] || 0;
+            var batterypower = batt['AC Power'] || 0;
+            var power_from_grid = inv['Power from grid'] || 0;
+            var power_to_grid = inv['Power to grid'] || 0;
 
-            d.push([timestamp, inv['AC Power']]); /* Solar Dach */
-            e.push([timestamp, inv['Power to grid']]); /* Einspeisung */
+            var consumption = panelpower + batterypower + power_from_grid - power_to_grid;
+            var batterypower = 0 - batterypower;
+
+            d.push([timestamp, panelpower]); /* Solar Dach */
+            e.push([timestamp, power_to_grid]); /* Einspeisung */
             f.push([timestamp, batterypower]); /* Batterie */
             g.push([timestamp, consumption]); /* Verbrauch */
-            h.push([timestamp, inv['Power from grid']]); /* Netzbezug */
+            h.push([timestamp, power_from_grid]); /* Netzbezug */
             pvchart();
 
-            $('#panelacpower').text(inv['AC Power']);
-            $('#powertogrid').text(inv['Power to grid']);
+            $('#panelacpower').text(panelpower);
+            $('#powertogrid').text(power_to_grid);
             $('#batteryacpower').text(batterypower);
             $('#batterycapacity').text(batt['BatteryCharge']);
-            $('#powerfromgrid').text(inv['Power from grid']);
+            $('#powerfromgrid').text(power_from_grid);
             $('#consumption').text(consumption);
 
             $('#batterycharging').find('i').removeClass('fa-caret-up');
