@@ -51,9 +51,11 @@
     ]
 """
 
+import asyncio
 import datetime
 import time
 import os
+from features.smamodbus import get_device_class
 from features.smamodbus import get_pv_data
 
 pv_last_update = 0
@@ -79,7 +81,17 @@ def run(emparts, config):
     pv_data = []
     for inv in eval(config.get('inverters')):
         host, port, modbusid, manufacturer = inv
-        mdata = get_pv_data(host, int(port), int(modbusid), registers)
+        device_class = get_device_class(host, int(port), int(modbusid))
+        if device_class == "Solar Inverter":
+            relevant_registers = eval(config.get('registers'))
+        elif device_class == "Battery Inverter":
+            relevant_registers = eval(config.get('registers_batt'))
+        else:
+            if (pv_debug > 1):
+                print("pv: unknown device class; skipping")
+            pass
+
+        mdata = get_pv_data(host, int(port), int(modbusid), relevant_registers)
         pv_data.append(mdata)
 
     # query
@@ -89,6 +101,7 @@ def run(emparts, config):
         return
 
     timestamp = datetime.datetime.now().isoformat()
+    result = []
     for i in pv_data:
         i['timestamp'] = timestamp
         if pv_debug > 0:
@@ -99,6 +112,8 @@ def run(emparts, config):
                     f.write(';'.join(f'"{k}"' for k, v in i.items()) + '\n')
             with open(output_file, 'a') as f:
                 f.write(';'.join(f'"{v}"' for k, v in i.items()) + '\n')
+        result.append(i)
+    return result
 
 
 def stopping(emparts, config):

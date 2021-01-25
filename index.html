@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="de-de">
+    <head>
+        <meta charset="utf-8">
+        <title> wehrmann.it Dashboard</title>
+        <meta name="description" content="">
+        <meta name="author" content="Sebastian Wehrmann">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-production-plugins.min.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-production.min.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-skins.min.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-rtl.min.css"> 
+        <link rel="stylesheet" type="text/css" media="screen" href="css/demo.min.css">
+        <link rel="shortcut icon" href="img/favicon/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="img/favicon/favicon.ico" type="image/x-icon">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
+
+
+        <style type="text/css">
+            body.full-screen #header {
+                display: none;
+            }
+        </style>
+    </head>
+
+    <body class="">
+        <header id="header">
+            <div style="margin-left: 20px;">
+                <h1>Am Wachtelberg 14</h1>
+            </div>
+            <div class="pull-right">
+                <div id="fullscreen" class="btn-header transparent pull-right">
+                    <span> <a href="javascript:void(0);"
+                            data-action="launchFullscreen" title="Full Screen"><i class="fa fa-arrows-alt"></i></a> </span>
+                </div>
+            </div>
+        </header>
+        <div id="main" role="main" style="margin-left: 0px">
+            <div id="content">
+                <section id="widget-grid" class="">
+                    <div class="row">
+                        <article class="col-xs-12 col-sm-8">
+                            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-1" 
+                                    data-widget-colorbutton="false" 
+                                    data-widget-editbutton="false" 
+                                    data-widget-togglebutton="false" 
+                                    data-widget-deletebutton="false" 
+                                    data-widget-custombutton="false" 
+                                    data-widget-collapsed="false" 
+                                    data-widget-sortable="false">
+                                <header>
+                                    <span class="widget-icon"> <i class="fa fa-sun-o txt-color-yellow"></i> </span>
+                                    <h2>PV-Anlage <i id="panelstatus" class="glyphicon glyphicon-remove-circle"></i></h2>
+                                </header>
+                                <div>
+                                    <div class="widget-body no-padding">
+                                        <div class="row">
+                                            <div class="col-sm-4 col-md-2 col-md-offset-1 text-center">
+                                                <h3 class="margin-bottom-0">
+                                                    <span id="panelacpower">0</span>
+                                                    <br>
+                                                    <small class="font-xs"><sup><span class="badge bg-color-green">Erzeugung</span></sup></small>
+                                                </h3>
+                                            </div>
+                                            <div class="col-sm-4 col-md-2 text-center">
+                                                <h3 class="margin-bottom-0">
+                                                    <span id="powertogrid">0</span>
+                                                    <br>
+                                                    <small
+                                                        class="font-xs"><sup><span class="badge bg-color-blue">Einspeisung</span></sup></small>
+                                                </h3>
+                                            </div>
+                                            <div class="col-sm-4 col-md-2 text-center">
+                                                <h3 class="margin-bottom-0">
+                                                    <span id="batteryacpower">0</span>
+                                                    <ul class="smaller-stat pull-right" style="margin-top: -12px;">
+                                                        <li>
+                                                            <span class="label" style="font-size: 9px; color: black">
+                                                                <span id="batterytemp">0</span> °C
+                                                            </span>
+                                                        </li>
+                                                        <li>
+                                                            <span
+                                                                id="batterycharging" class="label bg-color-red" style="font-size: 9px;">
+                                                                <i class="fa fa-caret-down"></i> <span id="batterycapacity">0</span>%
+                                                            </span>
+                                                        </li>
+                                                    </ul>
+                                                    <br>
+                                                    <small
+                                                        class="font-xs"><sup><span class="badge bg-color-orange">Batterie</span></sup></small>
+                                                </h3>
+                                            </div>
+                                            <div class="col-sm-4 col-md-2 text-center">
+                                                <h3 class="margin-bottom-0">
+                                                    <span id="consumption">0</span>
+                                                    <br>
+                                                    <small
+                                                        class="font-xs"><sup><span class="badge bg-color-red">Verbrauch</span></sup></small>
+                                                </h3>
+                                            </div>
+                                            <div class="col-sm-4 col-md-2 text-center">
+                                                <h3 class="margin-bottom-0">
+                                                    <span id="powerfromgrid">0</span>
+                                                    <br>
+                                                    <small
+                                                        class="font-xs"><sup><span class="badge bg-color-darkred">Netzbezug</span></sup></small>
+                                                </h3>
+                                            </div>
+                                        </div>
+
+                                        <hr class="margin-5">
+                                        <div id="pvchart" class="chart"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="col-xs-12 col-sm-4">
+                            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-2" 
+                                    data-widget-colorbutton="false" 
+                                    data-widget-editbutton="false" 
+                                    data-widget-togglebutton="false" 
+                                    data-widget-deletebutton="false" 
+                                    data-widget-fullscreenbutton="false" 
+                                    data-widget-custombutton="false" 
+                                    data-widget-collapsed="false" 
+                                    data-widget-sortable="false">
+                                <header>
+                                    <span class="widget-icon"> <i class="fa fa-cloud txt-color-blueLight"></i> </span>
+                                    <h2>Wetter</h2>
+                                </header>
+                                <div>
+                                    <div class="jarviswidget-editbox">
+                                        <input class="form-control" type="text">
+                                    </div>
+                                    <div class="widget-body">
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6 text-right">
+                                                <h1 style="font-size: 3em"><bold>0.0</bold> °C</h1>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            <div class="row">
+                <div class="col-xs-6 col-sm-6 text-right hidden-xs">
+                    <div class="txt-color-white inline-block">
+                        <i class="txt-color-blueLight">
+                            Zuletzt aktualisiert vor <i class="fa
+                                fa-clock-o"></i> <strong> <span
+                                    id="secondslastupdate">0 Sekunden</span> &nbsp;</strong> </i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script data-pace-options='{ "restartOnRequestAfter": true }' src="js/plugin/pace/pace.min.js"></script>
+
+        <script src="js/libs/jquery-3.2.1.min.js"></script>
+        <script src="js/libs/jquery-ui.min.js"></script>
+        <script src="js/app.config.js"></script>
+        <script src="js/app.config.js"></script>
+        <script src="js/plugin/jquery-touch/jquery.ui.touch-punch.min.js"></script> 
+        <script src="js/bootstrap/bootstrap.min.js"></script>
+        <script src="js/notification/SmartNotification.min.js"></script>
+        <script src="js/smartwidgets/jarvis.widget.min.js"></script>
+        <script src="js/plugin/easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
+        <script src="js/plugin/sparkline/jquery.sparkline.min.js"></script>
+        <script src="js/plugin/jquery-validate/jquery.validate.min.js"></script>
+        <script src="js/plugin/masked-input/jquery.maskedinput.min.js"></script>
+        <script src="js/plugin/select2/select2.min.js"></script>
+        <script src="js/plugin/bootstrap-slider/bootstrap-slider.min.js"></script>
+        <script src="js/plugin/msie-fix/jquery.mb.browser.min.js"></script>
+        <script src="js/plugin/fastclick/fastclick.min.js"></script>
+        <script src="js/app.min.js"></script>
+        <script src="js/plugin/vectormap/jquery-jvectormap-1.2.2.min.js"></script>
+        <script src="js/plugin/vectormap/jquery-jvectormap-world-mill-en.js"></script>
+        <script src="js/plugin/moment/moment.min.js"></script>
+        <script src="js/plugin/chartjs/chart.min.js"></script>
+        <script src="js/plugin/flot/jquery.flot.cust.min.js"></script>
+        <script src="js/plugin/flot/jquery.flot.resize.min.js"></script>
+        <script src="js/plugin/flot/jquery.flot.fillbetween.min.js"></script>
+        <script src="js/plugin/flot/jquery.flot.orderBar.min.js"></script>
+        <script src="js/plugin/flot/jquery.flot.pie.min.js"></script>
+        <script src="js/plugin/flot/jquery.flot.time.min.js"></script>
+        <script src="js/plugin/flot/jquery.flot.tooltip.min.js"></script>
+        <script src="js/dashboard.js"></script>
+        <script>
+        </script>
+    </body>
+</html>
