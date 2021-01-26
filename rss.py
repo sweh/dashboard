@@ -44,7 +44,7 @@ class Client:
                 pass
             else:
                 self.history.append(result)
-                self.history = self.history[-3:]
+                self.history = self.history[-10:]
                 print(result)
                 for websocket in self.websockets:
                     try:
