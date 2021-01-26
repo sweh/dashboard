@@ -4,3 +4,5 @@ pymodbus~=2.4.0
 requests~=2.24.0
 websockets==8.1
 lnetatmo==2.1.0
+lxml==4.6.2
+rss_parser==0.1.1

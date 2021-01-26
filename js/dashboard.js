@@ -40,6 +40,21 @@
             plot_1 = $.plot($("#pvchart"), [d,e,f,g,h], options);
         };
 
+        var handle_helios = function (odata) {
+            var data = odata[0];
+            $(['aussenluft', 'abluft', 'abluft_feuchte', 'fortluft',
+               'stufe', 'zuluft']).each(function (i, key) {
+                $('#helios_' + key).text(data[key]);
+                $('#helios_' + key + '_tendency').removeClass('fa-caret-down');
+                $('#helios_' + key + '_tendency').removeClass('fa-caret-up');
+                $('#helios_' + key + '_tendency').removeClass('fa-caret-right');
+                $('#helios_' + key + '_tendency').addClass(
+                    'fa-caret-' + data[key + '_tendency']
+                );
+            });
+            console.log(odata);
+        };
+
         var handle_corona = function (odata) {
             var data = odata[0].data[15091],
                 meta = odata[0].meta;
@@ -157,6 +172,8 @@
                 return handle_weather(data);
             } else if (data[0]['DeviceClass'] === 'Corona') {
                 return handle_corona(data);
+            } else if (data[0]['DeviceClass'] === 'Helios') {
+                return handle_helios(data);
             }
             $(data).each(function (i, obj) {
                 if (obj['DeviceClass'] === 'Solar Inverter') {
@@ -248,7 +265,8 @@
             $('#current_date').html(
                 day + ', der ' +
                 now.getDate() + '. ' + month + ' ' + now.getFullYear() +
-                ' ' + now.getHours() + seperator + now.getMinutes()
+                ' ' + String(now.getHours()).padStart(2, "0") + seperator +
+                String(now.getMinutes()).padStart(2, "0")
             );
         }, 1000);
 }(jQuery));
