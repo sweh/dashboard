@@ -31,10 +31,8 @@ class Client:
         self.history = []
         self.websockets = []
 
-    async def register(self, websocket):
+    def register(self, websocket):
         self.websockets.append(websocket)
-        if self.history:
-            await websocket.send(json.dumps([self.history[-1]]))
 
     async def run(self):
         while True:
@@ -44,7 +42,6 @@ class Client:
                 pass
             else:
                 self.history.append(result)
-                print(result)
                 for websocket in self.websockets:
                     try:
                         await websocket.send(json.dumps([result]))

@@ -30,11 +30,11 @@ if __name__ == "__main__":
     rssclient = RSSClient(smadaemon.config)
 
     async def server(websocket, path):
-        await smadaemon.register(websocket)
-        await openweatherclient.register(websocket)
-        await coronaclient.register(websocket)
-        await heliosclient.register(websocket)
-        await rssclient.register(websocket)
+        smadaemon.register(websocket)
+        openweatherclient.register(websocket)
+        coronaclient.register(websocket)
+        heliosclient.register(websocket)
+        rssclient.register(websocket)
         while True:
             # Get received data from websocket
             data = await websocket.recv()

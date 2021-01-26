@@ -66,10 +66,8 @@ class Client:
         self.history = []
         self.websockets = []
 
-    async def register(self, websocket):
+    def register(self, websocket):
         self.websockets.append(websocket)
-        if self.history:
-            await websocket.send(json.dumps([self.history[-1]]))
 
     async def run(self):
         while True:
@@ -107,7 +105,6 @@ class Client:
                 result['DeviceClass'] = 'Helios'
                 self.history.append(result)
                 self.history = self.history[-2:]
-                print(result)
                 for websocket in self.websockets:
                     try:
                         await websocket.send(json.dumps([result]))

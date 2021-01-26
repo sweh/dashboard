@@ -72,19 +72,15 @@ class Client:
         '&lang=de'
         '&appid='
     )
-    history = None
     websockets = None
 
     def __init__(self, config):
         self.api_key = config.get("WEATHER", 'openweather_api_key')
         self.netatmo = NetatmoClient(config)
-        self.history = []
         self.websockets = []
 
-    async def register(self, websocket):
+    def register(self, websocket):
         self.websockets.append(websocket)
-        if self.history:
-            await websocket.send(json.dumps([self.history[-1]]))
 
     async def run(self):
         while True:
@@ -97,9 +93,6 @@ class Client:
             else:
                 result.update(self.netatmo.weatherData)
                 result['DeviceClass'] = 'Weather'
-                self.history.append(result)
-                self.history = self.history[-100:]
-                print(result)
                 for websocket in self.websockets:
                     try:
                         await websocket.send(json.dumps([result]))

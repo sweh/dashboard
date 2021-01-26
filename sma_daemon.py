@@ -17,7 +17,6 @@ import websockets.exceptions
 
 class MyDaemon(daemon3x):
 
-    history = None
     websockets = None
 
     def __init__(self, config):
@@ -43,7 +42,6 @@ class MyDaemon(daemon3x):
         else:
             self.statusfile = "em-status"
 
-        self.history = []
         self.websockets = []
 
         self.load_features()
@@ -75,10 +73,8 @@ class MyDaemon(daemon3x):
                 pass
             self.featurelist.append(featureitem)
 
-    async def register(self, websocket):
+    def register(self, websocket):
         self.websockets.append(websocket)
-        for history in self.history:
-            await websocket.send(json.dumps(history))
 
     def connect_to_socket(self):
         # prepare listen to socket-Multicast
@@ -125,8 +121,6 @@ class MyDaemon(daemon3x):
                 emparts, feature["config"]
             )
             if result:
-                self.history.append(result)
-                self.history = self.history[-2:]
                 for websocket in self.websockets:
                     try:
                         await websocket.send(json.dumps(result))
