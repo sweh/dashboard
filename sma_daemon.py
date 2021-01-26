@@ -126,7 +126,7 @@ class MyDaemon(daemon3x):
             )
             if result:
                 self.history.append(result)
-                self.history = self.history[-10:]
+                self.history = self.history[-2:]
                 for websocket in self.websockets:
                     try:
                         await websocket.send(json.dumps(result))
