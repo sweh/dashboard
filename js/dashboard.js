@@ -1,5 +1,6 @@
 (function($) {
         var PieConfig;
+        var rss_messages = [];
         window.lastupdate = Date.now();
 
         pageSetUp();
@@ -38,6 +39,20 @@
                 colors : [$chrt_main, $chrt_second, $chrt_third, $chrt_fourth, $chrt_fifth],
             };
             plot_1 = $.plot($("#pvchart"), [d,e,f,g,h], options);
+        };
+
+        var handle_rss = function (odata) {
+            if (!rss_messages.length) {
+                container = $('#rsswidget li:first()');
+            } else {
+                container = $('#rsswidget li:first()').clone();
+                $('#rsswidget').prepend(container);
+            }
+            rss_messages.push(odata);
+            container.find('.title').text(odata[0].title);
+            container.find('.description').text(odata[0].description);
+            container.removeClass('hidden');
+            console.log(odata);
         };
 
         var handle_helios = function (odata) {
@@ -174,6 +189,8 @@
                 return handle_corona(data);
             } else if (data[0]['DeviceClass'] === 'Helios') {
                 return handle_helios(data);
+            } else if (data[0]['DeviceClass'] === 'RSS') {
+                return handle_rss(data);
             }
             $(data).each(function (i, obj) {
                 if (obj['DeviceClass'] === 'Solar Inverter') {

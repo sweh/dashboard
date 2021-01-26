@@ -5,6 +5,7 @@ from sma_daemon import MyDaemon
 from openweather import Client as OpenWeatherClient
 from corona import Client as CoronaClient
 from helios import Client as HeliosClient
+from rss import Client as RSSClient
 
 
 def parse_arguments():
@@ -26,12 +27,14 @@ if __name__ == "__main__":
     openweatherclient = OpenWeatherClient(smadaemon.config)
     coronaclient = CoronaClient(smadaemon.config)
     heliosclient = HeliosClient(smadaemon.config)
+    rssclient = RSSClient(smadaemon.config)
 
     async def server(websocket, path):
         await smadaemon.register(websocket)
         await openweatherclient.register(websocket)
         await coronaclient.register(websocket)
         await heliosclient.register(websocket)
+        await rssclient.register(websocket)
         while True:
             # Get received data from websocket
             data = await websocket.recv()
@@ -44,6 +47,7 @@ if __name__ == "__main__":
         openweatherclient.run(),
         coronaclient.run(),
         heliosclient.run(),
+        rssclient.run(),
     ]
 
     asyncio.get_event_loop().run_until_complete(asyncio.wait(tasks))
