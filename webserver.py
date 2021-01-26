@@ -2,6 +2,8 @@ import asyncio
 import websockets
 import argparse
 from sma_daemon import MyDaemon
+from openweather import Client as OpenWeatherClient
+from corona import Client as CoronaClient
 
 
 def parse_arguments():
@@ -20,20 +22,24 @@ def parse_arguments():
 if __name__ == "__main__":
     args = parse_arguments()
     smadaemon = MyDaemon(args.config)
+    openweatherclient = OpenWeatherClient(smadaemon.config)
+    coronaclient = CoronaClient(smadaemon.config)
 
     async def server(websocket, path):
-        smadaemon.register(websocket)
+        await smadaemon.register(websocket)
+        await openweatherclient.register(websocket)
+        await coronaclient.register(websocket)
         while True:
             # Get received data from websocket
             data = await websocket.recv()
             print(data)
             await asyncio.sleep(1)
 
-    start_dashboard = websockets.serve(server, "0.0.0.0", 6789)
-
     tasks = [
+        websockets.serve(server, "0.0.0.0", 6789),
         smadaemon.run(),
-        websockets.serve(server, "0.0.0.0", 6789)
+        openweatherclient.run(),
+        coronaclient.run(),
     ]
 
     asyncio.get_event_loop().run_until_complete(asyncio.wait(tasks))

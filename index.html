@@ -16,19 +16,12 @@
         <link rel="shortcut icon" href="img/favicon/favicon.ico" type="image/x-icon">
         <link rel="icon" href="img/favicon/favicon.ico" type="image/x-icon">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
-
-
-        <style type="text/css">
-            body.full-screen #header {
-                display: none;
-            }
-        </style>
     </head>
 
     <body class="">
         <header id="header">
             <div style="margin-left: 20px;">
-                <h1>Am Wachtelberg 14</h1>
+                <h1 id="current_date" style="width: 300px">Am Wachtelberg 14</h1>
             </div>
             <div class="pull-right">
                 <div id="fullscreen" class="btn-header transparent pull-right">
@@ -118,6 +111,7 @@
                             </div>
                         </article>
                         <article class="col-xs-12 col-sm-4">
+                          <div class="row" style="margin: 0px">
                             <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-2" 
                                     data-widget-colorbutton="false" 
                                     data-widget-editbutton="false" 
@@ -137,13 +131,107 @@
                                     </div>
                                     <div class="widget-body">
                                         <div class="row">
-                                            <div class="col-sm-6 col-md-6 text-right">
-                                                <h1 style="font-size: 3em"><bold>0.0</bold> °C</h1>
+                                            <div class="col-sm-9 col-md-9 text-right">
+                                                <h1 style="font-size: 3em; display: inline-block">
+                                                    <bold id="current_temp">0.0</bold>°C
+                                                </h1>
+                                                <ul class="smaller-stat hidden-sm pull-right" style="margin-left: 10px; margin-top: 7px;">
+                                                    <li>
+                                                        <span class="label bg-color-red" style="width:55px;"><i class="fa fa-caret-up"></i> <span id="today_temp_max">0.0</span>°C</span> </li>
+                                                    <li>
+                                                        <span class="label bg-color-blue" style="width:55px;"><i class="fa fa-caret-down"></i> <span id="today_temp_min">0.0</span>°C</span></span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-sm-3 col-md-3 text-center">
+                                                <img id="current_weather_icon" src="" style=" height: 60px; ">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-3 col-md-3 text-center">
+                                                <p class="text-left">
+                                                  <i id="weather_wind_icon" class="fa"></i>
+                                                  <span id="weather_wind_angle"></span>
+                                                  <span style="font-size: 6px; display: block;" id="weather_wind_desc"></span>
+                                                </p>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 text-center">
+                                                <h4 id="weather_desc"></h4>
+                                            </div>
+                                            <div class="col-sm-3 col-md-3 text-center">
+                                                  <div>
+                                                    <i class="fa fa-umbrella"></i>
+                                                    <span id="weather_rain"></span>
+                                                  </div>
+                                                  <div style="font-size: 6px; float: left">
+                                                      <i class="fa fa-clock-o"></i>
+                                                      <span id="weather_rain_1"></span>
+                                                  </div>
+                                                  <div style="font-size: 6px; float: right">
+                                                      <i class="fa fa-calendar"></i>
+                                                      <span id="weather_rain_24"></span>
+                                                  </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                          </div>
+                          <div class="row" style="margin: 0px">
+                            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-2" 
+                                    data-widget-colorbutton="false" 
+                                    data-widget-editbutton="false" 
+                                    data-widget-togglebutton="false" 
+                                    data-widget-deletebutton="false" 
+                                    data-widget-fullscreenbutton="false" 
+                                    data-widget-custombutton="false" 
+                                    data-widget-collapsed="false" 
+                                    data-widget-sortable="false">
+                                <header>
+                                    <span class="widget-icon"> <i class="fa fa-medkit txt-color-red"></i> </span>
+                                    <h2>Corona Inzidenz</h2>
+                                </header>
+                                <div>
+                                    <div class="jarviswidget-editbox">
+                                        <input class="form-control" type="text">
+                                    </div>
+                                    <div class="widget-body">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-12 text-center">
+                                                <h1 class="" style="font-size: 55px; margin-top: 0px;" id="corona_incidence">0</h1>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4 col-md-4 text-center">
+                                                <span>Neue Fälle</span>
+                                            </div>
+                                            <div class="col-sm-4 col-md-4 text-center">
+                                                <span>Todesfälle</span>
+                                            </div>
+                                            <div class="col-sm-4 col-md-4 text-center">
+                                                <span>Genesen</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4 col-md-4 text-center">
+                                                <h3 id="corona_cases_delta" style="margin: 0px">0</h3>
+                                            </div>
+                                            <div class="col-sm-4 col-md-4 text-center">
+                                                <h3 id="corona_deaths_delta" style="margin: 0px">0</h3>
+                                            </div>
+                                            <div class="col-sm-4 col-md-4 text-center">
+                                                <h3 id="corona_recovered_delta" style="margin: 0px">0</h3>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-12 text-right" style="font-size: 9px">
+                                                Stand: <span id="corona_date"></span>, <span id="corona_source"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          </div>
                         </article>
                     </div>
                 </section>

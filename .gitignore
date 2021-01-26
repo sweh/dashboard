@@ -60,3 +60,4 @@ target/
 # Venv
 bin/
 pyvenv.cfg
+config
