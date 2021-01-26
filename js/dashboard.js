@@ -140,7 +140,7 @@
             console.log(data);
         }
 
-        let socket = new WebSocket((window.location.href + 'wsapp/').replace('http', 'ws'));
+        let socket = new WebSocket('ws://' + window.location.hostname + '/wsapp/');
 
         socket.onopen = function(e) {
             console.log("[open] Connection established, send -> server");
