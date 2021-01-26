@@ -52,7 +52,6 @@
             container.find('.title').text(odata[0].title);
             container.find('.description').text(odata[0].description);
             container.removeClass('hidden');
-            console.log(odata);
         };
 
         var handle_helios = function (odata) {
@@ -67,7 +66,6 @@
                     'fa-caret-' + data[key + '_tendency']
                 );
             });
-            console.log(odata);
         };
 
         var handle_corona = function (odata) {
@@ -101,7 +99,6 @@
             $('#corona_cases_delta').text(data.delta.cases);
             $('#corona_deaths_delta').text(data.delta.deaths);
             $('#corona_recovered_delta').text(data.delta.recovered);
-            console.log(odata);
         }
 
         var handle_weather = function (data) {
@@ -167,14 +164,13 @@
                 'src',
                 'http://openweathermap.org/img/wn/' + weather_icon + '@2x.png'
             );
-            console.log(data);
         }
 
         let socket = new WebSocket('ws://' + window.location.hostname + '/wsapp/');
 
         socket.onopen = function(e) {
             console.log("[open] Connection established, send -> server");
-            socket.send("This is the dashboard client.");
+            //socket.send("This is the dashboard client.");
         };
 
         socket.onmessage = function(event) {
@@ -244,7 +240,20 @@
             }
 
             window.lastupdate = Date.now();
-            console.log(data);
+        };
+
+        socket.onclose = function(event) {
+            if (event.wasClean) {
+                alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+            } else {
+                // e.g. server process killed or network down
+                // event.code is usually 1006 in this case
+                alert('[close] Connection died');
+            }
+        };
+
+        socket.onerror = function(error) {
+            alert(`[error] ${error.message}`);
         };
 
         /* last updated counter */
