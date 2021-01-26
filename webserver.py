@@ -36,7 +36,7 @@ if __name__ == "__main__":
             await asyncio.sleep(1)
 
     tasks = [
-        websockets.serve(server, "0.0.0.0", 6789),
+        websockets.serve(server, "localhost", 6790),
         smadaemon.run(),
         openweatherclient.run(),
         coronaclient.run(),
