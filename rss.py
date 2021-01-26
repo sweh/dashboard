@@ -13,7 +13,7 @@ class Client:
 
     def parse_feed(self):
         xml = requests.get(self.rss_url)
-        parser = Parser(xml=xml.content, limit=5)
+        parser = Parser(xml=xml.content, limit=2)
         feed = parser.parse()
         result = {}
         feed = feed.feed[:]
@@ -44,7 +44,6 @@ class Client:
                 pass
             else:
                 self.history.append(result)
-                self.history = self.history[-10:]
                 print(result)
                 for websocket in self.websockets:
                     try:
