@@ -210,13 +210,6 @@
             }
 
             window.lastupdate = Date.now();
-            var now = new Date();
-            var days = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
-            var months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
-
-            var day = days[ now.getDay() ];
-            var month = months[ now.getMonth() ];
-            $('#current_date').text(day + ', der ' + now.getDate() + '. ' + month + ' ' + now.getFullYear());
             console.log(data);
         };
 
@@ -234,5 +227,28 @@
             if (minutes) { result += minutes + ' Minuten '; }
             result += seconds + ' Sekunden ';
             $('#secondslastupdate').text(result);
+
+            var now = new Date();
+            var days = [
+                'Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag',
+                'Freitag', 'Samstag'
+            ];
+            var months = [
+                'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli',
+                'August', 'September', 'Oktober', 'November', 'Dezember'
+            ];
+
+            var day = days[ now.getDay() ];
+            var month = months[ now.getMonth() ];
+            if (now.getSeconds() % 2 === 0) {
+                seperator = ':';
+            } else {
+                seperator = '&nbsp;';
+            }
+            $('#current_date').html(
+                day + ', der ' +
+                now.getDate() + '. ' + month + ' ' + now.getFullYear() +
+                ' ' + now.getHours() + seperator + now.getMinutes()
+            );
         }, 1000);
 }(jQuery));
