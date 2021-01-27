@@ -27,16 +27,19 @@ class BaseClient:
                 await self.send(websocket, item)
 
     async def send(self, websocket, data):
-        if websocket.state == 1:
-            if data in self.websockets[websocket]:
-                return
-            await websocket.send(json.dumps(data))
-            self.websockets[websocket].append(data)
-        else:
-            del self.websockets[websocket]
+        if data in self.websockets[websocket]:
+            return
+        await websocket.send(json.dumps(data))
+        self.websockets[websocket].append(data)
+
+    def clean_websockets(self):
+        for websocket in list(self.websockets):
+            if websocket.state != 1:
+                del self.websockets[websocket]
 
     async def run(self):
         while True:
+            self.clean_websockets()
             try:
                 self.history = self.history[0-self.keep_items:]
                 result = self.data
