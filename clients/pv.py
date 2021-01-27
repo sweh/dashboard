@@ -17,10 +17,10 @@ class Client(BaseClient):
 
     def save_result_to_file(self, data):
         data = dict(
-            panelpower=data['AC Power Solar'],
-            batterypower=0-data['AC Power Battery'],
-            power_from_grid=data['Power from grid'],
-            power_to_grid=data['Power to grid']
+            panelpower=data['AC Power Solar'] or 0,
+            batterypower=0-data['AC Power Battery'] or 0,
+            power_from_grid=data['Power from grid'] or 0,
+            power_to_grid=data['Power to grid'] or 0
         )
         data['consumption'] = (
                 data['panelpower'] + data['batterypower'] +
