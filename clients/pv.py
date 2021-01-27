@@ -26,7 +26,7 @@ class Client(BaseClient):
                 data['panelpower'] + data['batterypower'] +
                 data['power_from_grid'] - data['power_to_grid']
         )
-        if data['consumtion'] < 0:
+        if data['consumption'] < 0:
             data['consumption'] = 0 - data['consumption']
         data_file = self.config.get('FEATURE-pvdata', 'output_file')
         if data_file:
