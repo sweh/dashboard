@@ -1,5 +1,5 @@
 from rss_parser import Parser
-from baseclient import BaseClient
+from clients.baseclient import BaseClient
 import requests
 
 

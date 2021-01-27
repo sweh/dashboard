@@ -1,6 +1,6 @@
 import requests
 import lnetatmo
-from baseclient import BaseClient
+from clients.baseclient import BaseClient
 
 
 class NetatmoClient:

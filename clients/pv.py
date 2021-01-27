@@ -1,5 +1,5 @@
 from speedwiredecoder import decode_speedwire
-from baseclient import BaseClient
+from clients.baseclient import BaseClient
 
 
 class Client(BaseClient):

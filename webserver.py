@@ -2,11 +2,11 @@ import asyncio
 import websockets
 import argparse
 from sma_daemon import MyDaemon
-from pv import Client as PVClient
-from openweather import Client as OpenWeatherClient
-from corona import Client as CoronaClient
-from helios import Client as HeliosClient
-from rss import Client as RSSClient
+from clients.pv import Client as PVClient
+from clients.openweather import Client as OpenWeatherClient
+from clients.corona import Client as CoronaClient
+from clients.helios import Client as HeliosClient
+from clients.rss import Client as RSSClient
 
 
 def parse_arguments():

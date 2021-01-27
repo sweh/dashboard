@@ -1,5 +1,5 @@
 import requests
-from baseclient import BaseClient
+from clients.baseclient import BaseClient
 
 
 class Client(BaseClient):
