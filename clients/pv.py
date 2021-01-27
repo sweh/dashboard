@@ -26,8 +26,10 @@ class Client(BaseClient):
                 data['panelpower'] + data['batterypower'] +
                 data['power_from_grid'] - data['power_to_grid']
         )
-        with open(self.data_file, 'w') as f:
-            f.write(json.dumps(data))
+        data_file = self.config.get('FEATURE-pvdata', 'output_file')
+        if data_file:
+            with open(data_file, 'w') as f:
+                f.write(json.dumps(data))
 
     @property
     def data(self):
