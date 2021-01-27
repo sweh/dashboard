@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 class BaseClient:
 
     sleep_time = 30
-    keep_history = 3600  # 1 hour
+    keep_items = 1
     history = None
     websockets = None
     type_ = None
@@ -18,7 +18,6 @@ class BaseClient:
         self.config = config
         self.history = []
         self.websockets = {}
-        self.keep_items = int(self.keep_history / self.sleep_time)
 
     async def register(self, websocket):
         self.websockets[websocket] = []
@@ -31,6 +30,9 @@ class BaseClient:
             return
         await websocket.send(json.dumps(data))
         self.websockets[websocket].append(data)
+        self.websockets[websocket] = (
+            self.websockets[websocket][0-self.keep_items:]
+        )
 
     def clean_websockets(self):
         for websocket in list(self.websockets):
@@ -41,7 +43,6 @@ class BaseClient:
         while True:
             self.clean_websockets()
             try:
-                self.history = self.history[0-self.keep_items:]
                 result = self.data
             except Exception as e:
                 log.error(f'Exception while fetching {self.type_} data: {e}')
@@ -62,4 +63,5 @@ class BaseClient:
                             f'to {len(self.websockets)} clients.'
                         )
             finally:
+                self.history = self.history[0-self.keep_items:]
                 await asyncio.sleep(self.sleep_time)

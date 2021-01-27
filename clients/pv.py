@@ -6,6 +6,7 @@ class Client(BaseClient):
 
     sleep_time = 1
     type_ = 'PV'
+    keep_items = 100
 
     def __init__(self, smadaemon):
         self.smadaemon = smadaemon
