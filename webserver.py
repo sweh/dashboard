@@ -1,4 +1,5 @@
 import asyncio
+import json
 import websockets
 import argparse
 from sma_daemon import MyDaemon
@@ -37,12 +38,17 @@ if __name__ == "__main__":
         await coronaclient.register(websocket)
         await heliosclient.register(websocket)
         await rssclient.register(websocket)
-        await websocket.recv()  # For now as client does not send data
-        # while True:
-        #     # Get received data from websocket
-        #     data = await websocket.recv()
-        #     print(data)
-        #     await asyncio.sleep(1)
+        while True:
+            # Get received data from websocket
+            data = await websocket.recv()
+            if data:
+                data = json.loads(data)
+                if 'helios_stufe' in data:
+                    try:
+                        heliosclient.set_stufe(data['helios_stufe'])
+                    except Exception:
+                        pass
+            await asyncio.sleep(1)
 
     tasks = [
         websockets.serve(server, "localhost", 6790),

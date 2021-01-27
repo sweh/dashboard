@@ -56,8 +56,9 @@
         };
 
         var handle_helios = function (data) {
-            $(['aussenluft', 'abluft', 'abluft_feuchte', 'fortluft',
-               'stufe', 'zuluft']).each(function (i, key) {
+            $(
+                ['aussenluft', 'abluft', 'abluft_feuchte', 'fortluft', 'zuluft']
+            ).each(function (i, key) {
                 $('#helios_' + key).text(data[key]);
                 $('#helios_' + key + '_tendency').removeClass('fa-caret-down');
                 $('#helios_' + key + '_tendency').removeClass('fa-caret-up');
@@ -65,6 +66,14 @@
                 $('#helios_' + key + '_tendency').addClass(
                     'fa-caret-' + data[key + '_tendency']
                 );
+            });
+            $('#helios_stufe').val(data['stufe']);
+            $('#helios_stufe').knob({
+                release: function (value) {
+                    window.socket.send(
+                        JSON.stringify({'helios_stufe': value})
+                    );
+                },
             });
         };
 
@@ -212,14 +221,13 @@
             }
         };
 
-        let socket = new WebSocket('ws://' + window.location.hostname + '/wsapp/');
+        window.socket = new WebSocket('ws://' + window.location.hostname + '/wsapp/');
 
-        socket.onopen = function(e) {
+        window.socket.onopen = function(e) {
             console.log("[open] Connection established, send -> server");
-            //socket.send("This is the dashboard client.");
         };
 
-        socket.onmessage = function(event) {
+        window.socket.onmessage = function(event) {
             var timestamp = Date.now(),
                 data = JSON.parse(event.data);
 
@@ -240,7 +248,7 @@
             window.lastupdate = Date.now();
         };
 
-        socket.onclose = function(event) {
+        window.socket.onclose = function(event) {
             if (event.wasClean) {
                 alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
             } else {
@@ -250,7 +258,7 @@
             }
         };
 
-        socket.onerror = function(error) {
+        window.socket.onerror = function(error) {
             alert(`[error] ${error.message}`);
         };
 
