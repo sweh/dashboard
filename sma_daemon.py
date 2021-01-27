@@ -2,17 +2,12 @@
 # coding=utf-8
 from configparser import ConfigParser
 from daemon3x import daemon3x
-from speedwiredecoder import decode_speedwire
-import asyncio
 import importlib
-import json
 import socket
 import struct
 import sys
 import time
 import os
-import traceback
-import websockets.exceptions
 
 
 class MyDaemon(daemon3x):
@@ -42,8 +37,6 @@ class MyDaemon(daemon3x):
         else:
             self.statusfile = "em-status"
 
-        self.websockets = []
-
         self.load_features()
 
         super(MyDaemon, self).__init__(self.pidfile)
@@ -72,9 +65,6 @@ class MyDaemon(daemon3x):
             except Exception:
                 pass
             self.featurelist.append(featureitem)
-
-    def register(self, websocket):
-        self.websockets.append(websocket)
 
     def connect_to_socket(self):
         # prepare listen to socket-Multicast
@@ -113,34 +103,6 @@ class MyDaemon(daemon3x):
                     )
                 time.sleep(5)
         return sock
-
-    async def run_features(self, emparts):
-        # running all enabled features
-        for feature in self.featurelist:
-            result = feature["feature"].run(
-                emparts, feature["config"]
-            )
-            if result:
-                for websocket in self.websockets:
-                    try:
-                        await websocket.send(json.dumps(result))
-                    except websockets.exceptions.ConnectionClosedOK:
-                        self.websockets.remove(websocket)
-
-    async def run(self):
-        sock = self.connect_to_socket()
-
-        while True:
-            try:
-                emparts = decode_speedwire(sock.recv(608))
-                for serial in self.serials:
-                    if serial == format(emparts["serial"]):
-                        await self.run_features(emparts)
-            except Exception:
-                print("Daemon: Exception occured")
-                print(traceback.format_exc())
-                pass
-            await asyncio.sleep(1)
 
 
 # Daemon - Coding

@@ -2,6 +2,7 @@ import asyncio
 import websockets
 import argparse
 from sma_daemon import MyDaemon
+from pv import Client as PVClient
 from openweather import Client as OpenWeatherClient
 from corona import Client as CoronaClient
 from helios import Client as HeliosClient
@@ -24,26 +25,28 @@ def parse_arguments():
 if __name__ == "__main__":
     args = parse_arguments()
     smadaemon = MyDaemon(args.config)
+    pvclient = PVClient(smadaemon)
     openweatherclient = OpenWeatherClient(smadaemon.config)
     coronaclient = CoronaClient(smadaemon.config)
     heliosclient = HeliosClient(smadaemon.config)
     rssclient = RSSClient(smadaemon.config)
 
     async def server(websocket, path):
-        smadaemon.register(websocket)
-        openweatherclient.register(websocket)
-        coronaclient.register(websocket)
-        heliosclient.register(websocket)
-        rssclient.register(websocket)
-        while True:
-            # Get received data from websocket
-            data = await websocket.recv()
-            print(data)
-            await asyncio.sleep(1)
+        await pvclient.register(websocket)
+        await openweatherclient.register(websocket)
+        await coronaclient.register(websocket)
+        await heliosclient.register(websocket)
+        await rssclient.register(websocket)
+        await websocket.recv()  # For now as client does not send data
+        # while True:
+        #     # Get received data from websocket
+        #     data = await websocket.recv()
+        #     print(data)
+        #     await asyncio.sleep(1)
 
     tasks = [
         websockets.serve(server, "localhost", 6790),
-        smadaemon.run(),
+        pvclient.run(),
         openweatherclient.run(),
         coronaclient.run(),
         heliosclient.run(),

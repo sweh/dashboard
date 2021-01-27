@@ -1,8 +1,6 @@
-import json
-import websockets.exceptions
-import asyncio
 import requests
 import lnetatmo
+from baseclient import BaseClient
 
 
 class NetatmoClient:
@@ -63,7 +61,7 @@ class NetatmoClient:
         return result
 
 
-class Client:
+class Client(BaseClient):
 
     open_weather_url = (
         'http://api.openweathermap.org/data/2.5/weather'
@@ -72,30 +70,12 @@ class Client:
         '&lang=de'
         '&appid='
     )
-    websockets = None
+    type_ = 'Weather'
 
-    def __init__(self, config):
-        self.api_key = config.get("WEATHER", 'openweather_api_key')
-        self.netatmo = NetatmoClient(config)
-        self.websockets = []
-
-    def register(self, websocket):
-        self.websockets.append(websocket)
-
-    async def run(self):
-        while True:
-            try:
-                result = requests.get(
-                    self.open_weather_url + self.api_key
-                ).json()
-            except Exception:
-                pass
-            else:
-                result.update(self.netatmo.weatherData)
-                result['DeviceClass'] = 'Weather'
-                for websocket in self.websockets:
-                    try:
-                        await websocket.send(json.dumps([result]))
-                    except websockets.exceptions.ConnectionClosedOK:
-                        self.websockets.remove(websocket)
-            await asyncio.sleep(30)
+    @property
+    def data(self):
+        api_key = self.config.get("WEATHER", 'openweather_api_key')
+        netatmo = NetatmoClient(self.config)
+        result = requests.get(self.open_weather_url + api_key).json()
+        result.update(netatmo.weatherData)
+        return result

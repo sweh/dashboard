@@ -1,15 +1,11 @@
-import json
-import websockets.exceptions
 import xml.etree.ElementTree as ET
-import asyncio
 import requests
+from baseclient import BaseClient
 
 
-class Client:
+class Client(BaseClient):
 
-    corona_url = 'https://api.corona-zahlen.org/districts/15091'
-    history = None
-    websockets = None
+    type_ = 'Helios'
 
     def grab_helios_data(self):
         payload = {
@@ -61,53 +57,33 @@ class Client:
                 key = None
         return data
 
-    def __init__(self, config):
-        self.config = config
-        self.history = []
-        self.websockets = []
-
-    def register(self, websocket):
-        self.websockets.append(websocket)
-
-    async def run(self):
-        while True:
-            try:
-                heliosdata = self.grab_helios_data()
-            except Exception:
-                pass
-            else:
-                result = dict(
-                    stufe=heliosdata['v00102'],
-                    stufe_tendency='right',
-                    percent=heliosdata['v00103'],
-                    percent_tendency='right',
-                    aussenluft=float(heliosdata['v00104']),
-                    aussenluft_tendency='right',
-                    zuluft=float(heliosdata['v00105']),
-                    zuluft_tendency='right',
-                    fortluft=float(heliosdata['v00106']),
-                    fortluft_tendency='right',
-                    abluft=float(heliosdata['v00107']),
-                    abluft_tendency='right',
-                    abluft_feuchte=heliosdata['v02136'],
-                    abluft_feuchte_tendency='right',
-                )
-                if self.history:
-                    old_value = self.history[-1]
-                    for key in (
-                        'stufe', 'percent', 'aussenluft', 'zuluft',
-                        'fortluft', 'abluft', 'abluft_feuchte'
-                    ):
-                        if old_value[key] > result[key]:
-                            result[key + '_tendency'] = 'down'
-                        elif old_value[key] < result[key]:
-                            result[key + '_tendency'] = 'up'
-                result['DeviceClass'] = 'Helios'
-                self.history.append(result)
-                self.history = self.history[-2:]
-                for websocket in self.websockets:
-                    try:
-                        await websocket.send(json.dumps([result]))
-                    except websockets.exceptions.ConnectionClosedOK:
-                        self.websockets.remove(websocket)
-            await asyncio.sleep(30)
+    @property
+    def data(self):
+        heliosdata = self.grab_helios_data()
+        result = dict(
+            stufe=heliosdata['v00102'],
+            stufe_tendency='right',
+            percent=heliosdata['v00103'],
+            percent_tendency='right',
+            aussenluft=float(heliosdata['v00104']),
+            aussenluft_tendency='right',
+            zuluft=float(heliosdata['v00105']),
+            zuluft_tendency='right',
+            fortluft=float(heliosdata['v00106']),
+            fortluft_tendency='right',
+            abluft=float(heliosdata['v00107']),
+            abluft_tendency='right',
+            abluft_feuchte=heliosdata['v02136'],
+            abluft_feuchte_tendency='right',
+        )
+        if self.history:
+            old_value = self.history[-1]
+            for key in (
+                'stufe', 'percent', 'aussenluft', 'zuluft',
+                'fortluft', 'abluft', 'abluft_feuchte'
+            ):
+                if old_value[key] > result[key]:
+                    result[key + '_tendency'] = 'down'
+                elif old_value[key] < result[key]:
+                    result[key + '_tendency'] = 'up'
+        return result
