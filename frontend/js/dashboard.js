@@ -182,6 +182,7 @@
             var batterypower = data['AC Power Battery'] || 0;
             var power_from_grid = data['Power from grid'] || 0;
             var power_to_grid = data['Power to grid'] || 0;
+            var batterycapacity = data['BatteryCharge'] || 0;
 
             var consumption = panelpower + batterypower + power_from_grid - power_to_grid;
             var batterypower = 0 - batterypower;
@@ -196,19 +197,25 @@
             $('#panelacpower').text(panelpower);
             $('#powertogrid').text(power_to_grid);
             $('#batteryacpower').text(batterypower);
-            $('#batterycapacity').text(data['BatteryCharge']);
+            $('#batterycapacity').text(batterycapacity);
             $('#powerfromgrid').text(power_from_grid);
             $('#consumption').text(consumption);
 
             $('#batterycharging').find('i').removeClass('fa-caret-up');
             $('#batterycharging').find('i').removeClass('fa-caret-down');
             $('#batterycharging').removeClass('bg-color-green');
+            $('#batterycharging').removeClass('bg-color-orange');
             $('#batterycharging').removeClass('bg-color-red');
             if (data['BatteryState'] === 'Charging') {
                 $('#batterycharging').find('i').addClass('fa-caret-up');
-                $('#batterycharging').addClass('bg-color-green');
             } else {
                 $('#batterycharging').find('i').addClass('fa-caret-down');
+            }
+            if (batterycapacity > 50) {
+                $('#batterycharging').addClass('bg-color-green');
+            } else if (batterycapacity > 20) {
+                $('#batterycharging').addClass('bg-color-orange');
+            } else {
                 $('#batterycharging').addClass('bg-color-red');
             }
             $('#batterytemp').text(data['BatteryTemp']);
