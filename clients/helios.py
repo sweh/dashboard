@@ -46,7 +46,7 @@ class Client(BaseClient):
         if self.history:
             old_value = self.history[-1]
             for key in (
-                'stufe', 'percent', 'aussenluft', 'zuluft',
+                'stufe', 'aussenluft', 'zuluft',
                 'fortluft', 'abluft', 'abluft_feuchte'
             ):
                 if old_value[key] > result[key]:
