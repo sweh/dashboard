@@ -8,7 +8,6 @@ class Client(BaseClient):
     sleep_time = 1
     type_ = 'PV'
     keep_items = 100
-    data_file = '/tmp/pvdata.txt'
 
     def __init__(self, smadaemon):
         self.smadaemon = smadaemon
