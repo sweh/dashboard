@@ -67,14 +67,7 @@
                     'fa-caret-' + data[key + '_tendency']
                 );
             });
-            $('#helios_stufe').val(data['stufe']);
-            $('#helios_stufe').knob({
-                release: function (value) {
-                    window.socket.send(
-                        JSON.stringify({'helios_stufe': value})
-                    );
-                },
-            });
+            $('#helios_stufe').val(data['stufe']).trigger('change');
         };
 
         var handle_corona = function (odata) {
@@ -268,6 +261,14 @@
         window.socket.onerror = function(error) {
             alert(`[error] ${error.message}`);
         };
+
+        $('#helios_stufe').knob({
+            release: function (value) {
+                window.socket.send(
+                    JSON.stringify({'helios_stufe': value})
+                );
+            },
+        });
 
         /* last updated counter */
         setInterval(function() {

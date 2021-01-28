@@ -8,7 +8,7 @@ log = logging.getLogger(__name__)
 
 class BaseClient:
 
-    sleep_time = 30
+    sleep_time = 60
     keep_items = 1
     history = None
     websockets = None
