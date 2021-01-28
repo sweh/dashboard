@@ -9,17 +9,19 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
         <meta name="viewport" content="viewport-fit=cover, user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
         <link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-production-plugins.min.css">
         <link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-production.min.css">
         <link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-skins.min.css">
         <link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-rtl.min.css"> 
         <link rel="stylesheet" type="text/css" media="screen" href="css/demo.min.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="https://use.fontawesome.com/releases/v5.0.4/css/all.css">
         <link rel="shortcut icon" href="img/favicon/favicon.ico" type="image/x-icon">
         <link rel="icon" href="img/favicon/favicon.ico" type="image/x-icon">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
         <style>
             .hidden { display: none }
+            .bg-color-bulb-active { background-color: #FF9F01 }
+            .txt-color-bulb-active { color: #FF9F01 }
         </style>
     </head>
 
@@ -31,7 +33,7 @@
             <div class="pull-right">
                 <div id="reload" class="btn-header transparent pull-right">
                     <span> <a href="javascript:window.location.reload(false);"
-                            title="Reload"><i class="fa fa-refresh"></i></a> </span>
+                            title="Reload"><i class="fa fa-redo"></i></a> </span>
                 </div>
             </div>
         </header>
@@ -49,7 +51,7 @@
                                     data-widget-collapsed="false" 
                                     data-widget-sortable="false">
                                 <header>
-                                    <span class="widget-icon"> <i class="fa fa-sun-o txt-color-yellow"></i> </span>
+                                    <span class="widget-icon"> <i class="fa fa-sun txt-color-yellow"></i> </span>
                                     <h2>PV-Anlage <i id="panelstatus" class="glyphicon glyphicon-remove-circle"></i></h2>
                                 </header>
                                 <div>
@@ -157,7 +159,7 @@
                                                 <p class="text-left">
                                                   <i id="weather_wind_icon" class="fa"></i>
                                                   <span id="weather_wind_angle"></span>
-                                                  <span style="font-size: 6px; display: block;" id="weather_wind_desc"></span>
+                                                  <span style="font-size: 8px; display: block;" id="weather_wind_desc"></span>
                                                 </p>
                                             </div>
                                             <div class="col-sm-6 col-md-6 text-center">
@@ -168,11 +170,11 @@
                                                     <i class="fa fa-umbrella"></i>
                                                     <span id="weather_rain"></span>
                                                   </div>
-                                                  <div style="font-size: 6px; float: left">
+                                                  <div style="font-size: 8px; float: left">
                                                       <i class="fa fa-clock-o"></i>
                                                       <span id="weather_rain_1"></span>
                                                   </div>
-                                                  <div style="font-size: 6px; float: right">
+                                                  <div style="font-size: 8px; float: right">
                                                       <i class="fa fa-calendar"></i>
                                                       <span id="weather_rain_24"></span>
                                                   </div>
@@ -325,7 +327,7 @@
                                 </div>
                             </div>
                         </article>
-                        <article class="col-xs-12 col-sm-7" style="padding-left: 0px">
+                        <article class="col-xs-12 col-sm-2" style="padding-left: 0px">
                             <div class="jarviswidget jarviswidget-color-blueDark"
                                  style="margin-bottom: 10px"
                                  data-widget-colorbutton="false"
@@ -337,23 +339,31 @@
                                  data-widget-sortable="false">
                                 <header>
                                     <span class="widget-icon"> <i class="fa fa-bookmark txt-color-blue"></i> </span>
-                                    <h2>Schlagzeilen</h2>
+                                    <h2>MOTD</h2>
                                 </header>
                                 <div>
-                                    <div class="widget-body no-padding">
-                                        <div class="chat-body custom-scroll" style="background: none; height:200px; overflow: scroll;">
-                                            <ul id="rsswidget">
-                                                <li class="hidden message margin-bottom-10" style="margin-left: 0px">
-                                                    <img src="img/tagesschau.png" alt="" class="">
-                                                    <div class="message-text">
-                                                        <a href="#" class="title txt-color-blueDark" target="_blanc"></a>
-                                                        <br />
-                                                        <span class="font-xs description"></span>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                    <div class="widget-body custom-scroll" style="height: 188px; overflow: scroll">
+                                        <div id="motd_quote"></div>
+                                        <div id="motd_author" style="float:right; font-size: 10px"></div>
                                     </div>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="col-xs-12 col-sm-5" style="padding-left: 0px">
+                            <div class="jarviswidget jarviswidget-color-blueDark"
+                                 style="margin-bottom: 10px"
+                                 data-widget-colorbutton="false"
+                                 data-widget-editbutton="false"
+                                 data-widget-togglebutton="false"
+                                 data-widget-deletebutton="false"
+                                 data-widget-custombutton="false"
+                                 data-widget-collapsed="false"
+                                 data-widget-sortable="false">
+                                <header>
+                                    <span class="widget-icon"> <i class="fas fa-lightbulb txt-color-yellow"></i> </span>
+                                    <h2>Beleuchtung</h2>
+                                </header>
+                                <div id="hue_container">
                                 </div>
                             </div>
                         </article>

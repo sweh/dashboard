@@ -5,6 +5,11 @@
 
         pageSetUp();
 
+        var isUndefinedOrNull = function (o) {
+            return o  === undefined || o === null;
+        };
+
+
         /* flot chart colors default */
         var $chrt_border_color = "#efefef";
         var $chrt_grid_color = "#DDD"
@@ -221,10 +226,76 @@
             }
         };
 
+        var activate_light = function (key, brightness) {
+            var lightbulb = $('#hue_' + key);
+            lightbulb.find('i').addClass('txt-color-bulb-active');
+            lightbulb.find('.badge').addClass('bg-color-bulb-active');
+            $('#hue_' + key + '_knob').knob({
+                release: function (value) {
+                    window.socket.send(
+                        JSON.stringify({hue: {'id': key, 'bri': value}})
+                    );
+                },
+            });
+        };
+
+        var deactivate_light = function (key, brightness) {
+            var lightbulb = $('#hue_' + key);
+            lightbulb.find('i').removeClass('txt-color-bulb-active');
+            lightbulb.find('.badge').removeClass('bg-color-bulb-active');
+            $('#hue_' + key).find('div').remove();
+            if (!isUndefinedOrNull(brightness)) {
+                $('#hue_' + key).prepend('<input style="visibility: hidden; height: 60px;" id="hue_'+ key + '_knob" class="knob" data-width="80" data-height="80" data-min="0" data-max="254" data-fgColor="#FF9F01" data-angleOffset=-125 data-angleArc=250 value="' + brightness + '" data-thickness=.3>');
+            }
+        };
+
+        window.toggle_light = function (key, brightness) {
+            var lightbulb = $('#hue_' + key),
+                is_on = lightbulb.find('i').hasClass('txt-color-bulb-active');
+            if (is_on) {
+                deactivate_light(key, brightness);
+            } else {
+                activate_light(key, brightness);
+            }
+            window.socket.send(JSON.stringify({'hue': {'id': key, 'on': !is_on}}));
+        };
+
         window.socket = new WebSocket('ws://' + window.location.hostname + '/wsapp/');
 
         window.socket.onopen = function(e) {
             console.log("[open] Connection established, send -> server");
+        };
+
+        var handle_hue = function (data) {
+            console.log(data);
+            $('#hue_container').empty();
+            $.each(data, function (key, v) {
+                if (key === 'DeviceClass') {
+                    return;
+                }
+                var bulb = '<div class="col-sm-4 col-md-4  text-center" style="height: 94px">';
+                bulb += '<h3 id="hue_' + key + '" onclick="javascript: window.toggle_light(' + key + ', ' + v.bri +');" class="margin-bottom-0 margin-top-0">';
+                if (!isUndefinedOrNull(v.bri)) {
+                    bulb += '<input style="visibility: hidden; height: 60px;" id="hue_'+ key + '_knob" class="knob" data-width="80" data-height="80" data-min="0" data-max="254" data-fgColor="#FF9F01" data-angleOffset=-125 data-angleArc=250 value="' + v.bri + '" data-thickness=.3>';
+                    bulb += '<i class="fas fa-lightbulb txt-color-black" style="position: absolute; left: 54px; top: 24px; font-size: 30px;"></i>';
+                } else {
+                    bulb += '<i class="fas fa-lightbulb txt-color-black" style="display: block; font-size: 30px; height: 60px; width: 110px; padding-top: 24px"></i>';
+                }
+                bulb += '<br><small class="font-xs"><sup style="top: 0em;"><span class="badge" style="margin-top: -60px;">' + v.name + '</span></sup></small>';
+                bulb += '</h3>';
+                bulb += '</div>'
+
+                $('#hue_container').append(bulb);
+
+                if (v.on) {
+                    activate_light(key, v.bri);
+                }
+            });
+        };
+
+        var handle_motd = function (data) {
+            $('#motd_quote').text(data.quote);
+            $('#motd_author').text(data.author);
         };
 
         window.socket.onmessage = function(event) {
@@ -241,6 +312,10 @@
                 handle_rss(data);
             } else if (data['DeviceClass'] === 'PV') {
                 handle_pv(data);
+            } else if (data['DeviceClass'] === 'Hue') {
+                handle_hue(data);
+            } else if (data['DeviceClass'] === 'MOTD') {
+                handle_motd(data);
             } else {
                 alert('ERROR: Unknown DeviceClass ' + data['DeviceClass']);
             }
