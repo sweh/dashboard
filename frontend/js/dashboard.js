@@ -276,6 +276,49 @@
             console.log("[open] Connection established, send -> server");
         };
 
+        function round(value, precision) {
+            var multiplier = Math.pow(10, precision || 0);
+            var result = Math.round(value * multiplier) / multiplier;
+            result = result.toString();
+            if (result.indexOf('.') < 0) {
+                result = result + '.0';
+            }
+            return result;
+        }
+
+        var handle_tado = function (data) {
+            window.tado_zones = data;
+            $('#tado_container').empty();
+            $.each(data, function (key, v) {
+                if (key === 'DeviceClass') {
+                    return;
+                }
+                var color = '#999999';
+                if (v.heating_power > 50) {
+                    color = '#BD362F';
+                } else if (v.heating_power > 0) {
+                    color = '#FF9F01';
+                }
+
+                var zone = '<div class="col-sm-4 col-md-4 text-center" style="height: 100px">';
+                zone += '<span id="tado_' + key + '" style="position: relative; display: inline-grid; width: 80px" class="">';
+                zone += '<input style="width: 80px; height: 80px;" id="tado_'+ key + '_knob" class="knob" data-width="80" data-height="80" data-min="16" data-max="25" data-fgColor="' + color + '" data-angleOffset=-125 data-angleArc=250 value="' + v.dest_temp + '" data-thickness=.3>';
+                zone += '<span class="tado_current label"><span class="badge-xxs txt-color-red">' + round(v.curr_temp, 1) + '</span><span class="badge-xxs txt-color-blue">' + round(v.curr_humi, 1) + '</span></span>';
+                zone += '<br><small class="font-xs"><sup style="top: 0em;"><span class="badge" style="margin-top: -65px; background-color: ' + color + '">' + v.name + '</span></sup></small>';
+                zone += '</span>';
+                zone += '</div>'
+
+                $('#tado_container').append(zone);
+                $('#tado_' + key + '_knob').knob({
+                    release: function (value) {
+                        window.socket.send(
+                            JSON.stringify({tado: {'zone': key, 'dest_temp': value}})
+                        );
+                    },
+                });
+            });
+        };
+
         var handle_hue = function (data) {
             window.hue_lights = data;
             $('#hue_container').empty();
@@ -326,6 +369,8 @@
                 handle_hue(data);
             } else if (data['DeviceClass'] === 'MOTD') {
                 handle_motd(data);
+            } else if (data['DeviceClass'] === 'Tado') {
+                handle_tado(data);
             } else {
                 alert('ERROR: Unknown DeviceClass ' + data['DeviceClass']);
             }
@@ -357,6 +402,13 @@
 
         /* last updated counter */
         setInterval(function() {
+            // Fullscreen bug
+            if ($('#jarviswidget-fullscreen-mode').length == 0) {
+                $('#tado_container').css('height', '203px');
+                $('#tado_container').css('padding-top', '5px');
+            }
+
+
             var now = new Date().getTime();
             var distance = now - window.lastupdate;
             var days = Math.floor(distance / (1000 * 60 * 60 * 24));

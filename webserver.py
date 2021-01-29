@@ -10,6 +10,11 @@ from clients.helios import Client as HeliosClient
 # from clients.rss import Client as RSSClient
 from clients.hue import Client as HueClient
 from clients.motd import Client as MotdClient
+from clients.tado import Client as TadoClient
+import logging
+
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
 
 
 def parse_arguments():
@@ -35,6 +40,7 @@ if __name__ == "__main__":
     # rssclient = RSSClient(smadaemon.config)
     motdclient = MotdClient(smadaemon.config)
     hueclient = HueClient(smadaemon.config)
+    tadoclient = TadoClient(smadaemon.config)
 
     async def server(websocket, path):
         await pvclient.register(websocket)
@@ -44,6 +50,7 @@ if __name__ == "__main__":
         # await rssclient.register(websocket)
         await hueclient.register(websocket)
         await motdclient.register(websocket)
+        await tadoclient.register(websocket)
         while True:
             # Get received data from websocket
             data = await websocket.recv()
@@ -52,13 +59,18 @@ if __name__ == "__main__":
                 if 'helios_stufe' in data:
                     try:
                         heliosclient.set_stufe(data['helios_stufe'])
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        log.error(f'Exception while setting helios: {e}')
                 elif 'hue' in data:
                     try:
                         hueclient.set_status(data['hue'])
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        log.error(f'Exception while setting hue: {e}')
+                elif 'tado' in data:
+                    try:
+                        tadoclient.set_status(data['tado'])
+                    except Exception as e:
+                        log.error(f'Exception while setting tado: {e}')
             await asyncio.sleep(1)
 
     tasks = [
@@ -69,6 +81,7 @@ if __name__ == "__main__":
         heliosclient.run(),
         # rssclient.run(),
         hueclient.run(),
+        tadoclient.run(),
         motdclient.run(),
     ]
 

@@ -7,3 +7,5 @@ lnetatmo==2.1.0
 rss_parser==0.1.1
 EasyModbusSilaaCooling == 1.0.6
 hue-py==0.2.1
+libtado==3.2.1
+gocept.cache==4.0

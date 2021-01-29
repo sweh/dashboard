@@ -22,6 +22,16 @@
             .hidden { display: none }
             .bg-color-bulb-active { background-color: #FF9F01 }
             .txt-color-bulb-active { color: #FF9F01 }
+            .tado_current {
+                position: absolute;
+                bottom: 46px;
+                left: 13px;
+            }
+            .badge-xxs {
+                font-size: 9px;
+                padding: 2px;
+                font-weight: 700;
+            }
         </style>
     </head>
 
@@ -37,11 +47,11 @@
                 </div>
             </div>
         </header>
-        <div id="main" role="main" style="margin-left: 0px">
+        <div id="main" role="main" style="margin-left: 0px; padding-bottom: 0px;">
             <div id="content">
                 <section id="widget-grid" class="">
                     <div class="row">
-                        <article class="col-xs-12 col-sm-8">
+                        <article class="col-xs-12 col-sm-7">
                             <div class="jarviswidget jarviswidget-color-blueDark" style="margin-bottom: 15px;"
                                     data-widget-colorbutton="false" 
                                     data-widget-editbutton="false" 
@@ -54,7 +64,7 @@
                                     <span class="widget-icon"> <i class="fa fa-sun txt-color-yellow"></i> </span>
                                     <h2>PV-Anlage <i id="panelstatus" class="glyphicon glyphicon-remove-circle"></i></h2>
                                 </header>
-                                <div>
+                                <div style="height: 379px;">
                                     <div class="widget-body no-padding">
                                         <div class="row">
                                             <div class="col-sm-4 col-md-2 col-md-offset-1 text-center">
@@ -75,19 +85,6 @@
                                             <div class="col-sm-4 col-md-2 text-center">
                                                 <h3 class="margin-bottom-0">
                                                     <span id="batteryacpower">0</span>
-                                                    <ul class="smaller-stat pull-right" style="margin-top: -12px;">
-                                                        <li>
-                                                            <span class="label" style="font-size: 9px; color: black">
-                                                                <span id="batterytemp">0</span> °C
-                                                            </span>
-                                                        </li>
-                                                        <li>
-                                                            <span
-                                                                id="batterycharging" class="label bg-color-red" style="font-size: 9px;">
-                                                                <i class="fa fa-caret-down"></i> <span id="batterycapacity">0</span>%
-                                                            </span>
-                                                        </li>
-                                                    </ul>
                                                     <br>
                                                     <small
                                                         class="font-xs"><sup><span class="badge bg-color-orange">Batterie</span></sup></small>
@@ -110,6 +107,24 @@
                                                 </h3>
                                             </div>
                                         </div>
+                                        <div class="row">
+                                            <div class="col-sm-4 col-md-5 text-center">
+                                            </div>
+                                            <div class="col-sm-4 col-md-2 text-center">
+                                            <ul class="smaller-stat" style="margin-top: -8px; width: 81px;">
+                                                <li>
+                                                    <span class="label pull-right" style="font-size: 9px; color: black">
+                                                        <span id="batterytemp">0</span> °C
+                                                    </span>
+                                                    <span id="batterycharging" class="label bg-color-red pull-left" style="font-size: 9px;">
+                                                        <i class="fa fa-caret-down"></i> <span id="batterycapacity">0</span>%
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                            </div>
+                                            <div class="col-sm-4 col-md-5 text-center">
+                                            </div>
+                                        </div>
 
                                         <hr class="margin-5">
                                         <div id="pvchart" class="chart"></div>
@@ -117,8 +132,9 @@
                                 </div>
                             </div>
                         </article>
-                        <article class="col-xs-12 col-sm-4" style="padding-left: 0px">
+                        <article class="col-xs-12 col-sm-5" style="padding-left: 0px">
                           <div class="row" style="margin: 0px">
+                            <article class="col-xs-12 col-sm-7" style="padding-left: 0px">
                             <div class="jarviswidget jarviswidget-color-blueDark" style="margin-bottom: 15px;"
                                     data-widget-colorbutton="false" 
                                     data-widget-editbutton="false" 
@@ -131,7 +147,7 @@
                                     <span class="widget-icon"> <i class="fa fa-cloud txt-color-blueLight"></i> </span>
                                     <h2>Wetter</h2>
                                 </header>
-                                <div style="height: 125px">
+                                <div style="height: 128px">
                                     <div class="jarviswidget-editbox">
                                         <input class="form-control" type="text">
                                     </div>
@@ -141,30 +157,20 @@
                                                 <h1 style="font-size: 3em; display: inline-block">
                                                     <bold id="current_temp">0.0</bold>°C
                                                 </h1>
-                                                <ul class="smaller-stat hidden-sm pull-right" style="margin-left: 10px; margin-top: 7px;">
-                                                    <li>
-                                                        <span class="label bg-color-red" style="width:55px;"><i class="fa fa-caret-up"></i> <span id="today_temp_max">0.0</span>°C</span> </li>
-                                                    <li>
-                                                        <span class="label bg-color-blue" style="width:55px;"><i class="fa fa-caret-down"></i> <span id="today_temp_min">0.0</span>°C</span></span>
-                                                    </li>
-                                                </ul>
                                             </div>
-                                            <div class="col-sm-3 col-md-3 text-center">
-                                                <img id="current_weather_icon" src="" style=" height: 60px; ">
+                                            <div class="col-sm-3 col-md-3 text-left">
+                                                <img id="current_weather_icon" src="" style="margin-left: -20px; height: 60px; ">
                                             </div>
                                         </div>
                                         <div class="row" style="padding-top: 5px;">
-                                            <div class="col-sm-3 col-md-3 text-center">
+                                            <div class="col-sm-6 col-md-8 text-center">
                                                 <p class="text-left">
                                                   <i id="weather_wind_icon" class="fa"></i>
                                                   <span id="weather_wind_angle"></span>
                                                   <span style="font-size: 8px; display: block;" id="weather_wind_desc"></span>
                                                 </p>
                                             </div>
-                                            <div class="col-sm-6 col-md-6 text-center">
-                                                <h4 id="weather_desc"></h4>
-                                            </div>
-                                            <div class="col-sm-3 col-md-3 text-center">
+                                            <div class="col-sm-6 col-md-4 text-center">
                                                   <div>
                                                     <i class="fa fa-umbrella"></i>
                                                     <span id="weather_rain"></span>
@@ -182,8 +188,8 @@
                                     </div>
                                 </div>
                             </div>
-                          </div>
-                          <div class="row" style="margin: 0px">
+                            </article>
+                            <article class="col-xs-12 col-sm-5" style="padding-right: 0px; padding-left: 0px">
                             <div class="jarviswidget jarviswidget-color-blueDark" style="margin-bottom: 15px;"
                                     data-widget-colorbutton="false" 
                                     data-widget-editbutton="false" 
@@ -193,49 +199,53 @@
                                     data-widget-collapsed="false" 
                                     data-widget-sortable="false">
                                 <header>
-                                    <span class="widget-icon"> <i class="fa fa-medkit txt-color-red"></i> </span>
-                                    <h2>Corona Inzidenz</h2>
+                                    <span class="widget-icon"> <i class="fa fa-medkit txt-color-white"></i> </span>
+                                    <h2>Corona</h2>
                                 </header>
                                 <div>
                                     <div class="jarviswidget-editbox">
                                         <input class="form-control" type="text">
                                     </div>
-                                    <div class="widget-body">
+                                    <div class="widget-body" style="padding-bottom: 0px">
                                         <div class="row">
                                             <div class="col-sm-12 col-md-12 text-center">
-                                                <h1 class="" style="font-size: 55px; margin-top: 0px;" id="corona_incidence">0</h1>
+                                                <h1 class="" style="font-size: 40px; margin-top: 0px;" id="corona_incidence">0</h1>
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-sm-4 col-md-4 text-center">
-                                                <span>Neue Fälle</span>
-                                            </div>
-                                            <div class="col-sm-4 col-md-4 text-center">
-                                                <span>Todesfälle</span>
-                                            </div>
-                                            <div class="col-sm-4 col-md-4 text-center">
-                                                <span>Genesen</span>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4 col-md-4 text-center">
-                                                <h3 id="corona_cases_delta" style="margin: 0px">0</h3>
-                                            </div>
-                                            <div class="col-sm-4 col-md-4 text-center">
-                                                <h3 id="corona_deaths_delta" style="margin: 0px">0</h3>
-                                            </div>
-                                            <div class="col-sm-4 col-md-4 text-center">
-                                                <h3 id="corona_recovered_delta" style="margin: 0px">0</h3>
-                                            </div>
-                                        </div>
-                                        <div class="row" style="padding-top: 12px;">
-                                            <div class="col-sm-12 col-md-12 text-right" style="font-size: 10px">
-                                                Stand: <span id="corona_date"></span>, <span id="corona_source"></span>
-                                            </div>
+                                            <dl class="dl-horizontal" style="margin-left: -68px; margin-bottom: 5px">
+                                            <dt>Neue Fälle</dt>
+                                            <dd id="corona_cases_delta">0</dd>
+                                            <dt>Todesfälle</dt>
+                                            <dd id="corona_deaths_delta">0</dd>
+                                            <dt>Genesen</dt>
+                                            <dd id="corona_recovered_delta">0</dd>
+                                            </dl>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            </article>
+                          </div>
+                          <div class="row" style="margin: 0px">
+                        <article class="col-xs-12 col-sm-12" style="padding-right: 0px; padding-left: 0px">
+                            <div class="jarviswidget jarviswidget-color-blueDark"
+                                 style="margin-bottom: 10px"
+                                 data-widget-colorbutton="false"
+                                 data-widget-editbutton="false"
+                                 data-widget-togglebutton="false"
+                                 data-widget-deletebutton="false"
+                                 data-widget-custombutton="false"
+                                 data-widget-collapsed="false"
+                                 data-widget-sortable="false">
+                                <header>
+                                    <span class="widget-icon"> <i class="fa fa-fire txt-color-red"></i> </span>
+                                    <h2>Heizung</h2>
+                                </header>
+                                <div id="tado_container" style="height: 203px; padding-top: 5px;">
+                                </div>
+                            </div>
+                        </article>
                           </div>
                         </article>
                     </div>
@@ -332,7 +342,7 @@
                                  data-widget-editbutton="false"
                                  data-widget-togglebutton="false"
                                  data-widget-deletebutton="false"
-                                 data-widget-custombutton="false"
+                                 data-widget-custombutton="true"
                                  data-widget-collapsed="false"
                                  data-widget-sortable="false">
                                 <header>
@@ -366,27 +376,23 @@
                                             class="fas fa-moon"></i></a>
                                     </div>
                                 </header>
-                                <div id="hue_container" style="height: 203px; padding-top: 0px;">
+                                <div id="hue_container" style="height: 203px; padding-top: 5px;">
                                 </div>
                             </div>
                         </article>
                     </div>
                 </section>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 text-right hidden-xs">
+                    <i class="txt-color-blueLight">
+                        Zuletzt aktualisiert vor <i class="fa
+                            fa-clock-o"></i> <strong> <span
+                                id="secondslastupdate">0 Sekunden</span> &nbsp;</strong> </i>
+                </div>
+            </div>
             </div>
         </div>
 
-        <div class="page-footer">
-            <div class="row">
-                <div class="col-xs-6 col-sm-6 text-right hidden-xs">
-                    <div class="txt-color-white inline-block">
-                        <i class="txt-color-blueLight">
-                            Zuletzt aktualisiert vor <i class="fa
-                                fa-clock-o"></i> <strong> <span
-                                    id="secondslastupdate">0 Sekunden</span> &nbsp;</strong> </i>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <script data-pace-options='{ "restartOnRequestAfter": true }' src="js/plugin/pace/pace.min.js"></script>
 
