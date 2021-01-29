@@ -245,7 +245,7 @@
             lightbulb.find('.badge').removeClass('bg-color-bulb-active');
             $('#hue_' + key).find('div').remove();
             if (!isUndefinedOrNull(brightness)) {
-                $('#hue_' + key).prepend('<input style="visibility: hidden; height: 86px;" id="hue_'+ key + '_knob" class="knob" data-width="80" data-height="80" data-min="0" data-max="254" data-fgColor="#FF9F01" data-angleOffset=-125 data-angleArc=250 value="' + brightness + '" data-thickness=.3>');
+                $('#hue_' + key).prepend('<input style="width: 80px; visibility: hidden; height: 80px;" id="hue_'+ key + '_knob" class="knob" data-width="80" data-height="80" data-min="0" data-max="254" data-fgColor="#FF9F01" data-angleOffset=-125 data-angleArc=250 value="' + brightness + '" data-thickness=.3>');
             }
         };
 
@@ -260,6 +260,16 @@
             window.socket.send(JSON.stringify({'hue': {'id': key, 'on': !is_on}}));
         };
 
+        window.go_to_bed = function () {
+            window.socket.send(JSON.stringify({'hue': {'id': 4, 'on': false}}));
+            deactivate_light(4);
+            window.socket.send(JSON.stringify({'hue': {'id': 8, 'on': false}}));
+            deactivate_light(8, window.hue_lights['8'].bri);
+            window.socket.send(JSON.stringify({'hue': {'id': 7, 'on': true}}));
+            activate_light(7);
+            window.socket.send(JSON.stringify({'helios_stufe': 1}));
+        };
+
         window.socket = new WebSocket('ws://' + window.location.hostname + '/wsapp/');
 
         window.socket.onopen = function(e) {
@@ -267,22 +277,22 @@
         };
 
         var handle_hue = function (data) {
-            console.log(data);
+            window.hue_lights = data;
             $('#hue_container').empty();
             $.each(data, function (key, v) {
                 if (key === 'DeviceClass') {
                     return;
                 }
                 var bulb = '<div class="col-sm-4 col-md-4  text-center" style="height: 94px">';
-                bulb += '<h3 id="hue_' + key + '" style="width: 100px" class="margin-bottom-0 margin-top-0">';
+                bulb += '<span id="hue_' + key + '" style="position: relative; display: inline-grid; width: 80px" class="">';
                 if (!isUndefinedOrNull(v.bri)) {
-                    bulb += '<input style="visibility: hidden; height: 86px;" id="hue_'+ key + '_knob" class="knob" data-width="80" data-height="80" data-min="0" data-max="254" data-fgColor="#FF9F01" data-angleOffset=-125 data-angleArc=250 value="' + v.bri + '" data-thickness=.3>';
-                    bulb += '<i onclick="javascript: window.toggle_light(' + key + ', ' + v.bri +');"  class="fas fa-lightbulb txt-color-black" style="position: absolute; left: 53px; top: 24px; font-size: 30px;"></i>';
+                    bulb += '<input style="width: 80px; visibility: hidden; height: 80px;" id="hue_'+ key + '_knob" class="knob" data-width="80" data-height="80" data-min="0" data-max="254" data-fgColor="#FF9F01" data-angleOffset=-125 data-angleArc=250 value="' + v.bri + '" data-thickness=.3>';
+                    bulb += '<i onclick="javascript: window.toggle_light(' + key + ', ' + v.bri +');"  class="fas fa-lightbulb txt-color-black" style="position: absolute; left: 30px; top: 24px; font-size: 30px;"></i>';
                 } else {
-                    bulb += '<i onclick="javascript: window.toggle_light(' + key + ', ' + v.bri +');"  class="fas fa-lightbulb txt-color-black" style="display: block; font-size: 30px; height: 60px; width: 106px; padding-top: 24px"></i>';
+                    bulb += '<i onclick="javascript: window.toggle_light(' + key + ', ' + v.bri +');"  class="fas fa-lightbulb txt-color-black" style="height: 90px; display: block; font-size: 30px; height: 80px; width: 80px; padding-top: 24px"></i>';
                 }
-                bulb += '<br><small class="font-xs"><sup style="top: 0em;"><span class="badge" style="margin-top: -60px;">' + v.name + '</span></sup></small>';
-                bulb += '</h3>';
+                bulb += '<br><small class="font-xs"><sup style="top: 0em;"><span class="badge" style="margin-top: -65px;">' + v.name + '</span></sup></small>';
+                bulb += '</span>';
                 bulb += '</div>'
 
                 $('#hue_container').append(bulb);
