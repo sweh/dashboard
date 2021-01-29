@@ -274,12 +274,12 @@
                     return;
                 }
                 var bulb = '<div class="col-sm-4 col-md-4  text-center" style="height: 94px">';
-                bulb += '<h3 id="hue_' + key + '" class="margin-bottom-0 margin-top-0">';
+                bulb += '<h3 id="hue_' + key + '" style="width: 100px" class="margin-bottom-0 margin-top-0">';
                 if (!isUndefinedOrNull(v.bri)) {
                     bulb += '<input style="visibility: hidden; height: 86px;" id="hue_'+ key + '_knob" class="knob" data-width="80" data-height="80" data-min="0" data-max="254" data-fgColor="#FF9F01" data-angleOffset=-125 data-angleArc=250 value="' + v.bri + '" data-thickness=.3>';
-                    bulb += '<i onclick="javascript: window.toggle_light(' + key + ', ' + v.bri +');"  class="fas fa-lightbulb txt-color-black" style="position: absolute; left: 62px; top: 24px; font-size: 30px;"></i>';
+                    bulb += '<i onclick="javascript: window.toggle_light(' + key + ', ' + v.bri +');"  class="fas fa-lightbulb txt-color-black" style="position: absolute; left: 53px; top: 24px; font-size: 30px;"></i>';
                 } else {
-                    bulb += '<i onclick="javascript: window.toggle_light(' + key + ', ' + v.bri +');"  class="fas fa-lightbulb txt-color-black" style="display: block; font-size: 30px; height: 60px; width: 123px; padding-top: 24px"></i>';
+                    bulb += '<i onclick="javascript: window.toggle_light(' + key + ', ' + v.bri +');"  class="fas fa-lightbulb txt-color-black" style="display: block; font-size: 30px; height: 60px; width: 106px; padding-top: 24px"></i>';
                 }
                 bulb += '<br><small class="font-xs"><sup style="top: 0em;"><span class="badge" style="margin-top: -60px;">' + v.name + '</span></sup></small>';
                 bulb += '</h3>';
