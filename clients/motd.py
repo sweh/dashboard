@@ -10,7 +10,13 @@ class Client(BaseClient):
 
     @property
     def data(self):
-        quote = requests.get(self.url).json()['contents']['quotes'][0]
+        data = requests.get(self.url).json()
+        if 'error' in data:
+            return dict(
+                    quote=data['error']['message'],
+                    author=data['error']['code']
+                )
+        quote = data['contents']['quotes'][0]
         return dict(
             quote=quote['quote'],
             author=quote['author']
