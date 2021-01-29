@@ -39,7 +39,7 @@ class BaseClient:
             if websocket.state != 1:
                 del self.websockets[websocket]
 
-    async def run(self):
+    async def run(self, once=False):
         while True:
             self.clean_websockets()
             try:
@@ -64,4 +64,6 @@ class BaseClient:
                         )
             finally:
                 self.history = self.history[0-self.keep_items:]
+                if once:
+                    return
                 await asyncio.sleep(self.sleep_time)

@@ -58,17 +58,17 @@ if __name__ == "__main__":
                 data = json.loads(data)
                 if 'helios_stufe' in data:
                     try:
-                        heliosclient.set_stufe(data['helios_stufe'])
+                        await heliosclient.set_stufe(data['helios_stufe'])
                     except Exception as e:
                         log.error(f'Exception while setting helios: {e}')
                 elif 'hue' in data:
                     try:
-                        hueclient.set_status(data['hue'])
+                        await hueclient.set_status(data['hue'])
                     except Exception as e:
                         log.error(f'Exception while setting hue: {e}')
                 elif 'tado' in data:
                     try:
-                        tadoclient.set_status(data['tado'])
+                        await tadoclient.set_status(data['tado'])
                     except Exception as e:
                         log.error(f'Exception while setting tado: {e}')
             await asyncio.sleep(1)

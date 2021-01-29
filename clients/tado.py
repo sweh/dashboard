@@ -1,6 +1,7 @@
 import libtado.api
 import gocept.cache.method
 from clients.baseclient import BaseClient
+import asyncio
 
 
 class Client(BaseClient):
@@ -18,12 +19,14 @@ class Client(BaseClient):
     def api(self):
         return libtado.api.Tado(self.username, self.password, self.secret)
 
-    def set_status(self, data):
+    async def set_status(self, data):
         if 'dest_temp' in data:
             self.api().set_temperature(
                 int(data['zone']),
                 float(data['dest_temp'])
             )
+            await asyncio.sleep(4)
+            await self.run(once=True)
 
     @property
     def data(self):

@@ -8,7 +8,6 @@ class Client(BaseClient):
     type_ = 'Hue'
     ip = '10.0.1.108'
     cache_file = None
-    sleep_time = 10
 
     def __init__(self, config):
         self.cache_file = config.get("HUE", "cache_file")
@@ -20,7 +19,7 @@ class Client(BaseClient):
             self.api.save_api_key(cache_file=self.cache_file)
         self.api.load_existing(cache_file=self.cache_file)
 
-    def set_status(self, data):
+    async def set_status(self, data):
         if 'on' in data:
             if data['on']:
                 self.api.turn_on([int(data['id'])])
@@ -28,6 +27,7 @@ class Client(BaseClient):
                 self.api.turn_off([int(data['id'])])
         elif 'bri' in data:
             self.api.set_brightness(data['bri'], [int(data['id'])])
+        await self.run(once=True)
 
     @property
     def data(self):

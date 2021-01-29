@@ -13,7 +13,7 @@ class Client(BaseClient):
             time.sleep(1)
         self.conn_active = True
 
-    def set_stufe(self, value):
+    async def set_stufe(self, value):
         self.activate_conn()
         try:
             com = COM('10.0.1.64')
@@ -23,6 +23,7 @@ class Client(BaseClient):
                 com.exit()
         finally:
             self.conn_active = False
+        await self.run(once=True)
 
     def grab_helios_data(self):
         self.activate_conn()
