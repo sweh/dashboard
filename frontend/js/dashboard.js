@@ -72,7 +72,18 @@
                     'fa-caret-' + data[key + '_tendency']
                 );
             });
-            $('#helios_stufe').val(data['stufe']).trigger('change');
+            $('#helios_stufe').empty();
+            $('#helios_stufe').append(
+                '<input class="knob" data-width="80" data-height="80" data-min="0" data-max="4" data-fgColor="#6595b4" data-angleOffset=-125 data-angleArc=250 value="' + data['stufe'] + '" data-thickness=.3>'
+            )
+            $('#helios_stufe').find('input').knob({
+                release: function (value) {
+                    window.socket.send(
+                        JSON.stringify({'helios_stufe': value})
+                    );
+                },
+            });
+
         };
 
         var handle_corona = function (odata) {
@@ -116,9 +127,9 @@
                 current_wind_angle = data.wind_angle,
                 current_wind_icon,
                 current_wind_desc,
-                current_rain = data.rain || '0.0',
-                current_rain_1 = data.rain_1 || '0.0',
-                current_rain_24 = data.rain_24 || '0.0',
+                current_rain = round(data.rain || 0, 1),
+                current_rain_1 = round(data.rain_1 || 0, 1),
+                current_rain_24 = round(data.rain_24 || 0, 1),
                 weather_icon = data.weather[0].icon,
                 weather_desc = data.weather[0].description;
 
@@ -198,6 +209,9 @@
             $('#batterycapacity').text(batterycapacity);
             $('#powerfromgrid').text(power_from_grid);
             $('#consumption').text(consumption);
+            $('#panell1').text(data['Power L3'] || 0);
+            $('#panell2').text(data['Power L2'] || 0);
+            $('#panell3').text(data['Power L1'] || 0);
 
             $('#batterycharging').find('i').removeClass('fa-caret-up');
             $('#batterycharging').find('i').removeClass('fa-caret-down');
@@ -391,14 +405,6 @@
         window.socket.onerror = function(error) {
             alert(`[error] ${error.message}`);
         };
-
-        $('#helios_stufe').knob({
-            release: function (value) {
-                window.socket.send(
-                    JSON.stringify({'helios_stufe': value})
-                );
-            },
-        });
 
         /* last updated counter */
         setInterval(function() {
