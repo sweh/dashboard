@@ -30,11 +30,12 @@ class Client(BaseClient):
         boiler = self.boiler()
         result = dict(
             hot_water_current=(
-                boiler.getDomesticHotWaterStorageTemperature() + self.td
+                round(boiler.getDomesticHotWaterStorageTemperature()) + self.td
             ),
             hot_water_current_tendency='right',
             hot_water_config=(
-                boiler.getDomesticHotWaterConfiguredTemperature() + self.td
+                round(boiler.getDomesticHotWaterConfiguredTemperature()) +
+                self.td
             ),
             burner_active=boiler.getBurnerActive(),
             hot_water_charging=boiler.getDomesticHotWaterChargingActive(),
