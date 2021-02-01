@@ -9,8 +9,9 @@ from clients.corona import Client as CoronaClient
 from clients.helios import Client as HeliosClient
 # from clients.rss import Client as RSSClient
 from clients.hue import Client as HueClient
-from clients.motd import Client as MotdClient
+# from clients.motd import Client as MotdClient
 from clients.tado import Client as TadoClient
+from clients.vicare import Client as ViCareClient
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -38,9 +39,10 @@ if __name__ == "__main__":
     coronaclient = CoronaClient(smadaemon.config)
     heliosclient = HeliosClient(smadaemon.config)
     # rssclient = RSSClient(smadaemon.config)
-    motdclient = MotdClient(smadaemon.config)
+    # motdclient = MotdClient(smadaemon.config)
     hueclient = HueClient(smadaemon.config)
     tadoclient = TadoClient(smadaemon.config)
+    vicareclient = ViCareClient(smadaemon.config)
 
     async def server(websocket, path):
         await pvclient.register(websocket)
@@ -49,28 +51,20 @@ if __name__ == "__main__":
         await heliosclient.register(websocket)
         # await rssclient.register(websocket)
         await hueclient.register(websocket)
-        await motdclient.register(websocket)
+        # await motdclient.register(websocket)
         await tadoclient.register(websocket)
+        await vicareclient.register(websocket)
+
         while True:
             # Get received data from websocket
             data = await websocket.recv()
             if data:
                 data = json.loads(data)
-                if 'helios_stufe' in data:
+                for key, value in data.items():
                     try:
-                        await heliosclient.set_stufe(data['helios_stufe'])
+                        await globals()[f'{key}client'].set_status(value)
                     except Exception as e:
-                        log.error(f'Exception while setting helios: {e}')
-                elif 'hue' in data:
-                    try:
-                        await hueclient.set_status(data['hue'])
-                    except Exception as e:
-                        log.error(f'Exception while setting hue: {e}')
-                elif 'tado' in data:
-                    try:
-                        await tadoclient.set_status(data['tado'])
-                    except Exception as e:
-                        log.error(f'Exception while setting tado: {e}')
+                        log.error(f'Exception while setting {key}: {e}')
             await asyncio.sleep(1)
 
     tasks = [
@@ -82,7 +76,8 @@ if __name__ == "__main__":
         # rssclient.run(),
         hueclient.run(),
         tadoclient.run(),
-        motdclient.run(),
+        vicareclient.run(),
+        # motdclient.run(),
     ]
 
     asyncio.get_event_loop().run_until_complete(asyncio.wait(tasks))

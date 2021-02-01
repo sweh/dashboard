@@ -9,3 +9,4 @@ EasyModbusSilaaCooling == 1.0.6
 hue-py==0.2.1
 libtado==3.2.1
 gocept.cache==4.0
+-egit+https://github.com/somm15/PyViCare.git@622b3bb#egg=PyViCare

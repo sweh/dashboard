@@ -13,7 +13,8 @@ class Client(BaseClient):
             time.sleep(1)
         self.conn_active = True
 
-    async def set_stufe(self, value):
+    async def set_status(self, data):
+        value = data['stufe']
         self.activate_conn()
         try:
             com = COM('10.0.1.64')

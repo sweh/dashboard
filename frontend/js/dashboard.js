@@ -79,7 +79,7 @@
             $('#helios_stufe').find('input').knob({
                 release: function (value) {
                     window.socket.send(
-                        JSON.stringify({'helios_stufe': value})
+                        JSON.stringify({'helios': {'stufe': value}})
                     );
                 },
             });
@@ -120,7 +120,6 @@
         }
 
         var handle_weather = function (data) {
-            console.log(data);
             var current_temp = data.out_temp,
                 weather_icon = data.current.weather[0].icon,
                 weather_alerts = data.alerts;
@@ -261,7 +260,7 @@
             deactivate_light(8, window.hue_lights['8'].bri);
             window.socket.send(JSON.stringify({'hue': {'id': 7, 'on': true}}));
             activate_light(7);
-            window.socket.send(JSON.stringify({'helios_stufe': 1}));
+            window.socket.send(JSON.stringify({'helios': {'stufe': 1}}));
         };
 
         window.socket = new WebSocket('ws://' + window.location.hostname + '/wsapp/');
@@ -279,6 +278,37 @@
             }
             return result;
         }
+
+        var handle_vicare = function (data) {
+            console.log(data);
+            var color = '#999999';
+            if (data.hot_water_charging) {
+                color = '#BD362F';
+            }
+            $(
+                ['hot_water_current', ]
+            ).each(function (i, key) {
+                $('#' + key).text(data[key]);
+                $('#' + key + '_tendency').removeClass('fa-caret-down');
+                $('#' + key + '_tendency').removeClass('fa-caret-up');
+                $('#' + key + '_tendency').removeClass('fa-caret-right');
+                $('#' + key + '_tendency').addClass(
+                    'fa-caret-' + data[key + '_tendency']
+                );
+            });
+            $('#vicare_warm_water').empty();
+            $('#vicare_warm_water').append(
+                '<input class="knob" data-width="80" data-height="80" data-min="45" data-max="60" data-fgColor="' + color + '" data-angleOffset=-125 data-angleArc=250 value="' + data.hot_water_config + '" data-thickness=.3>'
+            )
+            $('#vicare_warm_water').find('input').knob({
+                release: function (value) {
+                    window.socket.send(
+                        JSON.stringify({'vicare': {'hot_water': value}})
+                    );
+                },
+            });
+
+        };
 
         var handle_tado = function (data) {
             window.tado_zones = data;
@@ -365,8 +395,11 @@
                 handle_motd(data);
             } else if (data['DeviceClass'] === 'Tado') {
                 handle_tado(data);
+            } else if (data['DeviceClass'] === 'ViCare') {
+                handle_vicare(data);
             } else {
                 alert('ERROR: Unknown DeviceClass ' + data['DeviceClass']);
+                console.log(data);
             }
 
             window.lastupdate = Date.now();
