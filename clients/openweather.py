@@ -63,19 +63,20 @@ class NetatmoClient:
 
 class Client(BaseClient):
 
-    open_weather_url = (
-        'http://api.openweathermap.org/data/2.5/weather'
-        '?q=Lutherstadt%20Wittenberg'
-        '&units=metric'
-        '&lang=de'
-        '&appid='
-    )
     type_ = 'Weather'
 
     @property
     def data(self):
-        api_key = self.config.get("WEATHER", 'openweather_api_key')
         netatmo = NetatmoClient(self.config)
-        result = requests.get(self.open_weather_url + api_key).json()
-        result.update(netatmo.weatherData)
+        result = netatmo.weatherData
+        api_key = self.config.get("WEATHER", 'openweather_api_key')
+        if api_key:
+            url = (
+                f'https://api.openweathermap.org/data/2.5/onecall?'
+                'units=metric&lang=de&'
+                'lat=51.888689135586574&lon=12.647285179149327&'
+                f'appid={api_key}'
+            )
+            data = requests.get(url).json()
+            result.update(data)
         return result

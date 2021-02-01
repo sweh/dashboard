@@ -35,12 +35,61 @@
             #jarviswidget-fullscreen-mode {
                 margin-top: 50px;
             }
+            .marquee {
+                height: 20px;
+                overflow: hidden;
+                position: relative;
+                margin-top: 7px;
+            }
+
+            .marquee b {
+                position: absolute;
+                width: 1000px;
+                height: 100%;
+                margin: 0;
+                line-height: 20px;
+                text-align: center;
+                -moz-transform: translateX(100%);
+                -webkit-transform: translateX(100%);
+                transform: translateX(100%);
+                -moz-animation: scroll-left 2s linear infinite;
+                -webkit-animation: scroll-left 2s linear infinite;
+                animation: scroll-left 20s linear infinite;
+            }
+            @-moz-keyframes scroll-left {
+                0% {
+                    -moz-transform: translateX(100%);
+                }
+                100% {
+                    -moz-transform: translateX(-100%);
+                }
+            }
+            @-webkit-keyframes scroll-left {
+                0% {
+                    -webkit-transform: translateX(100%);
+                }
+                100% {
+                    -webkit-transform: translateX(-100%);
+                }
+            }
+            @keyframes scroll-left {
+                0% {
+                    -moz-transform: translateX(100%);
+                    -webkit-transform: translateX(100%);
+                    transform: translateX(100%);
+                }
+                100% {
+                    -moz-transform: translateX(-100%);
+                    -webkit-transform: translateX(-100%);
+                    transform: translateX(-100%);
+                }
+            }
         </style>
     </head>
 
     <body class="">
         <header id="header">
-            <div style="width: 65%; text-align: center;">
+            <div style="width: 50%; text-align:left; padding-left: 15px">
                 <h1 id="current_date">Am Wachtelberg 14</h1>
             </div>
             <div class="pull-right">
@@ -67,7 +116,7 @@
                                     <span class="widget-icon"> <i class="fa fa-sun txt-color-yellow"></i> </span>
                                     <h2>PV-Anlage <i id="panelstatus" class="glyphicon glyphicon-remove-circle"></i></h2>
                                 </header>
-                                <div style="height: 379px;">
+                                <div style="height: 380px;">
                                     <div class="widget-body no-padding">
                                         <div class="row">
                                             <div class="col-sm-4 col-md-2 col-md-offset-1 text-center">
@@ -152,7 +201,7 @@
                         </article>
                         <article class="col-xs-12 col-sm-5" style="padding-left: 0px">
                           <div class="row" style="margin: 0px">
-                            <article class="col-xs-12 col-sm-7" style="padding-left: 0px">
+                            <article class="col-xs-12 col-sm-12" style="padding-left: 0px; padding-right: 0px;">
                             <div class="jarviswidget jarviswidget-color-blueDark" style="margin-bottom: 15px;"
                                     data-widget-colorbutton="false" 
                                     data-widget-editbutton="false" 
@@ -163,82 +212,25 @@
                                     data-widget-sortable="false">
                                 <header>
                                     <span class="widget-icon"> <i class="fa fa-cloud txt-color-blueLight"></i> </span>
-                                    <h2>Wetter</h2>
-                                </header>
-                                <div style="height: 128px">
-                                    <div class="jarviswidget-editbox">
-                                        <input class="form-control" type="text">
+                                    <h2 style="margin-right: 5px">Wetter</h2>
+                                    <div class="marquee">
+                                        <b id="weather_alert"></b>
                                     </div>
+                                </header>
+                                <div style="height: 128px; padding-top: 5px;">
                                     <div class="widget-body">
                                         <div class="row">
-                                            <div class="col-sm-9 col-md-9 text-right">
-                                                <h1 style="font-size: 3em; display: inline-block">
-                                                    <bold id="current_temp">0.0</bold>°C
+                                            <div class="col-sm-5 col-md-5 text-right" style="padding: 0px;">
+                                                <h1 style="font-size: 4em; display: inline-block; margin: 0px; margin-top: 3px;">
+                                                    <span id="current_temp" style="font-weight: 400">0.0</span>°C
                                                 </h1>
                                             </div>
-                                            <div class="col-sm-3 col-md-3 text-left">
-                                                <img id="current_weather_icon" src="" style="margin-left: -20px; height: 60px; ">
+                                            <div class="col-sm-7 col-md-7 text-center">
+                                                <div class="row" style="margin: 0px" id="weather_hourly">
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="row" style="padding-top: 5px;">
-                                            <div class="col-sm-6 col-md-8 text-center">
-                                                <p class="text-left">
-                                                  <i id="weather_wind_icon" class="fa"></i>
-                                                  <span id="weather_wind_angle"></span>
-                                                  <span style="font-size: 8px; display: block;" id="weather_wind_desc"></span>
-                                                </p>
-                                            </div>
-                                            <div class="col-sm-6 col-md-4 text-center">
-                                                  <div>
-                                                    <i class="fa fa-umbrella"></i>
-                                                    <span id="weather_rain"></span>
-                                                  </div>
-                                                  <div style="font-size: 8px; float: left">
-                                                      <i class="fa fa-clock-o"></i>
-                                                      <span id="weather_rain_1"></span>
-                                                  </div>
-                                                  <div style="font-size: 8px; float: right">
-                                                      <i class="fa fa-calendar"></i>
-                                                      <span id="weather_rain_24"></span>
-                                                  </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            </article>
-                            <article class="col-xs-12 col-sm-5" style="padding-right: 0px; padding-left: 0px">
-                            <div class="jarviswidget jarviswidget-color-blueDark" style="margin-bottom: 15px;"
-                                    data-widget-colorbutton="false" 
-                                    data-widget-editbutton="false" 
-                                    data-widget-togglebutton="false" 
-                                    data-widget-deletebutton="false" 
-                                    data-widget-custombutton="false" 
-                                    data-widget-collapsed="false" 
-                                    data-widget-sortable="false">
-                                <header>
-                                    <span class="widget-icon"> <i class="fa fa-medkit txt-color-white"></i> </span>
-                                    <h2>Corona</h2>
-                                </header>
-                                <div>
-                                    <div class="jarviswidget-editbox">
-                                        <input class="form-control" type="text">
-                                    </div>
-                                    <div class="widget-body" style="padding-bottom: 0px">
-                                        <div class="row">
-                                            <div class="col-sm-12 col-md-12 text-center">
-                                                <h1 class="" style="font-size: 40px; margin-top: 0px;" id="corona_incidence">0</h1>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <dl class="dl-horizontal" style="margin-left: -68px; margin-bottom: 5px">
-                                            <dt>Neue Fälle</dt>
-                                            <dd id="corona_cases_delta">0</dd>
-                                            <dt>Todesfälle</dt>
-                                            <dd id="corona_deaths_delta">0</dd>
-                                            <dt>Genesen</dt>
-                                            <dd id="corona_recovered_delta">0</dd>
-                                            </dl>
+                                        <div class="row" style="padding-top: 5px;" id="weather_daily">
                                         </div>
                                     </div>
                                 </div>
@@ -399,11 +391,20 @@
                     </div>
                 </section>
             <div class="row">
-                <div class="col-xs-12 col-sm-12 text-right hidden-xs">
+                <div class="col-xs-6 col-sm-6 text-left hidden-xs">
+                    <span>
+                        &nbsp;Corona-Inzidenz:
+                        <strong class="" id="corona_incidence"></strong>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <i>
+                            (Neu: <strong id="corona_cases_delta"></strong>,
+                             Gestorben: <strong id="corona_deaths_delta"></strong>,
+                             Genesen: <strong id="corona_recovered_delta"></strong>)
+                        </i>
+                    </span>
+                </div>
+                <div class="col-xs-6 col-sm-6 text-right hidden-xs">
                     <i class="txt-color-blueLight">
-                        Zuletzt aktualisiert vor <i class="fa
-                            fa-clock-o"></i> <strong> <span
-                                id="secondslastupdate">0 Sekunden</span> &nbsp;</strong> </i>
+                        Zuletzt aktualisiert vor <strong> <span id="secondslastupdate">0 Sekunden</span> &nbsp;</strong> </i>
                 </div>
             </div>
             </div>

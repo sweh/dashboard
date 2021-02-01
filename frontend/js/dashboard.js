@@ -120,68 +120,48 @@
         }
 
         var handle_weather = function (data) {
+            console.log(data);
             var current_temp = data.out_temp,
-                today_temp_min = data.out_temp_min,
-                today_temp_max = data.out_temp_max,
-                current_wind_str = data.wind_str,
-                current_wind_angle = data.wind_angle,
-                current_wind_icon,
-                current_wind_desc,
-                current_rain = round(data.rain || 0, 1),
-                current_rain_1 = round(data.rain_1 || 0, 1),
-                current_rain_24 = round(data.rain_24 || 0, 1),
-                weather_icon = data.weather[0].icon,
-                weather_desc = data.weather[0].description;
-
-            if (current_wind_angle >= 315 && current_wind_angle < 45 ) {
-                current_wind_angle = 'N';
-                current_wind_icon = 'fa-chevron-down';
-            } else if (current_wind_angle >= 45 && current_wind_angle < 135 ) {
-                current_wind_angle = 'O';
-                current_wind_icon = 'fa-chevron-left';
-            } else if (current_wind_angle >= 135 && current_wind_angle < 225 ) {
-                current_wind_angle = 'S';
-                current_wind_icon = 'fa-chevron-up';
-            } else {
-                current_wind_angle = 'W';
-                current_wind_icon = 'fa-chevron-right';
-            }
-            if (current_wind_str == 0) {
-                current_wind_desc = 'Stille';
-            } else if (current_wind_str > 0 && current_wind_str <= 3) {
-                current_wind_desc = 'schwacher Wind';
-            } else if (current_wind_str == 4) {
-                current_wind_desc  = 'mäßiger Wind';
-            } else if (current_wind_str == 5) {
-                current_wind_desc = 'frischer Wind';
-            } else if (current_wind_str == 6 || current_wind_str == 7) {
-                current_wind_desc = 'starker Wind';
-            } else if (current_wind_str == 8 || current_wind_str == 9) {
-                current_wind_desc = 'Sturm';
-            } else if (current_wind_str == 10) {
-                current_wind_desc = 'schwerer Sturm';
-            } else if (current_wind_str == 11 || current_wind_str == 12) {
-                current_wind_desc = 'Orkan';
-            }
+                weather_icon = data.current.weather[0].icon,
+                weather_alerts = data.alerts;
 
             $('#current_temp').text(current_temp);
-            $('#today_temp_max').text(today_temp_max);
-            $('#today_temp_min').text(today_temp_min);
-            $('#weather_desc').text(weather_desc);
-            $('#weather_wind_icon').removeClass('fa-chevron-down');
-            $('#weather_wind_icon').removeClass('fa-chevron-left');
-            $('#weather_wind_icon').removeClass('fa-chevron-up');
-            $('#weather_wind_icon').removeClass('fa-chevron-right');
-            $('#weather_wind_icon').addClass(current_wind_icon);
-            $('#weather_wind_angle').text(current_wind_angle + ' ' + current_wind_str);
-            $('#weather_wind_desc').text(current_wind_desc);
-            $('#weather_rain').text(current_rain + ' l');
-            $('#weather_rain_1').text(current_rain_1 + ' l');
-            $('#weather_rain_24').text(current_rain_24 + ' l');
             $('#current_weather_icon').attr(
                 'src',
                 'http://openweathermap.org/img/wn/' + weather_icon + '@2x.png'
             );
+            if (weather_alerts && weather_alerts.length) {
+                $('#weather_alert').text(
+                    weather_alerts[0]['event'] + ': ' + weather_alerts[0].description
+                )
+            }
+
+            $('#weather_hourly').empty();
+            for (var i=1; i<8; i+=2) {
+                var date = new Date(data.hourly[i].dt * 1000);
+                $('#weather_hourly').append(
+                    '<article class="col-xs-3 col-sm-3 text-center" style="padding: 0px">' +
+                    String(date.getHours()).padStart(2, "0") + ':' + String(date.getMinutes()).padStart(2, "0") + '<br />' +
+                    '<b>' + round(data.hourly[i].temp,1)+'</b></br>'+
+                    '<img style="height: 40px; margin-top: -10px" src="http://openweathermap.org/img/wn/'+ data.hourly[i].weather[0].icon +'@2x.png" />' +
+                    '</article>'
+                )
+            }
+
+            $('#weather_daily').empty();
+            var days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+            for (var i=1; i<5; i++) {
+                var day = days[new Date(data.daily[i].dt * 1000).getDay()];
+                $('#weather_daily').append(
+                    '<article class="col-xs-1 col-sm-1 text-right" style="width: 7%; margin-top: 1em; padding: 0px">' +
+                    day +
+                    '</article>' +
+                    '<article class="col-xs-2 col-sm-2 text-center" style="padding: 0px">' +
+                    '<b><i class="fa fa-caret-down"></i>' + round(data.daily[i].temp.min,1)+' <i class="fa fa-caret-up"></i>'+ round(data.daily[i].temp.max,1) +'</b></br>'+
+                    '<img style="height: 40px; margin-top: -10px" src="http://openweathermap.org/img/wn/'+ data.daily[i].weather[0].icon +'@2x.png" />' +
+                    '</article>'
+                )
+            }
         }
 
         var handle_pv = function (data) {
