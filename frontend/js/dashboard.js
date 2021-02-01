@@ -86,12 +86,9 @@
 
         };
 
-        var handle_corona = function (odata) {
-            var data = odata.data[15091],
-                meta = odata.meta;
-            var incidence = Math.round(data.weekIncidence),
-                last_update = new Date(meta.lastUpdate).toLocaleDateString(),
-                source = meta.source;
+        var handle_corona = function (data) {
+            var incidence = data.inzidenz,
+                last_update = data.stand;
 
             $('#corona_incidence').removeClass('txt-color-yellow')
             $('#corona_incidence').removeClass('txt-color-redLight')
@@ -113,10 +110,9 @@
             $('#corona_incidence').addClass(incidence_class)
             $('#corona_incidence').text(incidence);
             $('#corona_date').text(last_update);
-            $('#corona_source').text(source);
-            $('#corona_cases_delta').text(data.delta.cases);
-            $('#corona_deaths_delta').text(data.delta.deaths);
-            $('#corona_recovered_delta').text(data.delta.recovered);
+            $('#corona_cases').text(data.gesamt);
+            $('#corona_deaths_delta').text(data.gestorben);
+            $('#corona_current').text(data.aktuell);
         }
 
         var handle_weather = function (data) {
