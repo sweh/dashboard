@@ -120,7 +120,7 @@
         }
 
         var handle_weather = function (data) {
-            var current_temp = data.out_temp,
+            var current_temp = round(data.out_temp, 1),
                 weather_icon = data.current.weather[0].icon,
                 weather_alerts = data.alerts;
 
@@ -136,7 +136,7 @@
             }
 
             $('#weather_hourly').empty();
-            for (var i=1; i<8; i+=2) {
+            $([1, 3, 6, 10]).each(function (_, i) {
                 var date = new Date(data.hourly[i].dt * 1000);
                 $('#weather_hourly').append(
                     '<article class="col-xs-3 col-sm-3 text-center" style="padding: 0px">' +
@@ -145,7 +145,7 @@
                     '<img style="height: 40px; margin-top: -10px" src="http://openweathermap.org/img/wn/'+ data.hourly[i].weather[0].icon +'@2x.png" />' +
                     '</article>'
                 )
-            }
+            });
 
             $('#weather_daily').empty();
             var days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
