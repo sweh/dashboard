@@ -7,6 +7,7 @@ import asyncio
 class Client(BaseClient):
 
     type_ = 'ViCare'
+    td = 5  # Temperaturdifferenz, da der Sensor zu tief im Boiler hängt
 
     def __init__(self, config):
         self.username = config.get("VICARE", "username")
@@ -19,7 +20,8 @@ class Client(BaseClient):
 
     async def set_status(self, data):
         if 'hot_water' in data:
-            self.boiler().setDomesticHotWaterTemperature(data['hot_water'])
+            value = int(data['hot_water']) - self.td
+            self.boiler().setDomesticHotWaterTemperature(value)
         await asyncio.sleep(2)
         await self.run(once=True)
 
@@ -27,9 +29,13 @@ class Client(BaseClient):
     def data(self):
         boiler = self.boiler()
         result = dict(
-            hot_water_current=boiler.getDomesticHotWaterStorageTemperature(),
+            hot_water_current=(
+                boiler.getDomesticHotWaterStorageTemperature() + self.td
+            ),
             hot_water_current_tendency='right',
-            hot_water_config=boiler.getDomesticHotWaterConfiguredTemperature(),
+            hot_water_config=(
+                boiler.getDomesticHotWaterConfiguredTemperature() + self.td
+            ),
             burner_active=boiler.getBurnerActive(),
             hot_water_charging=boiler.getDomesticHotWaterChargingActive(),
             circulation_active=boiler.getCirculationPumpActive(),

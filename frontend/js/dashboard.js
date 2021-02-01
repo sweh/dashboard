@@ -298,7 +298,7 @@
             });
             $('#vicare_warm_water').empty();
             $('#vicare_warm_water').append(
-                '<input class="knob" data-width="80" data-height="80" data-min="45" data-max="60" data-fgColor="' + color + '" data-angleOffset=-125 data-angleArc=250 value="' + data.hot_water_config + '" data-thickness=.3>'
+                '<input class="knob" data-width="80" data-height="80" data-min="50" data-max="70" data-fgColor="' + color + '" data-angleOffset=-125 data-angleArc=250 value="' + data.hot_water_config + '" data-thickness=.3>'
             )
             $('#vicare_warm_water').find('input').knob({
                 release: function (value) {
