@@ -43,6 +43,9 @@ class Client(BaseClient):
         )
         if not result:
             return
+        for k, v in result.items():
+            if v == 'error':
+                return
         if self.history:
             old_value = self.history[-1]
             for key in ('hot_water_current', ):

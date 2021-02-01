@@ -296,6 +296,12 @@
                     'fa-caret-' + data[key + '_tendency']
                 );
             });
+
+            $('#vicare_burner_active').removeClass('txt-color-red');
+            if (data.burner_active) {
+                $('#vicare_burner_active').addClass('txt-color-red');
+            }
+
             $('#vicare_warm_water').empty();
             $('#vicare_warm_water').append(
                 '<input class="knob" data-width="80" data-height="80" data-min="50" data-max="70" data-fgColor="' + color + '" data-angleOffset=-125 data-angleArc=250 value="' + data.hot_water_config + '" data-thickness=.3>'
