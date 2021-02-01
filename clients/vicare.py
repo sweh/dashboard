@@ -7,6 +7,7 @@ import asyncio
 class Client(BaseClient):
 
     type_ = 'ViCare'
+    sleep_time = 120
     td = 5  # Temperaturdifferenz, da der Sensor zu tief im Boiler hängt
 
     def __init__(self, config):
