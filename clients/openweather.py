@@ -9,6 +9,7 @@ class NetatmoClient:
     password = None
     client_id = None
     client_secret = None
+    sleep_time = 300
 
     def __init__(self, config):
         self.user = config.get("WEATHER", 'netatmo_user')

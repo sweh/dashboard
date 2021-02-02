@@ -12,6 +12,7 @@ class Client(BaseClient):
 
     @property
     def data(self):
+        import pdb; pdb.set_trace()  # XXXXXXXXXX 
         result = requests.get(self.corona_url).text
         stand = result.split('(Stand ')[1][:21]
         gesamt = (
@@ -27,7 +28,11 @@ class Client(BaseClient):
             result.split('Patienten. ')[1].split(' ')[0]
         )
         inzidenz = (
-            result.split('wöchentliche Inzidenz von ')[1].split(' ')[0]
+            result
+            .split('Inzidenz von ')[1]
+            .split(' ')[0]
+            .replace('<strong>', '')
+            .replace('</strong>', '')
         )
         return dict(
             stand=stand,
