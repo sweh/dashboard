@@ -12,7 +12,6 @@ class Client(BaseClient):
 
     @property
     def data(self):
-        import pdb; pdb.set_trace()  # XXXXXXXXXX 
         result = requests.get(self.corona_url).text
         stand = result.split('(Stand ')[1][:21]
         gesamt = (
