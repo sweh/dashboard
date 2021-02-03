@@ -8,6 +8,7 @@ class Client(BaseClient):
 
     type_ = 'Tado'
     sleep_time = 60
+    external = True
 
     def __init__(self, config):
         self.username = config.get("TADO", "username")

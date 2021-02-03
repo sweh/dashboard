@@ -9,6 +9,7 @@ class NetatmoClient:
     password = None
     client_id = None
     client_secret = None
+    external = True
     sleep_time = 300
 
     def __init__(self, config):

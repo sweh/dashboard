@@ -1,7 +1,8 @@
 import asyncio
+from datetime import datetime
 import json
-
 import logging
+
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
@@ -12,6 +13,8 @@ class BaseClient:
     keep_items = 1
     history = None
     websockets = None
+    external = False
+    external_operation_time = ('05:30', '22:30')
     type_ = None
 
     def __init__(self, config):
@@ -39,10 +42,27 @@ class BaseClient:
             if websocket.state != 1:
                 del self.websockets[websocket]
 
+    def assert_operation_time(self):
+        if not self.external:
+            return
+        min_, max_ = self.external_operation_time
+        min_hour, min_minute = min_.split(':')
+        max_hour, max_minute = max_.split(':')
+        now = datetime.now()
+        if now < datetime(
+            now.year, now.month, now.day, int(min_hour), int(min_minute)
+        ):
+            raise RuntimeError('Operation time not reached')
+        if now > datetime(
+            now.year, now.month, now.day, int(max_hour), int(max_minute)
+        ):
+            raise RuntimeError('Operation time not reached')
+
     async def run(self, once=False):
         while True:
             self.clean_websockets()
             try:
+                self.assert_operation_time()
                 result = self.data
             except Exception as e:
                 log.error(f'Exception while fetching {self.type_} data: {e}')
