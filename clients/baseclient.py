@@ -14,11 +14,13 @@ class BaseClient:
     history = None
     websockets = None
     external = False
+    enabled = False
     external_operation_time = ('05:30', '22:30')
     type_ = None
 
     def __init__(self, config):
         self.config = config
+        self.enabled = bool(int(config.get(self.type_.upper(), 'enabled')))
         self.history = []
         self.websockets = {}
 
