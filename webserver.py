@@ -15,6 +15,7 @@ from clients.vicare import Client as ViCareClient
 import logging
 
 logging.basicConfig(level=logging.WARN)
+logging.getLogger().setLevel(logging.WARN)
 log = logging.getLogger(__name__)
 
 
