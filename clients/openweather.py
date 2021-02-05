@@ -3,20 +3,23 @@ import lnetatmo
 from clients.baseclient import BaseClient
 
 
-class NetatmoClient:
+class Client(BaseClient):
+
+    type_ = 'Weather'
+    external = True
+    sleep_time = 600
 
     user = None
     password = None
     client_id = None
     client_secret = None
-    external = True
-    sleep_time = 300
 
     def __init__(self, config):
         self.user = config.get("WEATHER", 'netatmo_user')
         self.password = config.get("WEATHER", 'netatmo_password')
         self.client_id = config.get("WEATHER", 'netatmo_client_id')
         self.client_secret = config.get("WEATHER", 'netatmo_client_secret')
+        super(Client, self).__init__(config)
 
     def authenticate(self):
         authorization = lnetatmo.ClientAuth(
@@ -29,7 +32,7 @@ class NetatmoClient:
         return lnetatmo.WeatherStationData(authorization)
 
     @property
-    def weatherData(self):
+    def netatmoWeatherData(self):
         result = dict()
         weatherData = self.authenticate()
 
@@ -62,15 +65,9 @@ class NetatmoClient:
                 result['in_co2'] = module['dashboard_data']['CO2']
         return result
 
-
-class Client(BaseClient):
-
-    type_ = 'Weather'
-
     @property
     def data(self):
-        netatmo = NetatmoClient(self.config)
-        result = netatmo.weatherData
+        result = self.netatmoWeatherData
         api_key = self.config.get("WEATHER", 'openweather_api_key')
         if api_key:
             url = (
