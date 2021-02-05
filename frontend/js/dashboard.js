@@ -1,7 +1,6 @@
 (function($) {
         var PieConfig;
         var rss_messages = [];
-        window.lastupdate = Date.now();
 
         pageSetUp();
 
@@ -160,11 +159,39 @@
         }
 
         var handle_pv = function (data) {
+            tick();
             timestamp = new Date(data.timestamp);
+
+            var consume = {
+                'panell1': Math.round(data['p1'] || 0),
+                'panell2': Math.round(data['p2'] || 0),
+                'panell3': Math.round(data['p3'] || 0)
+            }
+
+            $.each(consume, function (key, value) {
+                var elem = $('#' + key),
+                p = elem.parent();
+
+                p.removeClass('bg-color-green');
+                p.removeClass('bg-color-red');
+                if (value < 0) {
+                    p.addClass('bg-color-red');
+                    value = 0 - value;
+                } else {
+                    p.addClass('bg-color-green');
+                }
+                elem.text(value);
+            });
+
+            var power_from_grid = Math.round(0 - data['p'] || 0);
+            $('#powerfromgrid').text(power_from_grid);
+
+            if (isUndefinedOrNull(data['AC Power Solar'])) {
+                return
+            }
 
             var panelpower = data['AC Power Solar'] || 0;
             var batterypower = data['AC Power Battery'] || 0;
-            var power_from_grid = data['Power from grid'] || 0;
             var power_to_grid = data['Power to grid'] || 0;
             var batterycapacity = data['BatteryCharge'] || 0;
 
@@ -182,11 +209,7 @@
             $('#powertogrid').text(power_to_grid);
             $('#batteryacpower').text(batterypower);
             $('#batterycapacity').text(batterycapacity);
-            $('#powerfromgrid').text(power_from_grid);
             $('#consumption').text(consumption);
-            $('#panell1').text(data['Power L3'] || 0);
-            $('#panell2').text(data['Power L2'] || 0);
-            $('#panell3').text(data['Power L1'] || 0);
 
             $('#batterycharging').find('i').removeClass('fa-caret-up');
             $('#batterycharging').find('i').removeClass('fa-caret-down');
@@ -403,8 +426,6 @@
                 alert('ERROR: Unknown DeviceClass ' + data['DeviceClass']);
                 console.log(data);
             }
-
-            window.lastupdate = Date.now();
         };
 
         window.socket.onclose = function(event) {
@@ -422,26 +443,12 @@
         };
 
         /* last updated counter */
-        setInterval(function() {
+        var tick = function() {
             // Fullscreen bug
             if ($('#jarviswidget-fullscreen-mode').length == 0) {
                 $('#tado_container').css('height', '203px');
                 $('#tado_container').css('padding-top', '5px');
             }
-
-
-            var now = new Date().getTime();
-            var distance = now - window.lastupdate;
-            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            var result = '';
-            if (days) { result += days + ' Tagen '; }
-            if (hours) { result += hours + ' Stunden '; }
-            if (minutes) { result += minutes + ' Minuten '; }
-            result += seconds + ' Sekunden ';
-            $('#secondslastupdate').text(result);
 
             var now = new Date();
             var days = [
@@ -455,16 +462,11 @@
 
             var day = days[ now.getDay() ];
             var month = months[ now.getMonth() ];
-            if (now.getSeconds() % 2 === 0) {
-                seperator = ':';
-            } else {
-                seperator = '&nbsp;';
-            }
             $('#current_date').html(
                 day + ', der ' +
                 now.getDate() + '. ' + month + ' ' + now.getFullYear() +
-                ' ' + String(now.getHours()).padStart(2, "0") + seperator +
+                ' ' + String(now.getHours()).padStart(2, "0") + ':' +
                 String(now.getMinutes()).padStart(2, "0")
             );
-        }, 1000);
+        };
 }(jQuery));

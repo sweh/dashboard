@@ -14,7 +14,7 @@ from clients.tado import Client as TadoClient
 from clients.vicare import Client as ViCareClient
 import logging
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.WARN)
 log = logging.getLogger(__name__)
 
 

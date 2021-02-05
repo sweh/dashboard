@@ -48,6 +48,10 @@ class Client(BaseClient):
                         result.update(item)
         if result:
             self.save_result_to_file(result)
+        if not result:
+            result = dict()
+        for k in ('p', 'p1', 'p2', 'p3'):
+            result[k] = emparts[k+'supply'] - emparts[k+'consume']
         return result
 
     def run_features(self, emparts):
