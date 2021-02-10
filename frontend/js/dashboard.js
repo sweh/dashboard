@@ -186,7 +186,7 @@
             var power_from_grid = Math.round(0 - data['p'] || 0);
             $('#powerfromgrid').text(power_from_grid);
 
-            if (isUndefinedOrNull(data['AC Power Solar'])) {
+            if (isUndefinedOrNull(data.timestamp)) {
                 return
             }
 

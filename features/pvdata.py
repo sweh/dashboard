@@ -99,7 +99,9 @@ def run(emparts, config):
             print("PV: no data")
         return
 
-    timestamp = datetime.datetime.now().isoformat()
+    timestamp = datetime.datetime.utcnow().isoformat(
+        timespec='milliseconds'
+    ) + 'Z'
     result = []
     for i in pv_data:
         i['timestamp'] = timestamp
