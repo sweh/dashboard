@@ -11,7 +11,7 @@
 
         /* flot chart colors default */
         var $chrt_border_color = "#efefef";
-        var $chrt_grid_color = "#DDD"
+        var $chrt_grid_color = "#DDD";
         var $chrt_main = "#7e9d3a";         /* greeen    */
         var $chrt_second = "#6595b4";       /* blue      */
         var $chrt_third = "#FF9F01";        /* orange    */
@@ -73,8 +73,8 @@
             });
             $('#helios_stufe').empty();
             $('#helios_stufe').append(
-                '<input class="knob" data-width="80" data-height="80" data-min="0" data-max="4" data-fgColor="#6595b4" data-angleOffset=-125 data-angleArc=250 value="' + data['stufe'] + '" data-thickness=.3>'
-            )
+                '<input class="knob" data-width="80" data-height="80" data-min="0" data-max="4" data-fgColor="#6595b4" data-angleOffset=-125 data-angleArc=250 value="' + data.stufe + '" data-thickness=.3>'
+            );
             $('#helios_stufe').find('input').knob({
                 release: function (value) {
                     window.socket.send(
@@ -89,10 +89,10 @@
             var incidence = data.inzidenz,
                 last_update = data.stand;
 
-            $('#corona_incidence').removeClass('txt-color-yellow')
-            $('#corona_incidence').removeClass('txt-color-redLight')
-            $('#corona_incidence').removeClass('txt-color-red')
-            $('#corona_incidence').removeClass('txt-color-magenta')
+            $('#corona_incidence').removeClass('txt-color-yellow');
+            $('#corona_incidence').removeClass('txt-color-redLight');
+            $('#corona_incidence').removeClass('txt-color-red');
+            $('#corona_incidence').removeClass('txt-color-magenta');
             incidence_class = '';
             if (incidence > 35) {
                 incidence_class = 'txt-color-yellow';
@@ -106,13 +106,13 @@
             if (incidence > 200) {
                 incidence_class = 'txt-color-magenta';
             }
-            $('#corona_incidence').addClass(incidence_class)
+            $('#corona_incidence').addClass(incidence_class);
             $('#corona_incidence').text(incidence);
             $('#corona_date').text(last_update);
             $('#corona_cases').text(data.gesamt);
             $('#corona_deaths_delta').text(data.gestorben);
             $('#corona_current').text(data.aktuell);
-        }
+        };
 
         var handle_weather = function (data) {
             var current_temp = round(data.out_temp, 1),
@@ -126,8 +126,8 @@
             );
             if (weather_alerts && weather_alerts.length) {
                 $('#weather_alert').text(
-                    weather_alerts[0]['event'] + ': ' + weather_alerts[0].description
-                )
+                    weather_alerts[0].event + ': ' + weather_alerts[0].description
+                );
             }
 
             $('#weather_hourly').empty();
@@ -139,7 +139,7 @@
                     '<b>' + round(data.hourly[i].temp,1)+'</b></br>'+
                     '<img style="height: 40px; margin-top: -10px" src="http://openweathermap.org/img/wn/'+ data.hourly[i].weather[0].icon +'@2x.png" />' +
                     '</article>'
-                )
+                );
             });
 
             $('#weather_daily').empty();
@@ -154,19 +154,19 @@
                     '<b><i class="fa fa-caret-down"></i>' + round(data.daily[i].temp.min,1)+' <i class="fa fa-caret-up"></i>'+ round(data.daily[i].temp.max,1) +'</b></br>'+
                     '<img style="height: 40px; margin-top: -10px" src="http://openweathermap.org/img/wn/'+ data.daily[i].weather[0].icon +'@2x.png" />' +
                     '</article>'
-                )
+                );
             }
-        }
+        };
 
         var handle_pv = function (data) {
             tick();
             timestamp = new Date(data.timestamp);
 
             var consume = {
-                'panell1': Math.round(data['p1'] || 0),
-                'panell2': Math.round(data['p2'] || 0),
-                'panell3': Math.round(data['p3'] || 0)
-            }
+                'panell1': Math.round(data.p1 || 0),
+                'panell2': Math.round(data.p2 || 0),
+                'panell3': Math.round(data.p3 || 0)
+            };
 
             $.each(consume, function (key, value) {
                 var elem = $('#' + key),
@@ -183,20 +183,20 @@
                 elem.text(value);
             });
 
-            var power_from_grid = Math.round(0 - data['p'] || 0);
+            var power_from_grid = Math.round(0 - data.p || 0);
             $('#powerfromgrid').text(power_from_grid);
 
             if (isUndefinedOrNull(data.timestamp)) {
-                return
+                return;
             }
 
             var panelpower = data['AC Power Solar'] || 0;
             var batterypower = data['AC Power Battery'] || 0;
             var power_to_grid = data['Power to grid'] || 0;
-            var batterycapacity = data['BatteryCharge'] || 0;
+            var batterycapacity = data.BatteryCharge || 0;
 
             var consumption = panelpower + batterypower + power_from_grid - power_to_grid;
-            var batterypower = 0 - batterypower;
+            batterypower = 0 - batterypower;
 
             d.push([timestamp, panelpower]); /* Solar Dach */
             e.push([timestamp, power_to_grid]); /* Einspeisung */
@@ -216,7 +216,7 @@
             $('#batterycharging').removeClass('bg-color-green');
             $('#batterycharging').removeClass('bg-color-orange');
             $('#batterycharging').removeClass('bg-color-red');
-            if (data['BatteryState'] === 'Charging') {
+            if (data.BatteryState === 'Charging') {
                 $('#batterycharging').find('i').addClass('fa-caret-up');
             } else {
                 $('#batterycharging').find('i').addClass('fa-caret-down');
@@ -228,7 +228,7 @@
             } else {
                 $('#batterycharging').addClass('bg-color-red');
             }
-            $('#batterytemp').text(data['BatteryTemp']);
+            $('#batterytemp').text(data.BatteryTemp);
             $('#panelstatus').removeClass('glyphicon-ok-cirle');
             $('#panelstatus').removeClass('glyphicon-remove-cirle');
             if (data['Status Solar'] === 'OK') {
@@ -324,7 +324,7 @@
             $('#vicare_warm_water').empty();
             $('#vicare_warm_water').append(
                 '<input class="knob" data-width="80" data-height="80" data-min="50" data-max="70" data-fgColor="' + color + '" data-angleOffset=-125 data-angleArc=250 value="' + data.hot_water_config + '" data-thickness=.3>'
-            )
+            );
             $('#vicare_warm_water').find('input').knob({
                 release: function (value) {
                     window.socket.send(
@@ -355,7 +355,7 @@
                 zone += '<span class="tado_current label"><span class="badge-xxs txt-color-red">' + round(v.curr_temp, 1) + '</span><span class="badge-xxs txt-color-blue">' + round(v.curr_humi, 1) + '</span></span>';
                 zone += '<br><small class="font-xs"><sup style="top: 0em;"><span class="badge" style="margin-top: -65px; background-color: ' + color + '">' + v.name + '</span></sup></small>';
                 zone += '</span>';
-                zone += '</div>'
+                zone += '</div>';
 
                 $('#tado_container').append(zone);
                 $('#tado_' + key + '_knob').knob({
@@ -385,7 +385,7 @@
                 }
                 bulb += '<br><small class="font-xs"><sup style="top: 0em;"><span class="badge" style="margin-top: -65px;">' + v.name + '</span></sup></small>';
                 bulb += '</span>';
-                bulb += '</div>'
+                bulb += '</div>';
 
                 $('#hue_container').append(bulb);
 
@@ -404,33 +404,33 @@
             var timestamp = Date.now(),
                 data = JSON.parse(event.data);
 
-            if (data['DeviceClass'] === 'Weather') {
+            if (data.DeviceClass === 'Weather') {
                 handle_weather(data);
-            } else if (data['DeviceClass'] === 'Corona') {
+            } else if (data.DeviceClass === 'Corona') {
                 handle_corona(data);
-            } else if (data['DeviceClass'] === 'Helios') {
+            } else if (data.DeviceClass === 'Helios') {
                 handle_helios(data);
-            } else if (data['DeviceClass'] === 'RSS') {
+            } else if (data.DeviceClass === 'RSS') {
                 handle_rss(data);
-            } else if (data['DeviceClass'] === 'PV') {
+            } else if (data.DeviceClass === 'PV') {
                 handle_pv(data);
-            } else if (data['DeviceClass'] === 'Hue') {
+            } else if (data.DeviceClass === 'Hue') {
                 handle_hue(data);
-            } else if (data['DeviceClass'] === 'MOTD') {
+            } else if (data.DeviceClass === 'MOTD') {
                 handle_motd(data);
-            } else if (data['DeviceClass'] === 'Tado') {
+            } else if (data.DeviceClass === 'Tado') {
                 handle_tado(data);
-            } else if (data['DeviceClass'] === 'ViCare') {
+            } else if (data.DeviceClass === 'ViCare') {
                 handle_vicare(data);
             } else {
-                alert('ERROR: Unknown DeviceClass ' + data['DeviceClass']);
+                alert('ERROR: Unknown DeviceClass ' + data.DeviceClass);
                 console.log(data);
             }
         };
 
         window.socket.onclose = function(event) {
             if (event.wasClean) {
-                alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+                alert('[close] Connection closed cleanly');
             } else {
                 // e.g. server process killed or network down
                 // event.code is usually 1006 in this case
@@ -439,7 +439,7 @@
         };
 
         window.socket.onerror = function(error) {
-            alert(`[error] ${error.message}`);
+            alert('[error] ' + error.message);
         };
 
         /* last updated counter */
