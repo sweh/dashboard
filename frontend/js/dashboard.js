@@ -150,7 +150,7 @@
                     '<article class="col-xs-1 col-sm-1 text-right" style="width: 7%; margin-top: 1em; padding: 0px">' +
                     day +
                     '</article>' +
-                    '<article class="col-xs-2 col-sm-2 text-center" style="padding: 0px">' +
+                    '<article class="col-xs-2 col-sm-2 text-center" style="padding: 0px; font-size: 8pt;">' +
                     '<b><i class="fa fa-caret-down"></i>' + round(data.daily[i].temp.min,1)+' <i class="fa fa-caret-up"></i>'+ round(data.daily[i].temp.max,1) +'</b></br>'+
                     '<img style="height: 40px; margin-top: -10px" src="http://openweathermap.org/img/wn/'+ data.daily[i].weather[0].icon +'@2x.png" />' +
                     '</article>'
@@ -349,7 +349,7 @@
                     color = '#FF9F01';
                 }
 
-                var zone = '<div class="col-sm-4 col-md-4 text-center" style="height: 100px">';
+                var zone = '<div class="col-xs-4 col-sm-4 col-md-4 text-center" style="height: 100px">';
                 zone += '<span id="tado_' + key + '" style="position: relative; display: inline-grid; width: 80px" class="">';
                 zone += '<input style="width: 80px; height: 80px;" id="tado_'+ key + '_knob" class="knob" data-width="80" data-height="80" data-min="16" data-max="25" data-fgColor="' + color + '" data-angleOffset=-125 data-angleArc=250 value="' + v.dest_temp + '" data-thickness=.3>';
                 zone += '<span class="tado_current label"><span class="badge-xxs txt-color-red">' + round(v.curr_temp, 1) + '</span><span class="badge-xxs txt-color-blue">' + round(v.curr_humi, 1) + '</span></span>';
@@ -375,7 +375,7 @@
                 if (key === 'DeviceClass') {
                     return;
                 }
-                var bulb = '<div class="col-sm-4 col-md-4  text-center" style="height: 94px">';
+                var bulb = '<div class="col-xs-4 col-sm-4 col-md-4  text-center" style="height: 94px">';
                 bulb += '<span id="hue_' + key + '" style="position: relative; display: inline-grid; width: 80px" class="">';
                 if (!isUndefinedOrNull(v.bri)) {
                     bulb += '<input style="width: 80px; visibility: hidden; height: 80px;" id="hue_'+ key + '_knob" class="knob" data-width="80" data-height="80" data-min="0" data-max="254" data-fgColor="#FF9F01" data-angleOffset=-125 data-angleArc=250 value="' + v.bri + '" data-thickness=.3>';
