@@ -13,31 +13,6 @@ class Client(BaseClient):
     type_ = 'ViCare'
     sleep_time = 180  # 17h * 20 runs * 4 requests + 68 inits = 1428 requests
     external = True
-    # Temperaturdifferenz, da der Sensor zu tief im Boiler hängt
-    td = {
-        46: 50,
-        47: 51,
-        48: 52,
-        49: 54,
-        50: 55,
-        51: 56,
-        52: 57,
-        53: 58,
-        54: 59,
-        55: 60,
-        56: 61,
-        57: 62,
-        58: 63,
-        59: 64,
-        60: 65,
-        61: 66,
-        62: 68,
-        63: 69,
-        64: 71,
-        65: 74,
-        66: 77,
-        67: 80
-    }
 
     def __init__(self, config):
         self.username = config.get("VICARE", "username")
@@ -57,7 +32,7 @@ class Client(BaseClient):
 
     async def set_status(self, data):
         if 'hot_water' in data:
-            value = self.td.get(int(data['hot_water']), 50)
+            value = int(data['hot_water'])
             self.boiler().setDomesticHotWaterTemperature(value)
         await asyncio.sleep(2)
         await self.run(once=True)
@@ -75,9 +50,9 @@ class Client(BaseClient):
         # hot_water_pump_active = boiler.getDomesticHotWaterPumpActive()
 
         result = dict(
-            hot_water_current=self.td.get(round(water_temp), 0),
+            hot_water_current=water_temp,
             hot_water_current_tendency='right',
-            hot_water_config=self.td.get(round(water_temp_config), 0),
+            hot_water_config=water_temp_config,
             burner_active=burner_active,
             hot_water_charging=water_charging,
         )
