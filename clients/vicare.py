@@ -11,7 +11,8 @@ class Client(BaseClient):
     # 1450 calls for a time window of 24 hours
 
     type_ = 'ViCare'
-    sleep_time = 180  # 17h * 20 runs * 4 requests + 68 inits = 1428 requests
+    # sleep_time = 300  # 17h * 12 runs * 6 requests + 68 inits = 1292 requests
+    sleep_time = 3600
     external = True
 
     def __init__(self, config):
@@ -46,6 +47,8 @@ class Client(BaseClient):
         water_temp_config = boiler.getDomesticHotWaterConfiguredTemperature()
         water_charging = boiler.getDomesticHotWaterChargingActive()
         burner_active = boiler.getBurnerActive()
+        solar_collector_temp = boiler.getSolarCollectorTemperature()
+        solar_pump_active = boiler.getSolarPumpActive()
         # circulation_active = boiler.getCirculationPumpActive()
         # hot_water_pump_active = boiler.getDomesticHotWaterPumpActive()
 
@@ -55,6 +58,8 @@ class Client(BaseClient):
             hot_water_config=water_temp_config,
             burner_active=burner_active,
             hot_water_charging=water_charging,
+            solar_collector_temp=solar_collector_temp,
+            solar_pump_active=solar_pump_active,
         )
         if not result:
             return

@@ -307,7 +307,7 @@
             $(
                 ['hot_water_current', ]
             ).each(function (i, key) {
-                $('#' + key).text(data[key]);
+                $('#' + key).text(Math.round(data[key]));
                 $('#' + key + '_tendency').removeClass('fa-caret-down');
                 $('#' + key + '_tendency').removeClass('fa-caret-up');
                 $('#' + key + '_tendency').removeClass('fa-caret-right');
@@ -332,6 +332,13 @@
                     );
                 },
             });
+
+            $('#solarpumpactive').parent().removeClass('bg-color-red');
+            $('#solarpumpactive').parent().removeClass('bg-color-green');
+            if (data.solar_pump_active) {
+                $('#solarpumpactive').parent().addClass('bg-color-green');
+            }
+            $('#solarcollecttemp').text(round(data.solar_collector_temp, 1));
 
         };
 
