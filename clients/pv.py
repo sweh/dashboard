@@ -16,6 +16,7 @@ class Client(BaseClient):
         self.sock = smadaemon.connect_to_socket()
         self.sums = dict()
         self.costs = dict()
+        self.costs_per_hour = dict()
 
     def save_result_to_file(self, data):
         data = dict(
@@ -40,11 +41,15 @@ class Client(BaseClient):
 
         seconds = 1
         if self.history:
-            seconds = (
-                datetime.strptime(result['timestamp'], fmt) -
-                datetime.strptime(self.history[-1]['timestamp'], fmt)
-            )
-            seconds = float(f'{seconds.seconds}.{seconds.microseconds}')
+            current = datetime.strptime(result['timestamp'], fmt)
+            last = datetime.strptime(self.history[-1]['timestamp'], fmt)
+            if current.day != last.day:
+                self.costs = dict()
+                self.sums = dict()
+                seconds = 1
+            else:
+                seconds = current - last
+                seconds = float(f'{seconds.seconds}.{seconds.microseconds}')
         for key in (
             'Consumption',
             'AC Power Solar',
@@ -63,10 +68,24 @@ class Client(BaseClient):
         self.costs.setdefault('Power from grid', 0)
         self.costs['Power from grid'] = (
             self.sums['Power from grid'] / 1000 * 0.3000
-            )
+        )
         self.costs.setdefault('Power saving', 0)
         self.costs['Power saving'] = (
             self.sums['Consumption'] - self.sums['Power from grid']
+        ) / 1000 * 0.3000
+
+    def calculate_costs_per_hour(self, result):
+        self.costs_per_hour.setdefault('Power to grid', 0)
+        self.costs_per_hour['Power to grid'] = (
+            result['Power to grid'] / 1000 * 0.0877
+        )
+        self.costs_per_hour.setdefault('Power from grid', 0)
+        self.costs_per_hour['Power from grid'] = (
+            result['Power from grid'] / 1000 * 0.3000
+        )
+        self.costs_per_hour.setdefault('Power saving', 0)
+        self.costs_per_hour['Power saving'] = (
+            result['Consumption'] - result['Power from grid']
         ) / 1000 * 0.3000
 
     @property
@@ -96,6 +115,8 @@ class Client(BaseClient):
         result['sums'] = self.sums
         self.calculate_costs(result)
         result['costs'] = self.costs
+        self.calculate_costs_per_hour(result)
+        result['costs_per_hour'] = self.costs_per_hour
         return result
 
     def run_features(self, emparts):

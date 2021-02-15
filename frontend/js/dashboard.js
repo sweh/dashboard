@@ -3,6 +3,7 @@
         var rss_messages = [];
 
         pageSetUp();
+        window.ticks = 0;
 
         var isUndefinedOrNull = function (o) {
             return o  === undefined || o === null;
@@ -168,11 +169,6 @@
                 'panell3': round(data.sums.Consumption, 1),
                 'panell4': round(data.sums['Power from grid'], 1)
             };
-            var costs = {
-                'panell5': round(data.costs['Power to grid'], 2),
-                'panell6': round(data.costs['Power saving'], 2),
-                'panell7': round(data.costs['Power from grid'], 2)
-            };
 
             $.each(consume, function (key, value) {
                 var elem = $('#' + key),
@@ -184,9 +180,25 @@
                 elem.text(value + ' ' + unit);
             });
 
+            if ((window.ticks % 10) < 5) {
+                var costs = {
+                    'panell5': round(data.costs['Power to grid'], 2),
+                    'panell6': round(data.costs['Power saving'], 2),
+                    'panell7': round(data.costs['Power from grid'], 2)
+                   },
+                    unit = '€';
+            } else {
+                var costs = {
+                    'panell5': round(data.costs_per_hour['Power to grid'], 2),
+                    'panell6': round(data.costs_per_hour['Power saving'], 2),
+                    'panell7': round(data.costs_per_hour['Power from grid'], 2)
+                   },
+                    unit = '€/h';
+            }
+
             $.each(costs, function (key, value) {
                 var elem = $('#' + key);
-                elem.text(value + ' €');
+                elem.text(value + ' ' + unit);
             });
 
             var power_from_grid = data['Power from grid'];
@@ -455,6 +467,7 @@
 
         /* last updated counter */
         var tick = function() {
+            window.ticks += 1;
             // Fullscreen bug
             if ($('#jarviswidget-fullscreen-mode').length == 0) {
                 $('#tado_container').css('height', '203px');
