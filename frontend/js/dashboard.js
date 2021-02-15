@@ -186,7 +186,7 @@
 
             var costs = {},
                 unit = '';
-            if ((window.ticks % 10) < 5) {
+            if ((window.ticks % 2) === 0) {
                 costs = {
                     'panell5': round(data.costs['Power to grid'], 2),
                     'panell6': round(data.costs['Power saving'], 2),

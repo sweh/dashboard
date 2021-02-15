@@ -6,7 +6,7 @@ from clients.baseclient import BaseClient
 
 class Client(BaseClient):
 
-    sleep_time = 2
+    sleep_time = 5
     type_ = 'PV'
     keep_items = 1000
 
