@@ -9,6 +9,7 @@ from clients.corona import Client as CoronaClient
 from clients.helios import Client as HeliosClient
 from clients.rss import Client as RSSClient
 from clients.hue import Client as HueClient
+from clients.wifi import Client as WifiClient
 from clients.motd import Client as MotdClient
 from clients.tado import Client as TadoClient
 from clients.vicare import Client as ViCareClient
@@ -42,6 +43,7 @@ if __name__ == "__main__":
         heliosclient=HeliosClient(smadaemon.config),
         rssclient=RSSClient(smadaemon.config),
         motdclient=MotdClient(smadaemon.config),
+        wificlient=WifiClient(smadaemon.config),
         hueclient=HueClient(smadaemon.config),
         tadoclient=TadoClient(smadaemon.config),
         vicareclient=ViCareClient(smadaemon.config),

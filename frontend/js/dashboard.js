@@ -159,6 +159,10 @@
             }
         };
 
+        var handle_wifi = function (data) {
+            $('#wifi_password').text(data.password);
+        };
+
         var handle_pv = function (data) {
             tick();
             timestamp = new Date(data.timestamp);
@@ -180,20 +184,22 @@
                 elem.text(value + ' ' + unit);
             });
 
+            var costs = {},
+                unit = '';
             if ((window.ticks % 10) < 5) {
-                var costs = {
+                costs = {
                     'panell5': round(data.costs['Power to grid'], 2),
                     'panell6': round(data.costs['Power saving'], 2),
                     'panell7': round(data.costs['Power from grid'], 2)
-                   },
-                    unit = '€';
+                   };
+                unit = '€';
             } else {
-                var costs = {
+                costs = {
                     'panell5': round(data.costs_per_hour['Power to grid'], 2),
                     'panell6': round(data.costs_per_hour['Power saving'], 2),
                     'panell7': round(data.costs_per_hour['Power from grid'], 2)
-                   },
-                    unit = '€/h';
+               };
+               unit = '€/h';
             }
 
             $.each(costs, function (key, value) {
@@ -209,7 +215,7 @@
             var power_to_grid = data['Power to grid'] || 0;
             var batterycapacity = data.BatteryCharge || 0;
 
-            var consumption = data['Consumption'];
+            var consumption = data.Consumption;
             batterypower = 0 - batterypower;
 
             d.push([timestamp, panelpower]); /* Solar Dach */
@@ -445,6 +451,8 @@
                 handle_tado(data);
             } else if (data.DeviceClass === 'ViCare') {
                 handle_vicare(data);
+            } else if (data.DeviceClass === 'WIFI') {
+                handle_wifi(data);
             } else {
                 alert('ERROR: Unknown DeviceClass ' + data.DeviceClass);
                 console.log(data);
