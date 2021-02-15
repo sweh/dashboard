@@ -5,14 +5,16 @@ from clients.baseclient import BaseClient
 
 class Client(BaseClient):
 
-    sleep_time = 1
+    sleep_time = 2
     type_ = 'PV'
-    keep_items = 100
+    keep_items = 1000
 
     def __init__(self, smadaemon):
         self.smadaemon = smadaemon
         super(Client, self).__init__(smadaemon.config)
         self.sock = smadaemon.connect_to_socket()
+        self.sums = dict()
+        self.costs = dict()
 
     def save_result_to_file(self, data):
         data = dict(
@@ -32,6 +34,31 @@ class Client(BaseClient):
             with open(data_file, 'w') as f:
                 f.write(json.dumps(data))
 
+    def calculate_sums(self, result):
+        for key in (
+            'Consumption',
+            'AC Power Solar',
+            'Power to grid',
+            'AC Power Battery',
+            'Power from grid'
+        ):
+            self.sums.setdefault(key, 0)
+            self.sums[key] += result[key] / 3600 * self.sleep_time
+
+    def calculate_costs(self, result):
+        self.costs.setdefault('Power to grid', 0)
+        self.costs['Power to grid'] = (
+            self.sums['Power to grid'] / 1000 * 0.0877
+        )
+        self.costs.setdefault('Power from grid', 0)
+        self.costs['Power from grid'] = (
+            self.sums['Power from grid'] / 1000 * 0.3000
+            )
+        self.costs.setdefault('Power saving', 0)
+        self.costs['Power saving'] = (
+            self.sums['Consumption'] - self.sums['Power from grid']
+        ) / 1000 * 0.3000
+
     @property
     def data(self):
         result = {}
@@ -41,17 +68,24 @@ class Client(BaseClient):
                 for items in self.run_features(emparts):
                     for item in items:
                         if item['DeviceClass'] == 'Solar Inverter':
-                            item['AC Power Solar'] = item['AC Power']
+                            item['AC Power Solar'] = item['AC Power'] or 0
                             item['Status Solar'] = item['Status']
                         if item['DeviceClass'] == 'Battery Inverter':
-                            item['AC Power Battery'] = item['AC Power']
+                            item['AC Power Battery'] = item['AC Power'] or 0
                         result.update(item)
+        result['Power to grid'] = result['Power to grid'] or 0
+        result['Consumption'] = (
+            result['AC Power Solar'] +
+            result['AC Power Battery'] +
+            result['Power from grid'] -
+            result['Power to grid']
+        )
         if result:
             self.save_result_to_file(result)
-        if not result:
-            result = dict()
-        for k in ('p', 'p1', 'p2', 'p3'):
-            result[k] = emparts[k+'supply'] - emparts[k+'consume']
+        self.calculate_sums(result)
+        result['sums'] = self.sums
+        self.calculate_costs(result)
+        result['costs'] = self.costs
         return result
 
     def run_features(self, emparts):

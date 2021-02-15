@@ -15,8 +15,8 @@
         var $chrt_main = "#7e9d3a";         /* greeen    */
         var $chrt_second = "#6595b4";       /* blue      */
         var $chrt_third = "#FF9F01";        /* orange    */
-        var $chrt_fourth = "#E24913";       /* red       */
-        var $chrt_fifth = "#BD362F";        /* dark red  */
+        var $chrt_fourth = "#92a2a8";       /* light blue*/
+        var $chrt_fifth = "#a90329";        /* red       */
         var $chrt_mono = "#000";
 
         var d = [], e = [], f = [], g = [], h = [];
@@ -163,39 +163,41 @@
             timestamp = new Date(data.timestamp);
 
             var consume = {
-                'panell1': Math.round(data.p1 || 0),
-                'panell2': Math.round(data.p2 || 0),
-                'panell3': Math.round(data.p3 || 0)
+                'panell1': round(data.sums['AC Power Solar'], 1),
+                'panell2': round(data.sums['Power to grid'], 1),
+                'panell3': round(data.sums.Consumption, 1),
+                'panell4': round(data.sums['Power from grid'], 1)
+            };
+            var costs = {
+                'panell5': round(data.costs['Power to grid'], 2),
+                'panell6': round(data.costs['Power saving'], 2),
+                'panell7': round(data.costs['Power from grid'], 2)
             };
 
             $.each(consume, function (key, value) {
                 var elem = $('#' + key),
-                p = elem.parent();
-
-                p.removeClass('bg-color-green');
-                p.removeClass('bg-color-red');
-                if (value < 0) {
-                    p.addClass('bg-color-red');
-                    value = 0 - value;
-                } else {
-                    p.addClass('bg-color-green');
+                    unit = 'W';
+                if (value > 1000) {
+                    value = round(value / 1000, 1);
+                    unit = 'kW';
                 }
-                elem.text(value);
+                elem.text(value + ' ' + unit);
             });
 
-            var power_from_grid = Math.round(0 - data.p || 0);
-            $('#powerfromgrid').text(power_from_grid);
+            $.each(costs, function (key, value) {
+                var elem = $('#' + key);
+                elem.text(value + ' €');
+            });
 
-            if (isUndefinedOrNull(data.timestamp)) {
-                return;
-            }
+            var power_from_grid = data['Power from grid'];
+            $('#powerfromgrid').text(power_from_grid);
 
             var panelpower = data['AC Power Solar'] || 0;
             var batterypower = data['AC Power Battery'] || 0;
             var power_to_grid = data['Power to grid'] || 0;
             var batterycapacity = data.BatteryCharge || 0;
 
-            var consumption = panelpower + batterypower + power_from_grid - power_to_grid;
+            var consumption = data['Consumption'];
             batterypower = 0 - batterypower;
 
             d.push([timestamp, panelpower]); /* Solar Dach */

@@ -36,14 +36,8 @@
                 margin-top: 50px;
             }
             #current_date,
-            .pv_fixed_height hr,
-            .pv_phases {
+            .pv_fixed_height hr {
                 display: none;
-            }
-            .battery_percent {
-                float: right;
-                margin-top: -70px;
-                padding-left: 25px;
             }
             .left-zero-padding {
                 padding-left: 13px;
@@ -53,8 +47,7 @@
             }
             @media (min-width: 400px) {
                 #current_date,
-                .pv_fixed_height hr,
-                .pv_phases {
+                .pv_fixed_height hr {
                     display: block;
                 }
                 .pv_fixed_height {
@@ -62,11 +55,6 @@
                 }
                 #hue_container {
                     height: 203px;
-                }
-                .battery_percent {
-                    margin-top: 0px;
-                    padding-left: 0px;
-                    padding-right: 333px;
                 }
                 .left-zero-padding {
                     padding-left: 0px;
@@ -183,39 +171,38 @@
                                                 <h3 class="margin-bottom-0">
                                                     <span id="consumption">0</span>
                                                     <br>
-                                                    <small
-                                                        class="font-xs"><sup><span class="badge bg-color-red">Verbrauch</span></sup></small>
+                                                    <small class="font-xs"><sup><span class="badge bg-color-blueLight">Verbrauch</span></sup></small>
                                                 </h3>
                                             </div>
                                             <div class="col-xs-5 col-sm-4 col-md-2 text-center">
                                                 <h3 class="margin-bottom-0">
                                                     <span id="powerfromgrid">0</span>
                                                     <br>
-                                                    <small
-                                                        class="font-xs"><sup><span class="badge bg-color-darkred">Netzbezug</span></sup></small>
+                                                    <small class="font-xs"><sup><span class="badge bg-color-red">Netzbezug</span></sup></small>
                                                 </h3>
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-xs-4 col-sm-4 col-md-2 text-center pv_phases">
-                                            <ul class="smaller-stat" style="margin-top: -8px; width: 120px;margin-left: 23px;">
+                                            <div class="col-xs-5 col-sm-5 col-md-5 text-center pv_phases">
+                                            <ul class="smaller-stat" style="margin-top: -8px; display: inline-block">
                                                 <li>
                                                     <span class="label bg-color-green pull-left text-center" style="font-size: 9px;">
                                                         <span id="panell1">0</span>
                                                     </span>
-                                                    <span class="label bg-color-green pull-left text-center" style="font-size: 9px;">
+                                                    <span class="label bg-color-blue pull-left text-center" style="font-size: 9px;">
                                                         <span id="panell2">0</span>
                                                     </span>
-                                                    <span class="label bg-color-green  pull-left text-center" style="font-size: 9px;">
+                                                    <span class="label bg-color-blueLight pull-left text-center" style="font-size: 9px;">
                                                         <span id="panell3">0</span>
+                                                    </span>
+                                                    <span class="label bg-color-red  pull-left text-center" style="font-size: 9px;">
+                                                        <span id="panell4">0</span>
                                                     </span>
                                                 </li>
                                             </ul>
                                             </div>
-                                            <div class="col-xs-4 col-sm-4 col-md-3 text-center">
-                                            </div>
-                                            <div class="col-xs-4 col-sm-4 col-md-2 text-center battery_percent">
-                                            <ul class="smaller-stat" style="margin-top: -8px; width: 81px;">
+                                            <div class="col-xs-2 col-sm-2 col-md-2 text-center battery_percent">
+                                            <ul class="smaller-stat" style="margin-top: -8px; width: 81px; display: inline-block">
                                                 <li>
                                                     <span class="label pull-right" style="font-size: 9px; color: black">
                                                         <span id="batterytemp">0</span> °C
@@ -226,7 +213,20 @@
                                                 </li>
                                             </ul>
                                             </div>
-                                            <div class="col-sm-4 col-md-5 text-center">
+                                            <div class="col-xs-5 col-sm-5 col-md-5 text-center">
+                                            <ul class="smaller-stat" style="margin-top: -8px; display: inline-block">
+                                                <li>
+                                                    <span class="label bg-color-blue pull-left text-center" style="font-size: 9px;">
+                                                        <span id="panell5">0</span>
+                                                    </span>
+                                                    <span class="label bg-color-blueLight pull-left text-center" style="font-size: 9px;">
+                                                        <span id="panell6">0</span>
+                                                    </span>
+                                                    <span class="label bg-color-red  pull-left text-center" style="font-size: 9px;">
+                                                        <span id="panell7">0</span>
+                                                    </span>
+                                                </li>
+                                            </ul>
                                             </div>
                                         </div>
 
