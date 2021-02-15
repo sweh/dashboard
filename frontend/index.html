@@ -39,6 +39,19 @@
             .pv_fixed_height hr {
                 display: none;
             }
+            .pv_sums {
+                position: absolute;
+                top: 74px;
+                left: -88px;
+            }
+            .pv_costs {
+                display: none;
+            }
+            .battery_percent {
+                position: absolute;
+                top: 74px;
+                right: -138px;
+            }
             .left-zero-padding {
                 padding-left: 13px;
             }
@@ -52,6 +65,16 @@
                 }
                 .pv_fixed_height {
                     height: 380px;
+                }
+                .pv_costs {
+                    display: block;
+                }
+                .pv_sums,
+                .battery_percent {
+                    position: inherit;
+                    top: inherit;
+                    right: inherit;
+                    left: inherit;
                 }
                 #hue_container {
                     height: 203px;
@@ -183,7 +206,7 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-xs-5 col-sm-5 col-md-5 text-center pv_phases">
+                                            <div class="col-xs-12 col-sm-5 col-md-5 text-center pv_sums">
                                             <ul class="smaller-stat" style="margin-top: -8px; display: inline-block">
                                                 <li>
                                                     <span class="label bg-color-green pull-left text-center" style="font-size: 9px;">
@@ -201,7 +224,7 @@
                                                 </li>
                                             </ul>
                                             </div>
-                                            <div class="col-xs-2 col-sm-2 col-md-2 text-center battery_percent">
+                                            <div class="col-xs-12 col-sm-2 col-md-2 text-center battery_percent">
                                             <ul class="smaller-stat" style="margin-top: -8px; width: 81px; display: inline-block">
                                                 <li>
                                                     <span class="label pull-right" style="font-size: 9px; color: black">
@@ -213,7 +236,7 @@
                                                 </li>
                                             </ul>
                                             </div>
-                                            <div class="col-xs-5 col-sm-5 col-md-5 text-center">
+                                            <div class="col-xs-12 col-sm-5 col-md-5 text-center pv_costs">
                                             <ul class="smaller-stat" style="margin-top: -8px; display: inline-block">
                                                 <li>
                                                     <span class="label bg-color-blue pull-left text-center" style="font-size: 9px;">
