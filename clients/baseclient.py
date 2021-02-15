@@ -1,4 +1,6 @@
 import asyncio
+import pickle
+import os.path
 from datetime import datetime
 import json
 import logging
@@ -21,8 +23,22 @@ class BaseClient:
     def __init__(self, config):
         self.config = config
         self.enabled = bool(int(config.get(self.type_.upper(), 'enabled')))
-        self.history = []
+        self.history = self.load_history()
         self.websockets = {}
+
+    @property
+    def history_dump_name(self):
+        return f'history_{self.type_}.bin'
+
+    def load_history(self):
+        if not os.path.exists(self.history_dump_name):
+            return []
+        with open(self.history_dump_name, 'rb') as f:
+            return pickle.load(f)
+
+    def save_history(self):
+        with open(self.history_dump_name, 'wb') as f:
+            pickle.dump(self.history, f)
 
     async def register(self, websocket):
         self.websockets[websocket] = []
@@ -86,6 +102,7 @@ class BaseClient:
                         )
             finally:
                 self.history = self.history[0-self.keep_items:]
+                self.save_history()
                 if once:
                     return
                 await asyncio.sleep(self.sleep_time)

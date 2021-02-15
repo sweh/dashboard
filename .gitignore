@@ -63,3 +63,4 @@ pyvenv.cfg
 config
 src/
 token.save
+history_*
