@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from speedwiredecoder import decode_speedwire
 from clients.baseclient import BaseClient
 
@@ -35,6 +36,15 @@ class Client(BaseClient):
                 f.write(json.dumps(data))
 
     def calculate_sums(self, result):
+        fmt = "%Y-%m-%dT%H:%M:%S.%f%z"
+
+        seconds = 1
+        if self.history:
+            seconds = (
+                datetime.strptime(result['timestamp'], fmt) -
+                datetime.strptime(self.history[-1]['timestamp'], fmt)
+            )
+            seconds = float(f'{seconds.seconds}.{seconds.microseconds}')
         for key in (
             'Consumption',
             'AC Power Solar',
@@ -43,7 +53,7 @@ class Client(BaseClient):
             'Power from grid'
         ):
             self.sums.setdefault(key, 0)
-            self.sums[key] += result[key] / 3600 * self.sleep_time
+            self.sums[key] += result[key] / 3600 * seconds
 
     def calculate_costs(self, result):
         self.costs.setdefault('Power to grid', 0)
