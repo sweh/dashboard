@@ -337,6 +337,8 @@
             $('#solarpumpactive').parent().removeClass('bg-color-green');
             if (data.solar_pump_active) {
                 $('#solarpumpactive').parent().addClass('bg-color-green');
+            } else {
+                $('#solarpumpactive').parent().addClass('bg-color-red');
             }
             $('#solarcollecttemp').text(round(data.solar_collector_temp, 1));
 
