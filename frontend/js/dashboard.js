@@ -9,6 +9,21 @@
             return o  === undefined || o === null;
         };
 
+        function round(value, precision) {
+            var multiplier = Math.pow(10, precision || 0);
+            var result = Math.round(value * multiplier) / multiplier;
+            result = result.toString();
+            if (result.indexOf('.') < 0) {
+                result = result + '.' + '0'.repeat(precision || 1);
+            } else {
+                result = result.split('.');
+                if (result[1].length < precision) {
+                    result[1] += '0'.repeat(precision - result[1].length);
+                }
+                result = result[0] + '.' + result[1];
+            }
+            return result;
+        }
 
         /* flot chart colors default */
         var $chrt_border_color = "#efefef";
@@ -307,16 +322,6 @@
         window.socket.onopen = function(e) {
             console.log("[open] Connection established, send -> server");
         };
-
-        function round(value, precision) {
-            var multiplier = Math.pow(10, precision || 0);
-            var result = Math.round(value * multiplier) / multiplier;
-            result = result.toString();
-            if (result.indexOf('.') < 0) {
-                result = result + '.0';
-            }
-            return result;
-        }
 
         var handle_vicare = function (data) {
             console.log(data);
