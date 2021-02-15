@@ -31,7 +31,7 @@
         var $chrt_main = "#7e9d3a";         /* greeen    */
         var $chrt_second = "#6595b4";       /* blue      */
         var $chrt_third = "#FF9F01";        /* orange    */
-        var $chrt_fourth = "#92a2a8";       /* light blue*/
+        var $chrt_fourth = "#4c4f53";       /* blueDark  */
         var $chrt_fifth = "#a90329";        /* red       */
         var $chrt_mono = "#000";
 
