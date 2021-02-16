@@ -136,10 +136,10 @@
                 weather_alerts = data.alerts;
 
             $('#current_temp').text(current_temp);
-            $('#current_weather_icon').attr(
-                'src',
-                'http://openweathermap.org/img/wn/' + weather_icon + '@2x.png'
-            );
+            $("#current_weather_icon").removeClass (function (index, className) {
+                return (className.match (/(^|\s)owi-\S+/g) || []).join(' ');
+            });
+            $('#current_weather_icon').addClass('owi-' + weather_icon);
             if (weather_alerts && weather_alerts.length) {
                 $('#weather_alert').text(
                     weather_alerts[0].event + ': ' + weather_alerts[0].description
@@ -153,7 +153,7 @@
                     '<article class="col-xs-3 col-sm-3 text-center" style="padding: 0px">' +
                     String(date.getHours()).padStart(2, "0") + ':' + String(date.getMinutes()).padStart(2, "0") + '<br />' +
                     '<b>' + round(data.hourly[i].temp,1)+'</b></br>'+
-                    '<img style="height: 40px; margin-top: -10px" src="http://openweathermap.org/img/wn/'+ data.hourly[i].weather[0].icon +'@2x.png" />' +
+                    '<i class="owi txt-color-black owi-' + data.hourly[i].weather[0].icon + '"></i>' +
                     '</article>'
                 );
             });
@@ -168,7 +168,7 @@
                     '</article>' +
                     '<article class="col-xs-2 col-sm-2 text-center" style="padding: 0px; font-size: 8pt;">' +
                     '<b><i class="fa fa-caret-down"></i>' + round(data.daily[i].temp.min,1)+' <i class="fa fa-caret-up"></i>'+ round(data.daily[i].temp.max,1) +'</b></br>'+
-                    '<img style="height: 40px; margin-top: -10px" src="http://openweathermap.org/img/wn/'+ data.daily[i].weather[0].icon +'@2x.png" />' +
+                    '<i class="owi txt-color-black owi-' + data.daily[i].weather[0].icon + '"></i>' +
                     '</article>'
                 );
             }

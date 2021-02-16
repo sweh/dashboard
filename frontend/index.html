@@ -8,6 +8,7 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
         <meta name="viewport" content="viewport-fit=cover, user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+        <link rel="stylesheet" type="text/css" media="screen" href="css/openweather.css">
         <link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-production-plugins.min.css">
         <link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-production.min.css">
@@ -22,6 +23,10 @@
             .hidden { display: none }
             .bg-color-bulb-active { background-color: #FF9F01 }
             .txt-color-bulb-active { color: #FF9F01 }
+            #current_weather_icon {
+                font-size: 20px;
+                margin-top: 6px;
+            }
             .pv_fixed_height .label {
                 width: auto !important;
             }
@@ -274,7 +279,7 @@
                                     data-widget-collapsed="false" 
                                     data-widget-sortable="false">
                                 <header>
-                                    <span class="widget-icon"> <i class="fa fa-cloud txt-color-blueLight"></i> </span>
+                                    <span class="widget-icon"> <i id="current_weather_icon" class="owi owi-01d txt-color-white"></i> </span>
                                     <h2 style="margin-right: 5px" class="weather_header">Wetter</h2>
                                     <div class="marquee">
                                         <b id="weather_alert"></b>
