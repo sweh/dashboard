@@ -38,15 +38,16 @@ class Client(BaseClient):
 
         seconds = 1
         sums = dict()
-        if self.history:
+        last_item = self.history.get_last_entry()
+        if last_item:
             current = datetime.strptime(result['timestamp'], fmt)
-            last = datetime.strptime(self.history[-1]['timestamp'], fmt)
+            last = datetime.strptime(last_item['timestamp'], fmt)
             if current.day != last.day:
                 seconds = 1
             else:
                 seconds = current - last
                 seconds = float(f'{seconds.seconds}.{seconds.microseconds}')
-                sums = self.history[-1]['sums'].copy()
+                sums = last_item['sums'].copy()
         for key in (
             'Consumption',
             'AC Power Solar',

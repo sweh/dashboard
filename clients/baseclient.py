@@ -9,6 +9,49 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
+class History:
+
+    def __init__(self, name, max_items=None):
+        self.name = f'history_{name}.bin'
+        self.max_items = max_items
+        self.load()
+
+    def append(self, item):
+        self.__data.append(item)
+        self.save()
+
+    def get(self):
+        if self.max_items is None:
+            return self.__data
+        return self.__data[0-self.max_items:]
+
+    def load(self):
+        if not os.path.exists(self.name):
+            self.__data = []
+        else:
+            with open(self.name, 'rb') as f:
+                self.__data = pickle.load(f)
+
+    def save(self):
+        with open(self.name, 'wb') as f:
+            pickle.dump(self.__data[0-self.max_items:], f)
+
+    def get_last_entry(self):
+        try:
+            return self.get()[-1]
+        except IndexError:
+            return
+
+    def __iter__(self):
+        return iter(self.get())
+
+    def __contains__(self, item):
+        return item in self.get()
+
+    def __getitem__(self, index):
+        return self.get()[index]
+
+
 class BaseClient:
 
     sleep_time = 60
@@ -23,28 +66,13 @@ class BaseClient:
     def __init__(self, config):
         self.config = config
         self.enabled = bool(int(config.get(self.type_.upper(), 'enabled')))
-        self.history = self.load_history()
+        self.history = History(self.type_, max_items=self.keep_items)
         self.websockets = {}
-
-    @property
-    def history_dump_name(self):
-        return f'history_{self.type_}.bin'
-
-    def load_history(self):
-        if not os.path.exists(self.history_dump_name):
-            return []
-        with open(self.history_dump_name, 'rb') as f:
-            return pickle.load(f)
-
-    def save_history(self):
-        with open(self.history_dump_name, 'wb') as f:
-            pickle.dump(self.history, f)
 
     async def register(self, websocket):
         self.websockets[websocket] = []
-        if self.history:
-            for item in self.history:
-                await self.send(websocket, item)
+        for item in self.history:
+            await self.send(websocket, item)
 
     async def send(self, websocket, data):
         if data in self.websockets[websocket]:
@@ -101,8 +129,6 @@ class BaseClient:
                             f'to {len(self.websockets)} clients.'
                         )
             finally:
-                self.history = self.history[0-self.keep_items:]
-                self.save_history()
                 if once:
                     return
                 await asyncio.sleep(self.sleep_time)

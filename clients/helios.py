@@ -60,8 +60,8 @@ class Client(BaseClient):
         result = self.grab_helios_data()
         if not result:
             return
-        if self.history:
-            old_value = self.history[-1]
+        old_value = self.history.get_last_entry()
+        if old_value:
             for key in (
                 'stufe', 'aussenluft', 'zuluft',
                 'fortluft', 'abluft', 'abluft_feuchte'

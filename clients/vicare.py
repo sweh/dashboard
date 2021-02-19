@@ -66,8 +66,8 @@ class Client(BaseClient):
         for k, v in result.items():
             if v == 'error':
                 return
-        if self.history:
-            old_value = self.history[-1]
+        old_value = self.history.get_last_entry()
+        if old_value:
             for key in ('hot_water_current', ):
                 if old_value[key] > result[key]:
                     result[key + '_tendency'] = 'down'
