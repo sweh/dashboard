@@ -1,55 +1,11 @@
 import asyncio
-import pickle
-import os.path
 from datetime import datetime
+from history import History
 import json
 import logging
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
-
-
-class History:
-
-    def __init__(self, name, max_items=None):
-        self.name = f'history_{name}.bin'
-        self.max_items = max_items
-        self.load()
-
-    def append(self, item):
-        self.__data.append(item)
-        self.save()
-
-    def get(self):
-        if self.max_items is None:
-            return self.__data
-        return self.__data[0-self.max_items:]
-
-    def load(self):
-        if not os.path.exists(self.name):
-            self.__data = []
-        else:
-            with open(self.name, 'rb') as f:
-                self.__data = pickle.load(f)
-
-    def save(self):
-        with open(self.name, 'wb') as f:
-            pickle.dump(self.__data[0-self.max_items:], f)
-
-    def get_last_entry(self):
-        try:
-            return self.get()[-1]
-        except IndexError:
-            return
-
-    def __iter__(self):
-        return iter(self.get())
-
-    def __contains__(self, item):
-        return item in self.get()
-
-    def __getitem__(self, index):
-        return self.get()[index]
 
 
 class BaseClient:
