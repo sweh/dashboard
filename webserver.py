@@ -1,19 +1,21 @@
-import asyncio
-import json
-import websockets
-import argparse
-from sma_daemon import MyDaemon
-from clients.pv import Client as PVClient
-from clients.openweather import Client as OpenWeatherClient
 from clients.corona import Client as CoronaClient
 from clients.helios import Client as HeliosClient
-from clients.rss import Client as RSSClient
 from clients.hue import Client as HueClient
-from clients.wifi import Client as WifiClient
 from clients.motd import Client as MotdClient
+from clients.openweather import Client as OpenWeatherClient
+from clients.pv import Client as PVClient
+from clients.rss import Client as RSSClient
 from clients.tado import Client as TadoClient
 from clients.vicare import Client as ViCareClient
+from clients.wifi import Client as WifiClient
+from sma_daemon import MyDaemon
+from sqlalchemy import create_engine
+import argparse
+import asyncio
+import json
 import logging
+import model
+import websockets
 
 logging.basicConfig(level=logging.WARN)
 logging.getLogger().setLevel(logging.WARN)
@@ -36,6 +38,11 @@ def parse_arguments():
 if __name__ == "__main__":
     args = parse_arguments()
     smadaemon = MyDaemon(args.config)
+    smadaemon.config.engine = smadaemon.config.get('DB', 'connect')
+    if smadaemon.config.engine:
+        smadaemon.config.engine = create_engine(smadaemon.config.engine)
+        model.Base.metadata.create_all(smadaemon.config.engine)
+
     clients = dict(
         pvclient=PVClient(smadaemon),
         openweatherclient=OpenWeatherClient(smadaemon.config),

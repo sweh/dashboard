@@ -1,12 +1,7 @@
-from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, class_mapper
 import model
 import pickle
 import os.path
-
-engine = create_engine('postgresql://kravag-user:asdf@localhost/dashboard')
-model.Base.metadata.create_all(engine)
-Session = sessionmaker(bind=engine)
 
 
 def sqlalchemy_encode(o):
@@ -23,9 +18,9 @@ class History:
     db_class = None
     session = None
 
-    def __init__(self, name, max_items=None):
+    def __init__(self, name, engine, max_items=None):
         self.db_class = getattr(model, name, None)
-        self.session = Session()
+        self.session = sessionmaker(bind=engine)()
         self.name = f'history_{name}.bin'
         self.max_items = max_items
         self.load()

@@ -20,7 +20,7 @@ class PV(Base):
     }
 
     __fmt = "%Y-%m-%dT%H:%M:%S.%f%z"
-    _timestamp = Column('timestamp', DateTime, primary_key=True)
+    _timestamp = Column('timestamp', DateTime(timezone=True), primary_key=True)
     sums = Column(JSON)
     costs = Column(JSON)
     costs_per_hour = Column(JSON)
