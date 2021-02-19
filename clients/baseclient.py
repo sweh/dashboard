@@ -22,7 +22,11 @@ class BaseClient:
     def __init__(self, config):
         self.config = config
         self.enabled = bool(int(config.get(self.type_.upper(), 'enabled')))
-        self.history = History(self.type_, config.engine, max_items=self.keep_items)
+        self.history = History(
+            self.type_,
+            config.engine,
+            max_items=self.keep_items
+        )
         self.websockets = {}
 
     async def register(self, websocket):
