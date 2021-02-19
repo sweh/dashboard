@@ -14,8 +14,8 @@ class BaseModel:
 Base = declarative_base(cls=BaseModel)
 
 
-class PVCosts(Base):
-    __tablename__ = 'pvcosts'
+class PVSums(Base):
+    __tablename__ = 'pvsums'
     name_mapping = {
         'power_from_grid': 'Power from grid',
         'power_to_grid': 'Power to grid',
@@ -30,6 +30,20 @@ class PVCosts(Base):
     power_to_grid = Column(Float)
     ac_power_battery = Column(Float)
     power_from_grid = Column(Float)
+
+
+class PVCosts(Base):
+    __tablename__ = 'pvcosts'
+    name_mapping = {
+        'power_from_grid': 'Power from grid',
+        'power_to_grid': 'Power to grid',
+        'power_saving': 'Power saving',
+    }
+
+    day = Column(Date, primary_key=True)
+    power_to_grid = Column(Float)
+    power_from_grid = Column(Float)
+    power_saving = Column(Float)
 
 
 class PV(Base):
@@ -72,15 +86,23 @@ class PV(Base):
     def timestamp(self, value):
         self._timestamp = datetime.strptime(value, self.__fmt)
 
-    def prepare(self, session):
-        costs = (
-            session.query(PVCosts)
-            .filter(PVCosts.day == self._timestamp.date())
+    def _calculate_sub(self, session, db_class):
+        sub = (
+            session.query(db_class)
+            .filter(db_class.day == self._timestamp.date())
             .one_or_none()
         )
-        if costs is None:
-            costs = PVCosts()
-            costs.day = self._timestamp.date()
-        for k, v in costs.name_mapping.items():
-            setattr(costs, k, getattr(self, k))
-        session.add(costs)
+        if sub is None:
+            sub = db_class()
+            sub.day = self._timestamp.date()
+        for k, v in sub.name_mapping.items():
+            setattr(
+                sub,
+                k,
+                getattr(self, sub.__tablename__.replace('pv', ''))[v]
+            )
+        return sub
+
+    def prepare(self, session):
+        session.add(self._calculate_sub(session, PVCosts))
+        session.add(self._calculate_sub(session, PVSums))
