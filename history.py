@@ -77,6 +77,7 @@ class History:
         for k, v in self.db_class.name_mapping.items():
             setattr(item, k, last[v])
         self.session.add(item)
+        item.prepare(self.session)
         self.session.commit()
 
     def get_last_entry(self):
