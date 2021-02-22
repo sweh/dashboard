@@ -93,25 +93,6 @@
                 pvsums_page = Object.keys(pages)[Object.keys(pages).length-1];
             }
 
-            $('.pvhistory_pagination').remove();
-            $('#pvchart-history').after(
-                '<div class="pvhistory_pagination" style="text-align: center; margin-top: -5px;"><div class="btn-group"></div></div>'
-            );
-
-            for (var i = 1; i<=Object.keys(pages).length; i++) {
-                var type = 'default';
-                if (i == pvsums_page) {
-                    type = 'primary';
-                }
-                $('.pvhistory_pagination .btn-group').append(
-                    '<button type="button" class="btn btn-' + type + ' btn-xs" data-page="'+ i +'">' + page_labels[i] + '</button>'
-                );
-            }
-            $('.pvhistory_pagination .btn-group button').click(function (ev) {
-                pvsums_page = parseInt($(ev.currentTarget).data('page'));
-                pvhistory();
-            });
-
             $.each(pages[pvsums_page], function (index, day) {
                 var data = pvsums[day];
                 day = parseInt(day.slice(4,6));
@@ -154,6 +135,25 @@
                 }
             });
             if ($('#pvchart-history').is(":visible")) {
+                $('.pvhistory_pagination').remove();
+                $('#pvchart-history').after(
+                    '<div class="pvhistory_pagination" style="text-align: center; margin-top: -5px;"><div class="btn-group"></div></div>'
+                );
+
+                for (var i = 1; i<=Object.keys(pages).length; i++) {
+                    var type = 'default';
+                    if (i == pvsums_page) {
+                        type = 'primary';
+                    }
+                    $('.pvhistory_pagination .btn-group').append(
+                        '<button type="button" class="btn btn-' + type + ' btn-xs" data-page="'+ i +'">' + page_labels[i] + '</button>'
+                    );
+                }
+                $('.pvhistory_pagination .btn-group button').click(function (ev) {
+                    pvsums_page = parseInt($(ev.currentTarget).data('page'));
+                    pvhistory();
+                });
+
                 $.plot($("#pvchart-history"), ds, {
                     colors : [$chrt_main, $chrt_second, $chrt_fourth, $chrt_fifth],
                     grid : {
@@ -443,7 +443,7 @@
         };
 
         window.switch_pv_charts = function () {
-            $('#pvhistory_pagination').toggle();
+            $('.pvhistory_pagination').toggle();
             $('#pvchart-history').toggle();
             $('#pvchart').toggle();
         };
