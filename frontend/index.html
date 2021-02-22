@@ -171,6 +171,9 @@
                                 <header>
                                     <span class="widget-icon"> <i class="fa fa-sun txt-color-yellow"></i> </span>
                                     <h2>PV-Anlage <i id="panelstatus" class="glyphicon glyphicon-remove-circle"></i></h2>
+                                    <div class="widget-toolbar" role="menu">
+                                        <a href="javascript:window.switch_pv_charts();" class="button-icon" style="color: white"><i class="fa fa-chart-bar"></i></a>
+                                    </div>
                                 </header>
                                 <div class="pv_fixed_height">
                                     <div class="widget-body no-padding">
@@ -262,7 +265,8 @@
                                         </div>
 
                                         <hr class="margin-5">
-                                        <div id="pvchart" class="chart"></div>
+                                        <div id="pvchart" class="chart" style="display: none"></div>
+                                        <div id="pvchart-history" class="chart"></div>
                                     </div>
                                 </div>
                             </div>

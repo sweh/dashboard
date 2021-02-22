@@ -4,6 +4,7 @@ from clients.hue import Client as HueClient
 from clients.motd import Client as MotdClient
 from clients.openweather import Client as OpenWeatherClient
 from clients.pv import Client as PVClient
+from clients.pvsums import Client as PVSumsClient
 from clients.rss import Client as RSSClient
 from clients.tado import Client as TadoClient
 from clients.vicare import Client as ViCareClient
@@ -45,6 +46,7 @@ if __name__ == "__main__":
 
     clients = dict(
         pvclient=PVClient(smadaemon),
+        pvsumsclient=PVSumsClient(smadaemon.config),
         openweatherclient=OpenWeatherClient(smadaemon.config),
         coronaclient=CoronaClient(smadaemon.config),
         heliosclient=HeliosClient(smadaemon.config),

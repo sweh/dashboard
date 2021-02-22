@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import synonym
 from sqlalchemy import Column, Integer, String, Date, DateTime, JSON, Float
 
 
@@ -25,6 +26,7 @@ class PVSums(Base):
     }
 
     day = Column(Date, primary_key=True)
+    _timestamp = synonym('day')
     consumption = Column(Float)
     ac_power_solar = Column(Float)
     power_to_grid = Column(Float)

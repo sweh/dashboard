@@ -1,4 +1,7 @@
 from sqlalchemy.orm import sessionmaker, class_mapper
+import datetime
+import decimal
+import json
 import model
 import pickle
 import os.path
@@ -51,12 +54,13 @@ class History:
         self._data = []
         for item in (
             self.session.query(self.db_class)
-            .order_by(self.db_class._timestamp.asc())
+            .order_by(self.db_class._timestamp.desc())
             .limit(self.max_items)
         ):
             item = sqlalchemy_encode(item)
             item['DeviceClass'] = self.db_class.__name__
             self._data.append(item)
+        self._data.reverse()
 
     def save(self):
         if self.db_class:
@@ -94,3 +98,28 @@ class History:
 
     def __getitem__(self, index):
         return self.get()[index]
+
+
+def datetime_encode(o, request=None):
+    return o.isoformat()
+
+
+def decimal_encode(o, request=None):
+    return str(o)
+
+
+ENCODERS = {model.Base: sqlalchemy_encode,
+            datetime.date: datetime_encode,
+            datetime.datetime: datetime_encode,
+            decimal.Decimal: decimal_encode}
+
+
+def encode(o):
+    for klass, encoder in ENCODERS.items():
+        if isinstance(o, klass):
+            return encoder(o)
+    return json._default_encoder._default_orig(o)
+
+
+json._default_encoder._default_orig = json._default_encoder.default
+json._default_encoder.default = encode

@@ -58,7 +58,120 @@
                 },
                 colors : [$chrt_main, $chrt_second, $chrt_third, $chrt_fourth, $chrt_fifth],
             };
-            plot_1 = $.plot($("#pvchart"), [d,e,f,g,h], options);
+            if ($('#pvchart').is(":visible")) {
+                plot_1 = $.plot($("#pvchart"), [d,e,f,g,h], options);
+            }
+        };
+
+        var pvsums = {},
+            pvsums_per_month = {},
+            pvsums_page = -1;
+
+        var pvhistory = function() {
+            var ds = new Array();
+            var ac_power_solar = [];
+            var power_to_grid = [];
+            var consumption = [];
+            var power_from_grid = [];
+
+            var pvsums_keys = Object.keys(pvsums);
+            pvsums_keys.sort()
+            var pages = {};
+            var page_labels = {};
+            var _page = 1;
+            $.each(pvsums_keys, function (index, item) {
+                if ((index > 0) && (item.slice(4, 6) === "01")) {
+                    _page += 1;
+                }
+                page_labels[_page] = item.slice(2,4) + '/' + item.slice(0,2);
+                if (!pages[_page]) {
+                    pages[_page] = [];
+                }
+                pages[_page].push(item);
+            });
+            if (pvsums_page === -1) {
+                pvsums_page = Object.keys(pages)[Object.keys(pages).length-1];
+            }
+
+            $('.pvhistory_pagination').remove();
+            $('#pvchart-history').after(
+                '<div class="pvhistory_pagination" style="text-align: center; margin-top: -5px;"><div class="btn-group"></div></div>'
+            );
+
+            for (var i = 1; i<=Object.keys(pages).length; i++) {
+                var type = 'default';
+                if (i == pvsums_page) {
+                    type = 'primary';
+                }
+                $('.pvhistory_pagination .btn-group').append(
+                    '<button type="button" class="btn btn-' + type + ' btn-xs" data-page="'+ i +'">' + page_labels[i] + '</button>'
+                );
+            }
+            $('.pvhistory_pagination .btn-group button').click(function (ev) {
+                pvsums_page = parseInt($(ev.currentTarget).data('page'));
+                pvhistory();
+            });
+
+            $.each(pages[pvsums_page], function (index, day) {
+                var data = pvsums[day];
+                day = parseInt(day.slice(4,6));
+                ac_power_solar.push([day, Math.round(data.ac_power_solar)]);
+                power_to_grid.push([day, Math.round(data.power_to_grid)]);
+                consumption.push([day, Math.round(data.consumption)]);
+                power_from_grid.push([day, Math.round(data.power_from_grid)]);
+            });
+
+            ds.push({
+                data : ac_power_solar,
+                bars : {
+                    show : true,
+                    barWidth : 0.2,
+                    order : 1,
+                }
+            });
+            ds.push({
+                data : power_to_grid,
+                bars : {
+                    show : true,
+                    barWidth : 0.2,
+                    order : 2
+                }
+            });
+            ds.push({
+                data : consumption,
+                bars : {
+                    show : true,
+                    barWidth : 0.2,
+                    order : 3
+                }
+            });
+            ds.push({
+                data : power_from_grid,
+                bars : {
+                    show : true,
+                    barWidth : 0.2,
+                    order : 3
+                }
+            });
+            if ($('#pvchart-history').is(":visible")) {
+                $.plot($("#pvchart-history"), ds, {
+                    colors : [$chrt_main, $chrt_second, $chrt_fourth, $chrt_fifth],
+                    grid : {
+                        show : true,
+                        hoverable: true,
+                        clickable : true,
+                        tickColor : $chrt_border_color,
+                        borderWidth : 0,
+                        borderColor : $chrt_border_color,
+                    },
+                    legend : true,
+                    tooltip : true,
+                    tooltipOpts : {
+                        content : "%x = <span>%y</span>",
+                        defaultTheme : false
+                    }
+                });
+            };
         };
 
         var handle_rss = function (data) {
@@ -176,6 +289,18 @@
 
         var handle_wifi = function (data) {
             $('#wifi_password').text(data.password);
+        };
+
+        var handle_pvsums = function (data) {
+            console.log(data);
+            var day = new Date(data.day),
+                today = new Date().toISOString().slice(0, 10);
+            day = day.getFullYear().toString().slice(-2) + ('0'+(day.getMonth()+1)).slice(-2) + ('0'+(day.getDate())).slice(-2);
+            //day = day.getTime();
+            pvsums[day] = data;
+            if (data.day == today) {
+                pvhistory();
+            }
         };
 
         var handle_pv = function (data) {
@@ -317,6 +442,12 @@
             window.socket.send(JSON.stringify({'helios': {'stufe': 1}}));
         };
 
+        window.switch_pv_charts = function () {
+            $('#pvhistory_pagination').toggle();
+            $('#pvchart-history').toggle();
+            $('#pvchart').toggle();
+        };
+
         window.socket = new WebSocket('ws://' + window.location.hostname + '/wsapp/');
 
         window.socket.onopen = function(e) {
@@ -448,6 +579,8 @@
                 handle_rss(data);
             } else if (data.DeviceClass === 'PV') {
                 handle_pv(data);
+            } else if (data.DeviceClass === 'PVSums') {
+                handle_pvsums(data);
             } else if (data.DeviceClass === 'Hue') {
                 handle_hue(data);
             } else if (data.DeviceClass === 'MOTD') {

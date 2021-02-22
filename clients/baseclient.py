@@ -64,6 +64,21 @@ class BaseClient:
         ):
             raise RuntimeError('Operation time not reached')
 
+    async def prepare_send(self, result):
+        if result not in self.history:
+            self.history.append(result)
+            log.info(
+                f'{self.type_} fetched new data, sending to '
+                f'{len(self.websockets)} clients.'
+            )
+            for websocket in list(self.websockets):
+                await self.send(websocket, result)
+        else:
+            log.info(
+                f'{self.type_} fetched existing data, not sending '
+                f'to {len(self.websockets)} clients.'
+            )
+
     async def run(self, once=False):
         while True:
             self.clean_websockets()
@@ -75,19 +90,7 @@ class BaseClient:
             else:
                 if result:
                     result['DeviceClass'] = self.type_
-                    if result not in self.history:
-                        self.history.append(result)
-                        log.info(
-                            f'{self.type_} fetched new data, sending to '
-                            f'{len(self.websockets)} clients.'
-                        )
-                        for websocket in list(self.websockets):
-                            await self.send(websocket, result)
-                    else:
-                        log.info(
-                            f'{self.type_} fetched existing data, not sending '
-                            f'to {len(self.websockets)} clients.'
-                        )
+                    await self.prepare_send(result)
             finally:
                 if once:
                     return
