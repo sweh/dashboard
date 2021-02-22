@@ -2,6 +2,15 @@
         var PieConfig;
         var rss_messages = [];
 
+        var days = [
+            'Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag',
+            'Freitag', 'Samstag'
+        ];
+        var months = [
+            'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli',
+            'August', 'September', 'Oktober', 'November', 'Dezember'
+        ];
+
         pageSetUp();
         window.ticks = 0;
 
@@ -76,6 +85,20 @@
 
             var pvsums_keys = Object.keys(pvsums);
             pvsums_keys.sort()
+            while (pvsums_keys[0].slice(4,6) !== '01') {
+                var _day = parseInt(pvsums_keys[0].slice(4,6)) - 1;
+                _day = ('0'+_day).slice(-2);
+                pvsums_keys.unshift(pvsums_keys[0].slice(0,4) + _day);
+            }
+            var today = new Date();
+            var lastDayOfMonth = new Date(
+                today.getFullYear(), today.getMonth()+1, 0
+            ).getDate().toString();
+            while (pvsums_keys[pvsums_keys.length-1].slice(4,6) !== lastDayOfMonth) {
+                var _day = parseInt(pvsums_keys[pvsums_keys.length-1].slice(4,6)) + 1;
+                _day = ('0'+_day).slice(-2);
+                pvsums_keys.push(pvsums_keys[pvsums_keys.length-1].slice(0,4) + _day);
+            }
             var pages = {};
             var page_labels = {};
             var _page = 1;
@@ -94,12 +117,12 @@
             }
 
             $.each(pages[pvsums_page], function (index, day) {
-                var data = pvsums[day];
+                var data = pvsums[day] || {};
                 day = parseInt(day.slice(4,6));
-                ac_power_solar.push([day, Math.round(data.ac_power_solar)]);
-                power_to_grid.push([day, Math.round(data.power_to_grid)]);
-                consumption.push([day, Math.round(data.consumption)]);
-                power_from_grid.push([day, Math.round(data.power_from_grid)]);
+                ac_power_solar.push([day, Math.round(data.ac_power_solar || 0)]);
+                power_to_grid.push([day, Math.round(data.power_to_grid || 0)]);
+                consumption.push([day, Math.round(data.consumption || 0)]);
+                power_from_grid.push([day, Math.round(data.power_from_grid || 0)]);
             });
 
             ds.push({
@@ -154,6 +177,8 @@
                     pvhistory();
                 });
 
+                var tooltip_month = months[parseInt(pages[pvsums_page][0].slice(2,4))-1];
+                var tooltip_year = '20' + pages[pvsums_page][0].slice(0,2);
                 $.plot($("#pvchart-history"), ds, {
                     colors : [$chrt_main, $chrt_second, $chrt_fourth, $chrt_fifth],
                     grid : {
@@ -167,7 +192,7 @@
                     legend : true,
                     tooltip : true,
                     tooltipOpts : {
-                        content : "%x = <span>%y</span>",
+                        content : "%x.. " + tooltip_month + " " + tooltip_year + "<br /><span>%y Wh</span>",
                         defaultTheme : false
                     }
                 });
@@ -621,15 +646,6 @@
             }
 
             var now = new Date();
-            var days = [
-                'Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag',
-                'Freitag', 'Samstag'
-            ];
-            var months = [
-                'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli',
-                'August', 'September', 'Oktober', 'November', 'Dezember'
-            ];
-
             var day = days[ now.getDay() ];
             var month = months[ now.getMonth() ];
             $('#current_date').html(
