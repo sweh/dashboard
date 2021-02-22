@@ -74,7 +74,8 @@
 
         var pvsums = {},
             pvsums_per_month = {},
-            pvsums_page = -1;
+            pvsums_page = -1,
+            pvsums_display = 'Monat';
 
         var pvhistory = function() {
             var ds = new Array();
@@ -82,48 +83,86 @@
             var power_to_grid = [];
             var consumption = [];
             var power_from_grid = [];
-
-            var pvsums_keys = Object.keys(pvsums);
-            pvsums_keys.sort()
-            while (pvsums_keys[0].slice(4,6) !== '01') {
-                var _day = parseInt(pvsums_keys[0].slice(4,6)) - 1;
-                _day = ('0'+_day).slice(-2);
-                pvsums_keys.unshift(pvsums_keys[0].slice(0,4) + _day);
-            }
-            var today = new Date();
-            var lastDayOfMonth = new Date(
-                today.getFullYear(), today.getMonth()+1, 0
-            ).getDate().toString();
-            while (pvsums_keys[pvsums_keys.length-1].slice(4,6) !== lastDayOfMonth) {
-                var _day = parseInt(pvsums_keys[pvsums_keys.length-1].slice(4,6)) + 1;
-                _day = ('0'+_day).slice(-2);
-                pvsums_keys.push(pvsums_keys[pvsums_keys.length-1].slice(0,4) + _day);
-            }
             var pages = {};
             var page_labels = {};
             var _page = 1;
-            $.each(pvsums_keys, function (index, item) {
-                if ((index > 0) && (item.slice(4, 6) === "01")) {
-                    _page += 1;
-                }
-                page_labels[_page] = item.slice(2,4) + '/' + item.slice(0,2);
-                if (!pages[_page]) {
-                    pages[_page] = [];
-                }
-                pages[_page].push(item);
-            });
-            if (pvsums_page === -1) {
-                pvsums_page = Object.keys(pages)[Object.keys(pages).length-1];
-            }
+            var pvsums_keys = Object.keys(pvsums);
+            pvsums_keys.sort()
 
-            $.each(pages[pvsums_page], function (index, day) {
-                var data = pvsums[day] || {};
-                day = parseInt(day.slice(4,6));
-                ac_power_solar.push([day, Math.round(data.ac_power_solar || 0)]);
-                power_to_grid.push([day, Math.round(data.power_to_grid || 0)]);
-                consumption.push([day, Math.round(data.consumption || 0)]);
-                power_from_grid.push([day, Math.round(data.power_from_grid || 0)]);
-            });
+            if (pvsums_display === 'Monat') {
+                while (pvsums_keys[0].slice(4,6) !== '01') {
+                    var _day = parseInt(pvsums_keys[0].slice(4,6)) - 1;
+                    _day = ('0'+_day).slice(-2);
+                    pvsums_keys.unshift(pvsums_keys[0].slice(0,4) + _day);
+                }
+                var today = new Date();
+                var lastDayOfMonth = new Date(
+                    today.getFullYear(), today.getMonth()+1, 0
+                ).getDate().toString();
+                while (pvsums_keys[pvsums_keys.length-1].slice(4,6) !== lastDayOfMonth) {
+                    var _day = parseInt(pvsums_keys[pvsums_keys.length-1].slice(4,6)) + 1;
+                    _day = ('0'+_day).slice(-2);
+                    pvsums_keys.push(pvsums_keys[pvsums_keys.length-1].slice(0,4) + _day);
+                }
+                $.each(pvsums_keys, function (index, item) {
+                    if ((index > 0) && (item.slice(4, 6) === "01")) {
+                        _page += 1;
+                    }
+                    page_labels[_page] = item.slice(2,4) + '/' + item.slice(0,2);
+                    if (!pages[_page]) {
+                        pages[_page] = [];
+                    }
+                    pages[_page].push(item);
+                });
+                if (pvsums_page === -1) {
+                    pvsums_page = Object.keys(pages)[Object.keys(pages).length-1];
+                }
+
+                $.each(pages[pvsums_page], function (index, day) {
+                    var data = pvsums[day] || {};
+                    day = parseInt(day.slice(4,6));
+                    ac_power_solar.push([day, Math.round(data.ac_power_solar || 0)]);
+                    power_to_grid.push([day, Math.round(data.power_to_grid || 0)]);
+                    consumption.push([day, Math.round(data.consumption || 0)]);
+                    power_from_grid.push([day, Math.round(data.power_from_grid || 0)]);
+                });
+                var tooltip_month = months[parseInt(pages[pvsums_page][0].slice(2,4))-1];
+                var tooltip_year = '20' + pages[pvsums_page][0].slice(0,2);
+                var tooltip_content = "%x.. " + tooltip_month + " " + tooltip_year + "<br /><span>%y Wh</span>";
+            } else if (pvsums_display === 'Jahr') {
+                var start = pvsums_keys[0].slice(0, 2);
+                $.each(pvsums_keys, function (index, item) {
+                    if ((index > 0) && (item.slice(0, 2) !== start)) {
+                        _page += 1;
+                        start = item.slice(0, 2);
+                    }
+                    page_labels[_page] = '20' + item.slice(0,2)
+                    if (!pages[_page]) {
+                        pages[_page] = [];
+                    }
+                    pages[_page].push(item);
+                });
+                if (pvsums_page === -1) {
+                    pvsums_page = Object.keys(pages)[Object.keys(pages).length-1];
+                }
+                var pvsums_month = {1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {}, 11: {}, 12: {}};
+                $.each(pages[pvsums_page], function (index, day) {
+                    var data = pvsums[day] || {};
+                    month = parseInt(day.slice(2,4));
+                    pvsums_month[month].ac_power_solar = (pvsums_month[month].ac_power_solar || 0) + data.ac_power_solar;
+                    pvsums_month[month].power_to_grid = (pvsums_month[month].power_to_grid || 0) + data.power_to_grid;
+                    pvsums_month[month].consumption = (pvsums_month[month].consumption || 0) + data.consumption;
+                    pvsums_month[month].power_from_grid = (pvsums_month[month].power_from_grid || 0) + data.power_from_grid;
+                });
+                $.each(pvsums_month, function (month, data) {
+                    ac_power_solar.push([parseInt(month), Math.round(data.ac_power_solar || 0)/1000]);
+                    power_to_grid.push([parseInt(month), Math.round(data.power_to_grid || 0)/1000]);
+                    consumption.push([parseInt(month), Math.round(data.consumption || 0)/1000]);
+                    power_from_grid.push([parseInt(month), Math.round(data.power_from_grid || 0)/1000]);
+                });
+                var tooltip_year = page_labels[pvsums_page];
+                var tooltip_content = "%x/" + tooltip_year + "<br /><span>%y kWh</span>";
+            }
 
             ds.push({
                 data : ac_power_solar,
@@ -160,7 +199,7 @@
             if ($('#pvchart-history').is(":visible")) {
                 $('.pvhistory_pagination').remove();
                 $('#pvchart-history').after(
-                    '<div class="pvhistory_pagination" style="text-align: center; margin-top: -5px;"><div class="btn-group"></div></div>'
+                    '<div class="pvhistory_pagination" style="text-align: center; margin-top: -5px;"><div class="btn-group pages"></div></div>'
                 );
 
                 for (var i = 1; i<=Object.keys(pages).length; i++) {
@@ -172,13 +211,23 @@
                         '<button type="button" class="btn btn-' + type + ' btn-xs" data-page="'+ i +'">' + page_labels[i] + '</button>'
                     );
                 }
-                $('.pvhistory_pagination .btn-group button').click(function (ev) {
+                $('.pvhistory_pagination').append(
+                    '<div class="btn-group display" style="margin-left: 10px"><button type="button" class="btn btn-success btn-xs">'+ pvsums_display +'</button></div>'
+                );
+                $('.pvhistory_pagination .pages button').click(function (ev) {
                     pvsums_page = parseInt($(ev.currentTarget).data('page'));
                     pvhistory();
                 });
+                $('.pvhistory_pagination .display button').click(function (ev) {
+                    if ($(ev.currentTarget).text() == 'Monat') {
+                        pvsums_display = 'Jahr';
+                    } else {
+                        pvsums_display = 'Monat';
+                    }
+                    pvsums_page = -1;
+                    pvhistory();
+                });
 
-                var tooltip_month = months[parseInt(pages[pvsums_page][0].slice(2,4))-1];
-                var tooltip_year = '20' + pages[pvsums_page][0].slice(0,2);
                 $.plot($("#pvchart-history"), ds, {
                     colors : [$chrt_main, $chrt_second, $chrt_fourth, $chrt_fifth],
                     grid : {
@@ -192,7 +241,7 @@
                     legend : true,
                     tooltip : true,
                     tooltipOpts : {
-                        content : "%x.. " + tooltip_month + " " + tooltip_year + "<br /><span>%y Wh</span>",
+                        content : tooltip_content,
                         defaultTheme : false
                     }
                 });
