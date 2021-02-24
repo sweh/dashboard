@@ -23,7 +23,10 @@ class Client(BaseClient):
         )
         item = sqlalchemy_encode(item)
         item['DeviceClass'] = self.type_
-        self.history._data[-1] = item
+        if self.history._data[-1]['day'] == item['day']:
+            self.history._data[-1] = item
+        else:
+            self.history._data.append(item)
         return item
 
     async def prepare_send(self, result):

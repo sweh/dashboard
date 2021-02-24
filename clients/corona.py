@@ -8,6 +8,7 @@ class Client(BaseClient):
         'https://www.landkreis-wittenberg.de/de/informationen-zum-coronavirus'
         '-im-landkreis-wittenberg/informationen-zum-coronavirus.html'
     )
+    external = True
     type_ = 'Corona'
 
     @property

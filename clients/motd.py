@@ -6,6 +6,7 @@ class Client(BaseClient):
 
     url = 'http://quotes.rest/qod'
     type_ = 'MOTD'
+    external = True
     sleep_time = 3600
 
     @property

@@ -7,6 +7,7 @@ class Client(BaseClient):
 
     rss_url = 'https://www.tagesschau.de/xml/rss2/'
     type_ = 'RSS'
+    external = True
     keep_items = 50000
 
     @property
