@@ -83,6 +83,7 @@
             var power_to_grid = [];
             var consumption = [];
             var power_from_grid = [];
+            var power_from_battery = [];
             var ac_power_battery = [];
             var pages = {};
             var page_labels = {};
@@ -124,8 +125,9 @@
                     day = parseInt(day.slice(4,6));
                     ac_power_solar.push([day, Math.round(data.ac_power_solar || 0)]);
                     power_to_grid.push([day, Math.round(data.power_to_grid || 0)]);
-                    consumption.push([day, Math.round(data.consumption || 0)]);
-                    power_from_grid.push([day, Math.round(data.power_from_grid || 0)]);
+                    consumption.push([day, 0 - Math.round(data.consumption || 0)]);
+                    power_from_grid.push([day, 0 - Math.round(data.power_from_grid || 0)]);
+                    power_from_battery.push([day, 0 - Math.round(data.power_from_battery || 0)]);
                     ac_power_battery.push([day, Math.round(data.ac_power_battery || 0)]);
                 });
                 var tooltip_month = months[parseInt(pages[pvsums_page][0].slice(2,4))-1];
@@ -155,13 +157,15 @@
                     pvsums_month[month].power_to_grid = (pvsums_month[month].power_to_grid || 0) + data.power_to_grid;
                     pvsums_month[month].consumption = (pvsums_month[month].consumption || 0) + data.consumption;
                     pvsums_month[month].power_from_grid = (pvsums_month[month].power_from_grid || 0) + data.power_from_grid;
+                    pvsums_month[month].power_from_battery = (pvsums_month[month].power_from_battery || 0) + data.power_from_battery;
                     pvsums_month[month].ac_power_battery = (pvsums_month[month].ac_power_battery || 0) + data.ac_power_battery;
                 });
                 $.each(pvsums_month, function (month, data) {
                     ac_power_solar.push([parseInt(month), Math.round(data.ac_power_solar || 0)/1000]);
                     power_to_grid.push([parseInt(month), Math.round(data.power_to_grid || 0)/1000]);
-                    consumption.push([parseInt(month), Math.round(data.consumption || 0)/1000]);
-                    power_from_grid.push([parseInt(month), Math.round(data.power_from_grid || 0)/1000]);
+                    consumption.push([parseInt(month), 0 - Math.round(data.consumption || 0)/1000]);
+                    power_from_grid.push([parseInt(month), 0 - Math.round(data.power_from_grid || 0)/1000]);
+                    power_from_battery.push([parseInt(month), 0 - Math.round(data.power_from_battery || 0)/1000]);
                     ac_power_battery.push([parseInt(month), Math.round(data.ac_power_battery || 0)/1000]);
                 });
                 var tooltip_year = page_labels[pvsums_page];
@@ -172,7 +176,7 @@
                 data : ac_power_solar,
                 bars : {
                     show : true,
-                    barWidth : 0.2,
+                    barWidth : 0.1,
                     order : 1,
                 }
             });
@@ -180,7 +184,7 @@
                 data : power_to_grid,
                 bars : {
                     show : true,
-                    barWidth : 0.2,
+                    barWidth : 0.1,
                     order : 2
                 }
             });
@@ -188,24 +192,32 @@
                 data : ac_power_battery,
                 bars : {
                     show : true,
-                    barWidth : 0.2,
+                    barWidth : 0.1,
                     order : 3
+                }
+            });
+            ds.push({
+                data : power_from_battery,
+                bars : {
+                    show : true,
+                    barWidth : 0.1,
+                    order : 4
                 }
             });
             ds.push({
                 data : consumption,
                 bars : {
                     show : true,
-                    barWidth : 0.2,
-                    order : 3
+                    barWidth : 0.1,
+                    order : 5
                 }
             });
             ds.push({
                 data : power_from_grid,
                 bars : {
                     show : true,
-                    barWidth : 0.2,
-                    order : 3
+                    barWidth : 0.1,
+                    order : 6
                 }
             });
             if ($('#pvchart-history').is(":visible")) {
@@ -241,7 +253,7 @@
                 });
 
                 $.plot($("#pvchart-history"), ds, {
-                    colors : [$chrt_main, $chrt_second, $chrt_third, $chrt_fourth, $chrt_fifth],
+                    colors : [$chrt_main, $chrt_second, $chrt_third, $chrt_third, $chrt_fourth, $chrt_fifth],
                     grid : {
                         show : true,
                         hoverable: true,

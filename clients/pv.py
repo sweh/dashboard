@@ -63,7 +63,7 @@ class Client(BaseClient):
                 result['AC Power Battery'] / 3600 * seconds
             )
         else:
-            sums['Power from battery'] += (
+            sums['Power from battery'] -= (
                 result['AC Power Battery'] / 3600 * seconds
             )
         result['sums'] = sums
