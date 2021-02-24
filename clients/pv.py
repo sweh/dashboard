@@ -52,12 +52,20 @@ class Client(BaseClient):
             'Consumption',
             'AC Power Solar',
             'Power to grid',
-            'AC Power Battery',
             'Power from grid'
         ):
             sums.setdefault(key, 0)
-            if result[key] > 0:
-                sums[key] += result[key] / 3600 * seconds
+            sums[key] += result[key] / 3600 * seconds
+        sums.setdefault('AC Power Battery', 0)
+        sums.setdefault('Power from battery', 0)
+        if result['AC Power Battery'] > 0:
+            sums['AC Power Battery'] += (
+                result['AC Power Battery'] / 3600 * seconds
+            )
+        else:
+            sums['Power from battery'] += (
+                result['AC Power Battery'] / 3600 * seconds
+            )
         result['sums'] = sums
 
     def calculate_costs(self, result):

@@ -22,6 +22,7 @@ class PVSums(Base):
         'power_to_grid': 'Power to grid',
         'ac_power_solar': 'AC Power Solar',
         'ac_power_battery': 'AC Power Battery',
+        'power_from_battery': 'Power from battery',
         'consumption': 'Consumption',
     }
 
@@ -31,6 +32,7 @@ class PVSums(Base):
     ac_power_solar = Column(Float)
     power_to_grid = Column(Float)
     ac_power_battery = Column(Float)
+    power_from_battery = Column(Float)
     power_from_grid = Column(Float)
 
 
