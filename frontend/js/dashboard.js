@@ -174,50 +174,48 @@
 
             ds.push({
                 data : ac_power_solar,
+                stack: true,
                 bars : {
                     show : true,
-                    barWidth : 0.1,
-                    order : 1,
+                    barWidth : 0.2,
                 }
             });
             ds.push({
                 data : power_to_grid,
+                stack: true,
                 bars : {
                     show : true,
-                    barWidth : 0.1,
-                    order : 2
+                    barWidth : 0.2,
                 }
             });
             ds.push({
                 data : ac_power_battery,
                 bars : {
                     show : true,
-                    barWidth : 0.1,
-                    order : 3
+                    barWidth : 0.2,
+                    order : 2
                 }
             });
             ds.push({
                 data : power_from_battery,
                 bars : {
                     show : true,
-                    barWidth : 0.1,
-                    order : 4
+                    barWidth : 0.4,
+                    order : 3
                 }
             });
             ds.push({
                 data : consumption,
                 bars : {
                     show : true,
-                    barWidth : 0.1,
-                    order : 5
+                    barWidth : 0.2,
                 }
             });
             ds.push({
                 data : power_from_grid,
                 bars : {
                     show : true,
-                    barWidth : 0.1,
-                    order : 6
+                    barWidth : 0.2,
                 }
             });
             if ($('#pvchart-history').is(":visible")) {
