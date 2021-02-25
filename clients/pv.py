@@ -58,13 +58,14 @@ class Client(BaseClient):
             sums[key] += result[key] / 3600 * seconds
         sums.setdefault('AC Power Battery', 0)
         sums.setdefault('Power from battery', 0)
-        if result['AC Power Battery'] > 0:
+        battery_power = 0 - result['AC Power Battery']
+        if battery_power > 0:
             sums['AC Power Battery'] += (
-                result['AC Power Battery'] / 3600 * seconds
+                battery_power / 3600 * seconds
             )
         else:
             sums['Power from battery'] -= (
-                result['AC Power Battery'] / 3600 * seconds
+                battery_power / 3600 * seconds
             )
         result['sums'] = sums
 
