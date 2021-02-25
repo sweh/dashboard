@@ -132,7 +132,7 @@
                 });
                 var tooltip_month = months[parseInt(pages[pvsums_page][0].slice(2,4))-1];
                 var tooltip_year = '20' + pages[pvsums_page][0].slice(0,2);
-                var tooltip_content = "%x.. " + tooltip_month + " " + tooltip_year + "<br /><span>%y Wh</span>";
+                var tooltip_content = "%x. " + tooltip_month + " " + tooltip_year + "<br /><span>%y Wh</span>";
             } else if (pvsums_display === 'Jahr') {
                 var start = pvsums_keys[0].slice(0, 2);
                 $.each(pvsums_keys, function (index, item) {
@@ -169,7 +169,7 @@
                     ac_power_battery.push([parseInt(month), Math.round(data.ac_power_battery || 0)/1000]);
                 });
                 var tooltip_year = page_labels[pvsums_page];
-                var tooltip_content = "%x/" + tooltip_year + "<br /><span>%y kWh</span>";
+                var tooltip_content = "%x/" + tooltip_year + "<br /><span class='value'>%y kWh</span>";
             }
 
             ds.push({
@@ -264,7 +264,11 @@
                     tooltip : true,
                     tooltipOpts : {
                         content : tooltip_content,
-                        defaultTheme : false
+                        defaultTheme : true,
+                        onHover: function(flotItem, tooltip) {
+                            tooltip.find('span').css('color', flotItem.series.color);
+                            tooltip.find('span').css('font-weight', 'bold');
+                        }
                     }
                 });
             };
