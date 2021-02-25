@@ -11,14 +11,11 @@ class Client(BaseClient):
     type_ = 'PVSums'
     keep_items = 365
 
-    @gocept.cache.method.Memoize(900)
-    def session(self):
-        return sessionmaker(bind=self.config.engine)()
-
     @property
     def data(self):
+        session = self.history.session
         item = (
-            self.session().query(PVSums)
+            session.query(PVSums)
             .order_by(PVSums._timestamp.desc())
             .first()
         )
