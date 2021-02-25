@@ -1,3 +1,4 @@
+import gocept.cache.method
 from model import PVSums
 from history import sqlalchemy_encode
 from sqlalchemy.orm import sessionmaker
@@ -10,14 +11,14 @@ class Client(BaseClient):
     type_ = 'PVSums'
     keep_items = 365
 
-    def __init__(self, *args, **kw):
-        super(Client, self).__init__(*args, **kw)
-        self.session = sessionmaker(bind=self.config.engine)()
+    @gocept.cache.method.Memoize(900)
+    def session(self):
+        return sessionmaker(bind=self.config.engine)()
 
     @property
     def data(self):
         item = (
-            self.session.query(PVSums)
+            self.session().query(PVSums)
             .order_by(PVSums._timestamp.desc())
             .first()
         )

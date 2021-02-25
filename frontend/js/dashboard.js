@@ -457,8 +457,8 @@
             d.push([timestamp, panelpower]); /* Solar Dach */
             e.push([timestamp, power_to_grid]); /* Einspeisung */
             f.push([timestamp, batterypower]); /* Batterie */
-            g.push([timestamp, consumption]); /* Verbrauch */
-            h.push([timestamp, power_from_grid]); /* Netzbezug */
+            g.push([timestamp, 0 - consumption]); /* Verbrauch */
+            h.push([timestamp, 0 - power_from_grid]); /* Netzbezug */
             pvchart();
 
             $('#panelacpower').text(panelpower);
