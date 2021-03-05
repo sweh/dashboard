@@ -9,6 +9,7 @@ class Client(BaseClient):
     sleep_time = 5
     type_ = 'PV'
     keep_items = 1000
+    kw_price = 0.2769
 
     def __init__(self, smadaemon):
         self.smadaemon = smadaemon
@@ -77,12 +78,12 @@ class Client(BaseClient):
         )
         costs.setdefault('Power from grid', 0)
         costs['Power from grid'] = (
-            result['sums']['Power from grid'] / 1000 * 0.3000
+            result['sums']['Power from grid'] / 1000 * self.kw_price
         )
         costs.setdefault('Power saving', 0)
         costs['Power saving'] = (
             result['sums']['Consumption'] - result['sums']['Power from grid']
-        ) / 1000 * 0.3000
+        ) / 1000 * self.kw_price
         result['costs'] = costs
 
     def calculate_costs_per_hour(self, result):
@@ -93,12 +94,12 @@ class Client(BaseClient):
         )
         costs_per_hour.setdefault('Power from grid', 0)
         costs_per_hour['Power from grid'] = (
-            result['Power from grid'] / 1000 * 0.3000
+            result['Power from grid'] / 1000 * self.kw_price
         )
         costs_per_hour.setdefault('Power saving', 0)
         costs_per_hour['Power saving'] = (
             result['Consumption'] - result['Power from grid']
-        ) / 1000 * 0.3000
+        ) / 1000 * self.kw_price
         result['costs_per_hour'] = costs_per_hour
 
     @property
