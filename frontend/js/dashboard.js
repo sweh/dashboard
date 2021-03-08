@@ -46,9 +46,28 @@
 
         var d = [], e = [], f = [], g = [], h = [];
 
+        var tooltip_content = "%x Uhr<br /><span>%y Wh</span>";
         var pvchart = function() {
             var options = {
                 xaxis : { mode : "time", tickLength : 5, timezone: "browser" },
+                grid : {
+                    show : true,
+                    hoverable: true,
+                    clickable : true,
+                    tickColor : $chrt_border_color,
+                    borderWidth : 0,
+                    borderColor : $chrt_border_color,
+                },
+                legend : true,
+                tooltip : true,
+                tooltipOpts : {
+                    content : tooltip_content,
+                    defaultTheme : true,
+                    onHover: function(flotItem, tooltip) {
+                        tooltip.find('span').css('color', flotItem.series.color);
+                        tooltip.find('span').css('font-weight', 'bold');
+                    }
+                },
                 series : {
                     lines : {
                         show : true,
