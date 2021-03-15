@@ -10,9 +10,12 @@ class Client(BaseClient):
     type_ = 'PV'
     keep_items = 1000
     kw_price = 0.2769
+    hueclient = None
 
-    def __init__(self, smadaemon):
+    def __init__(self, smadaemon, hueclient):
         self.smadaemon = smadaemon
+        if hueclient.enabled:
+            self.hueclient = hueclient
         super(Client, self).__init__(smadaemon.config)
         self.sock = smadaemon.connect_to_socket()
 
@@ -128,7 +131,16 @@ class Client(BaseClient):
         self.calculate_sums(result)
         self.calculate_costs(result)
         self.calculate_costs_per_hour(result)
+        self.check_windrad(result)
         return result
+
+    def check_windrad(self, result):
+        if self.hueclient is None:
+            return
+        if result['BatteryCharge'] == 100 and result['Power to grid'] > 100:
+            self.hueclient.api.turn_on([9])
+        else:
+            self.hueclient.api.turn_off([9])
 
     def run_features(self, emparts):
         # running all enabled features

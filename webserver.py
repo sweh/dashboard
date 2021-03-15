@@ -44,8 +44,9 @@ if __name__ == "__main__":
         smadaemon.config.engine = create_engine(smadaemon.config.engine)
         model.Base.metadata.create_all(smadaemon.config.engine)
 
+    hueclient = HueClient(smadaemon.config)
     clients = dict(
-        pvclient=PVClient(smadaemon),
+        pvclient=PVClient(smadaemon, hueclient),
         pvsumsclient=PVSumsClient(smadaemon.config),
         openweatherclient=OpenWeatherClient(smadaemon.config),
         coronaclient=CoronaClient(smadaemon.config),
@@ -53,7 +54,7 @@ if __name__ == "__main__":
         rssclient=RSSClient(smadaemon.config),
         motdclient=MotdClient(smadaemon.config),
         wificlient=WifiClient(smadaemon.config),
-        hueclient=HueClient(smadaemon.config),
+        hueclient=hueclient,
         tadoclient=TadoClient(smadaemon.config),
         vicareclient=ViCareClient(smadaemon.config),
     )
