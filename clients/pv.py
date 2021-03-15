@@ -11,6 +11,7 @@ class Client(BaseClient):
     keep_items = 1000
     kw_price = 0.2769
     hueclient = None
+    windrad_running = False
 
     def __init__(self, smadaemon, hueclient):
         self.smadaemon = smadaemon
@@ -138,9 +139,12 @@ class Client(BaseClient):
         if self.hueclient is None:
             return
         if result['BatteryCharge'] == 100 and result['Power to grid'] > 100:
-            self.hueclient.api.turn_on([9])
-        else:
+            if not self.windrad_running:
+                self.hueclient.api.turn_on([9])
+                self.windrad_running = True
+        elif self.windrad_running:
             self.hueclient.api.turn_off([9])
+            self.windrad_running = False
 
     def run_features(self, emparts):
         # running all enabled features
