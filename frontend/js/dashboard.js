@@ -567,7 +567,7 @@
             $('#pvchart').toggle();
         };
 
-        window.socket = new WebSocket('ws://' + window.location.hostname + '/wsapp/');
+        window.socket = new WebSocket('ws://' + window.location.hostname + ':6790/');
 
         window.socket.onopen = function(e) {
             console.log("[open] Connection established, send -> server");

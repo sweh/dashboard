@@ -77,7 +77,11 @@ if __name__ == "__main__":
             await asyncio.sleep(1)
 
     tasks = [
-        websockets.serve(server, "localhost", 6790),
+        websockets.serve(
+            server,
+            smadaemon.config.get("DAEMON", "ipbind"),
+            6790
+        ),
     ]
     tasks.extend(
         [c.run() for c in clients.values() if c.enabled]
