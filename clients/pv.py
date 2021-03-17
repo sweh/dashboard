@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from speedwiredecoder import decode_speedwire
 from clients.baseclient import BaseClient
 
@@ -10,6 +10,7 @@ class Client(BaseClient):
     type_ = 'PV'
     keep_items = 1000
     kw_price = 0.2769
+    max_battery = 8700
     hueclient = None
     windrad_running = False
 
@@ -127,6 +128,27 @@ class Client(BaseClient):
             result['Power from grid'] -
             result['Power to grid']
         )
+        result['BatteryChargeWatt'] = (
+            self.max_battery * (result['BatteryCharge'] / 100)
+        )
+        if result['AC Power Battery'] < 0:
+            # charge
+            amount_to_charge = self.max_battery - result['BatteryChargeWatt']
+            time = amount_to_charge / (0 - result['AC Power Battery'])
+            hours = int(time)
+            minutes = int(60 * (time - hours))
+        else:
+            # discharge
+            amount_to_discharge = result['BatteryChargeWatt']
+            time = amount_to_discharge / result['AC Power Battery']
+            hours = int(time)
+            minutes = int(60 * (time - hours))
+        if hours > 23:
+            result['BatteryChargeTime'] = '∞'
+        else:
+            result['BatteryChargeTime'] = (
+                datetime.now() + timedelta(hours=hours, minutes=minutes)
+            ).strftime('%H:%M')
         if result:
             self.save_result_to_file(result)
         self.calculate_sums(result)

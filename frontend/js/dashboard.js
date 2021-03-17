@@ -473,6 +473,8 @@
             var batterypower = data['AC Power Battery'] || 0;
             var power_to_grid = data['Power to grid'] || 0;
             var batterycapacity = data.BatteryCharge || 0;
+            var batterycapacitywatts = data.BatteryChargeWatt || 0;
+            var batterychargetime = data.BatteryChargeTime;
 
             var consumption = data.Consumption;
             batterypower = 0 - batterypower;
@@ -487,7 +489,7 @@
             $('#panelacpower').text(panelpower);
             $('#powertogrid').text(power_to_grid);
             $('#batteryacpower').text(batterypower);
-            $('#batterycapacity').text(batterycapacity);
+            $('#batterycapacity').text(round(batterycapacitywatts/1000, 2));
             $('#consumption').text(consumption);
 
             $('#batterycharging').find('i').removeClass('fa-caret-up');
@@ -502,12 +504,12 @@
             }
             if (batterycapacity > 50) {
                 $('#batterycharging').addClass('bg-color-green');
-            } else if (batterycapacity > 20) {
+            } else if (batterycapacity >= 20) {
                 $('#batterycharging').addClass('bg-color-orange');
             } else {
                 $('#batterycharging').addClass('bg-color-red');
             }
-            $('#batterytemp').text(data.BatteryTemp);
+            $('#batterytemp').text(batterychargetime);
             $('#panelstatus').removeClass('glyphicon-ok-cirle');
             $('#panelstatus').removeClass('glyphicon-remove-cirle');
             if (data['Status Solar'] === 'OK') {
