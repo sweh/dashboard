@@ -355,7 +355,7 @@
                 incidence_class = 'txt-color-magenta';
             }
             $('#corona_incidence').addClass(incidence_class);
-            $('#corona_incidence').text(incidence);
+            $('#corona_incidence').text(incidence + ' (' + data.inzidenz_plus + ')');
             $('#corona_date').text(last_update);
             $('#corona_cases').text(data.gesamt);
             $('#corona_deaths_delta').text(data.gestorben);

@@ -22,7 +22,7 @@ class Client(BaseClient):
         )
         aktuell = (
             result
-            .split('Aktuell infiziert sind ')[1].split(' ')[0]
+            .split('Aktuell infiziert ')[1].split(' ')[0]
         )
         gestorben = (
             result.split('Patienten. ')[1].split(' ')[0]
@@ -30,14 +30,17 @@ class Client(BaseClient):
         inzidenz = (
             result
             .split('Inzidenz von ')[1]
-            .split(' ')[0]
+            .split(') ')[0]
             .replace('<strong>', '')
             .replace('</strong>', '')
         )
+        inzidenz_plus = inzidenz.split(' (')[1]
+        inzidenz = inzidenz.split(' (')[0]
         return dict(
             stand=stand,
             gesamt=gesamt,
             aktuell=aktuell,
             gestorben=gestorben,
-            inzidenz=inzidenz
+            inzidenz=inzidenz,
+            inzidenz_plus=inzidenz_plus
         )
