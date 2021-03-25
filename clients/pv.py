@@ -160,7 +160,7 @@ class Client(BaseClient):
     def check_windrad(self, result):
         if self.hueclient is None:
             return
-        if result['BatteryCharge'] == 100 and result['Power to grid'] > 100:
+        if result['BatteryCharge'] == 100:
             if not self.windrad_running:
                 self.hueclient.api.turn_on([9])
                 self.windrad_running = True
