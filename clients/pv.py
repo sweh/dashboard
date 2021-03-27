@@ -10,7 +10,7 @@ class Client(BaseClient):
     type_ = 'PV'
     keep_items = 1000
     kw_price = 0.2769
-    max_battery = 8700
+    max_battery = 9600
     hueclient = None
     windrad_running = False
 

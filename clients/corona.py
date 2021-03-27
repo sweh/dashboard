@@ -22,10 +22,10 @@ class Client(BaseClient):
         )
         aktuell = (
             result
-            .split('Aktuell infiziert ')[1].split(' ')[0]
+            .split('Aktuell sind ')[1].split(' ')[0]
         )
         gestorben = (
-            result.split('Patienten. ')[1].split(' ')[0]
+            result.split('infiziert. ')[1].split(' ')[0]
         )
         inzidenz = (
             result
