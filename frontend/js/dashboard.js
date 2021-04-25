@@ -351,15 +351,13 @@
             if (incidence > 100) {
                 incidence_class = 'txt-color-red';
             }
-            if (incidence > 200) {
+            if (incidence > 165) {
                 incidence_class = 'txt-color-magenta';
             }
             $('#corona_incidence').addClass(incidence_class);
-            $('#corona_incidence').text(incidence + ' (' + data.inzidenz_plus + ')');
+            $('#corona_incidence').text(incidence);
             $('#corona_date').text(last_update);
             $('#corona_cases').text(data.gesamt);
-            $('#corona_deaths_delta').text(data.gestorben);
-            $('#corona_current').text(data.aktuell);
         };
 
         var handle_weather = function (data) {
