@@ -321,7 +321,7 @@
             });
             $('#helios_stufe').empty();
             $('#helios_stufe').append(
-                '<input class="knob" data-width="80" data-height="80" data-min="0" data-max="4" data-fgColor="#6595b4" data-angleOffset=-125 data-angleArc=250 value="' + data.stufe + '" data-thickness=.3>'
+                '<input class="knob" data-width="60" data-height="60" data-min="0" data-max="4" data-fgColor="#6595b4" data-angleOffset=-125 data-angleArc=250 value="' + data.stufe + '" data-thickness=.3>'
             );
             $('#helios_stufe').find('input').knob({
                 release: function (value) {
