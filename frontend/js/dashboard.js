@@ -319,18 +319,20 @@
                     'fa-caret-' + data[key + '_tendency']
                 );
             });
-            $('#helios_stufe').empty();
-            $('#helios_stufe').append(
-                '<input class="knob" data-width="60" data-height="60" data-min="0" data-max="4" data-fgColor="#6595b4" data-angleOffset=-125 data-angleArc=250 value="' + data.stufe + '" data-thickness=.3>'
-            );
-            $('#helios_stufe').find('input').knob({
-                release: function (value) {
-                    window.socket.send(
-                        JSON.stringify({'helios': {'stufe': value}})
-                    );
-                },
+            $( "#helios_stufe" ).empty();
+            $("#helios_stufe").append('<div style="height:70px; margin-left: 20px"></div>');
+            $( "#helios_stufe div" ).slider({
+              orientation: "vertical",
+              range: "min",
+              min: 0,
+              max: 4,
+              value: data.stufe,
+              change: function( event, ui ) {
+                  window.socket.send(
+                      JSON.stringify({'helios': {'stufe': ui.value}})
+                  );
+              }
             });
-
         };
 
         var handle_corona = function (data) {
