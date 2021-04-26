@@ -8,6 +8,7 @@ from clients.pvsums import Client as PVSumsClient
 from clients.rss import Client as RSSClient
 from clients.tado import Client as TadoClient
 from clients.vicare import Client as ViCareClient
+from clients.gardena import Client as GardenaClient
 from clients.wifi import Client as WifiClient
 from sma_daemon import MyDaemon
 from sqlalchemy import create_engine
@@ -57,6 +58,7 @@ if __name__ == "__main__":
         hueclient=hueclient,
         tadoclient=TadoClient(smadaemon.config),
         vicareclient=ViCareClient(smadaemon.config),
+        gardenaclient=GardenaClient(smadaemon.config),
     )
 
     async def server(websocket, path):

@@ -518,6 +518,30 @@
             }
         };
 
+        var activate_water_control = function () {
+            var control = $('#gardena_water_control_toggle');
+            control.find('i').addClass('txt-color-water-control-active');
+            control.find('.badge').addClass('bg-color-water-control-active');
+        };
+
+        var deactivate_water_control = function (key, brightness) {
+            var control = $('#gardena_water_control_toggle');
+            control.find('i').removeClass('txt-color-water-control-active');
+            control.find('.badge').removeClass('bg-color-water-control-active');
+            $('#gardena_water_control_toggle').find('div').remove();
+        };
+
+        window.toggle_water_control = function () {
+            var control = $('#gardena_water_control_toggle'),
+                is_on = control.find('i').hasClass('txt-color-water-control-active');
+            if (is_on) {
+                deactivate_water_control();
+            } else {
+                activate_water_control();
+            }
+            window.socket.send(JSON.stringify({'gardena': {'id': 'Water Control', 'on': !is_on}}));
+        };
+
         var activate_light = function (key, brightness) {
             var lightbulb = $('#hue_' + key);
             lightbulb.find('i').addClass('txt-color-bulb-active');
@@ -680,6 +704,70 @@
             });
         };
 
+        var handle_gardena = function (data) {
+            if (!data.Hochbeet) {
+                return;
+            }
+
+            $('#hochbeet_battery_level').parent().removeClass('bg-color-red');
+            $('#hochbeet_battery_level').parent().removeClass('bg-color-yellow');
+            $('#hochbeet_battery_level').parent().removeClass('bg-color-green');
+
+            $('#hochbeet_battery_level').parent().find('i').removeClass('fa-battery-full');
+            $('#hochbeet_battery_level').parent().find('i').removeClass('fa-battery-half');
+            $('#hochbeet_battery_level').parent().find('i').removeClass('fa-battery-empty');
+
+            $('#hochbeet_battery_level').text(data.Hochbeet.Batterie);
+            if (data.Hochbeet.Batterie > 50) {
+                $('#hochbeet_battery_level').parent().find('i').addClass('fa-battery-full');
+                $('#hochbeet_battery_level').parent().addClass('bg-color-green');
+            } else if (data.Hochbeet.Batterie > 20) {
+                $('#hochbeet_battery_level').parent().find('i').addClass('fa-battery-half');
+                $('#hochbeet_battery_level').parent().addClass('bg-color-yellow');
+            } else {
+                $('#hochbeet_battery_level').parent().find('i').addClass('fa-battery-empty');
+                $('#hochbeet_battery_level').parent().addClass('bg-color-red');
+            }
+
+            $('#hochbeet_helligkeit').text(data.Hochbeet.Helligkeit);
+            $('#hochbeet_feuchtikeit').text(data.Hochbeet.Bodenfeuchte);
+            $('#hochbeet_lufttemperatur').text(data.Hochbeet.Lufttemperatur);
+            $('#hochbeet_bodentemperatur').text(data.Hochbeet.Bodentemperatur);
+
+            $('#water_control_battery_level').parent().removeClass('bg-color-red');
+            $('#water_control_battery_level').parent().removeClass('bg-color-yellow');
+            $('#water_control_battery_level').parent().removeClass('bg-color-green');
+
+            $('#water_control_battery_level').parent().find('i').removeClass('fa-battery-full');
+            $('#water_control_battery_level').parent().find('i').removeClass('fa-battery-half');
+            $('#water_control_battery_level').parent().find('i').removeClass('fa-battery-empty');
+
+            $('#water_control_battery_level').text(data['Water Control'].Batterie);
+            if (data['Water Control'].Batterie > 50) {
+                $('#water_control_battery_level').parent().find('i').addClass('fa-battery-full');
+                $('#water_control_battery_level').parent().addClass('bg-color-green');
+            } else if (data['Water Control'].Batterie > 20) {
+                $('#water_control_battery_level').parent().find('i').addClass('fa-battery-half');
+                $('#water_control_battery_level').parent().addClass('bg-color-yellow');
+            } else {
+                $('#water_control_battery_level').parent().find('i').addClass('fa-battery-empty');
+                $('#water_control_battery_level').parent().addClass('bg-color-red');
+            }
+
+            $("#gardena_water_control").empty()
+            var bulb = '<div class="col-xs-12 col-sm-12 col-md-12  text-center" style="height: 94px">';
+            bulb += '<span id="gardena_water_control_toggle" style="position: relative; display: inline-grid; width: 80px" class="">';
+            bulb += '<i onclick="javascript: window.toggle_water_control();"  class="fas fa-tint txt-color-black" style="height: 90px; display: block; font-size: 30px; height: 80px; width: 80px; padding-top: 24px"></i>';
+            bulb += '<br><small class="font-xs"><sup style="top: 0em;"><span class="badge" style="margin-top: -65px;">Beregnung</span></sup></small>';
+            bulb += '</span>';
+            bulb += '</div>';
+
+            $('#gardena_water_control').append(bulb);
+            if (!data['Water Control'].Status === 'CLOSED') {
+                activate_water_control();
+            }
+        };
+
         var handle_motd = function (data) {
             $('#motd_quote').text(data.quote);
             $('#motd_author').text(data.author);
@@ -703,6 +791,8 @@
                 handle_pvsums(data);
             } else if (data.DeviceClass === 'Hue') {
                 handle_hue(data);
+            } else if (data.DeviceClass === 'Gardena') {
+                handle_gardena(data);
             } else if (data.DeviceClass === 'MOTD') {
                 handle_motd(data);
             } else if (data.DeviceClass === 'Tado') {

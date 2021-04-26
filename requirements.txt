@@ -4,6 +4,7 @@ pymodbus~=2.4.0
 requests~=2.24.0
 websockets==8.1
 lnetatmo==2.1.0
+py-smart-gardena==0.7.10
 rss_parser==0.1.1
 EasyModbusSilaaCooling == 1.0.6
 hue-py==0.2.1
