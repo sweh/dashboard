@@ -62,13 +62,11 @@ class Client(BaseClient):
         return self._data
 
     async def set_status(self, data):
+        location = self.smart_system.locations[self.loc_id]
+        water_control = location.find_device_by_type("WATER_CONTROL")[0]
         if 'on' in data:
             if data['on']:
-                self.smart_system.locations[
-                    self.loc_id
-                ].find_device_by_type("WATER_CONTROL")[0].unpause()
+                water_control.start_seconds_to_override(3600)
             else:
-                self.smart_system.locations[
-                    self.loc_id
-                ].find_device_by_type("WATER_CONTROL")[0].pause()
+                water_control.stop_until_next_task()
         await self.run(once=True)
