@@ -335,7 +335,7 @@
 
         var handle_corona = function (data) {
             var incidence = data.inzidenz,
-                inzidences = data.inzidences.join(", "),
+                incidences = data.inzidenzen.join(", "),
                 last_update = data.stand;
 
             $('#corona_incidence').removeClass('txt-color-yellow');
