@@ -26,8 +26,11 @@ class Client(BaseClient):
         data = result['data']['15091']
         gesamt = f"{data['cases']} (+{data['delta']['cases']})"
         inzidenz = round(data['weekIncidence'])
+        inzidenzen = [h['inzidenz'] for h in self.history._data[-6:-1]]
+        inzidenzen += [inzidenz]
         return dict(
             stand=stand,
             gesamt=gesamt,
             inzidenz=inzidenz,
+            inzidenzen=inzidenzen
         )
