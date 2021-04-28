@@ -337,9 +337,14 @@
 
         var handle_corona = function (data) {
             var incidence = data.inzidenz,
-                incidences = data.inzidenzen.join(", "),
+                incidences = [],
                 last_update = data.stand;
 
+            for (var i=0; i<data.inzidenzen.length; i++) {
+                incidences.push(data.inzidenzen[i][0] + ': ' + data.inzidenzen[i][1]);
+            }
+
+            incidences = incidences.join(', ');
             $('#corona_incidence').removeClass('txt-color-yellow');
             $('#corona_incidence').removeClass('txt-color-redLight');
             $('#corona_incidence').removeClass('txt-color-red');
