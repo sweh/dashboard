@@ -341,31 +341,22 @@
                 last_update = data.stand;
 
             for (var i=0; i<data.inzidenzen.length; i++) {
-                incidences.push(data.inzidenzen[i][0] + ': ' + data.inzidenzen[i][1]);
+                var incidence_color = '#99999c',
+                    incidence = data.inzidenzen[i][1];
+                if (incidence >= 100) {
+                    incidence_color = '#da4733';
+                }
+                if (incidence >= 150) {
+                    incidence_color = '#af2128';
+                }
+                if (incidence >= 165) {
+                    incidence_color = '#56000b';
+                }
+                incidences.push('<strong style="color: ' + incidence_color + '">' + data.inzidenzen[i][0] + ': ' + incidence + '</strong>');
             }
 
-            incidences = incidences.join(', ');
-            $('#corona_incidence').removeClass('txt-color-yellow');
-            $('#corona_incidence').removeClass('txt-color-redLight');
-            $('#corona_incidence').removeClass('txt-color-red');
-            $('#corona_incidence').removeClass('txt-color-magenta');
-            incidence_class = '';
-            if (incidence > 35) {
-                incidence_class = 'txt-color-yellow';
-            }
-            if (incidence > 50) {
-                incidence_class = 'txt-color-redLight';
-            }
-            if (incidence > 100) {
-                incidence_class = 'txt-color-red';
-            }
-            if (incidence > 165) {
-                incidence_class = 'txt-color-magenta';
-            }
-            $('#corona_incidence').addClass(incidence_class);
-            $('#corona_incidence').text(incidences);
-            $('#corona_date').text(last_update);
-            $('#corona_cases').text(data.gesamt);
+            incidences = incidences.join(' | ');
+            $('#corona_incidence').html(incidences);
         };
 
         var handle_weather = function (data) {
