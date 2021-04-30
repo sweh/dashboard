@@ -31,15 +31,15 @@ class Client(BaseClient):
         data = result['data']['15091']
         gesamt = f"{data['cases']} (+{data['delta']['cases']})"
         inzidenz = round(data['weekIncidence'])
-        inzidenzen = [
-            (h.get('tag', ''), h['inzidenz'])
-            for h in self.history._data[-6:-1]
-        ]
-        inzidenzen = list(set(inzidenzen))
-        inzidenzen = inzidenzen[-5:]
+        inzidenzen = []
+        for h in self.history._data:
+            value = (h.get('tag', ''), h['inzidenz'])
+            if value not in inzidenzen:
+                inzidenzen.append(value)
         today = (self.tage[dtstand.weekday()], inzidenz)
         if today not in inzidenzen:
             inzidenzen.append(today)
+        inzidenzen = inzidenzen[-5:]
         return dict(
             stand=stand,
             tag=self.tage[dtstand.weekday()],
