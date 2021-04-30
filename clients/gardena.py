@@ -10,6 +10,9 @@ class Client(BaseClient):
     _data = None
 
     def __init__(self, config):
+        super(Client, self).__init__(config)
+        if not self.enabled:
+            return
         self._data = {
             'Hochbeet': {},
             'Water Control': {},
