@@ -1,4 +1,5 @@
 from clients.baseclient import BaseClient
+import os
 from helios_com import COM
 import time
 
@@ -6,12 +7,12 @@ import time
 class Client(BaseClient):
 
     type_ = 'Helios'
-    conn_active = False
+    conn_active_filename = '/tmp/helios_client_active'
 
     def activate_conn(self):
-        while self.conn_active:
+        while os.path.exists(self.conn_active_filename):
             time.sleep(1)
-        self.conn_active = True
+        open(self.conn_active_filename, 'w')
 
     async def set_status(self, data):
         value = data['stufe']
@@ -23,7 +24,7 @@ class Client(BaseClient):
             finally:
                 com.exit()
         finally:
-            self.conn_active = False
+            os.remove(self.conn_active_filename)
         await self.run(once=True)
 
     def grab_helios_data(self):
@@ -53,7 +54,7 @@ class Client(BaseClient):
                 abluft_feuchte_tendency='right',
             )
         finally:
-            self.conn_active = False
+            os.remove(self.conn_active_filename)
 
     @property
     def data(self):

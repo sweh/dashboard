@@ -1,18 +1,16 @@
 import requests
 import datetime
 from clients.baseclient import BaseClient
-from datetime import date, timedelta
 
 
 class Client(BaseClient):
 
     corona_url = 'https://api.corona-zahlen.org/districts/15091'
-    # https://api.corona-zahlen.org/districts/15091/history/incidence/5
     external = True
     keep_items = 15
     type_ = 'Corona'
     tage = {
-        6: 'So', 0: 'Mo', 1: 'Di', 2: 'Mi', 3: 'Do', 4: 'Fr', 5: 'Sa'
+        0: 'Mo', 1: 'Di', 2: 'Mi', 3: 'Do', 4: 'Fr', 5: 'Sa', 6: 'So'
     }
 
     @property
@@ -21,15 +19,7 @@ class Client(BaseClient):
         dtstand = datetime.datetime.fromisoformat(
             result['meta']['lastUpdate'].replace('T', ' ').replace('Z', '')
         ).date()
-        today = date.today()
-        if dtstand == today:
-            stand = 'heute'
-        elif dtstand == (today - timedelta(days=1)):
-            stand = 'gestern'
-        else:
-            stand = dtstand.strftime('%d.%m.%Y')
         data = result['data']['15091']
-        gesamt = f"{data['cases']} (+{data['delta']['cases']})"
         inzidenz = round(data['weekIncidence'])
         inzidenzen = []
         for h in self.history._data:
@@ -37,13 +27,12 @@ class Client(BaseClient):
             if value not in inzidenzen:
                 inzidenzen.append(value)
         today = (self.tage[dtstand.weekday()], inzidenz)
-        if today not in inzidenzen:
+        if today != inzidenzen[-1]:
             inzidenzen.append(today)
         inzidenzen = inzidenzen[-5:]
         return dict(
-            stand=stand,
+            stand=dtstand.isoformat(),
             tag=self.tage[dtstand.weekday()],
-            gesamt=gesamt,
             inzidenz=inzidenz,
             inzidenzen=inzidenzen
         )
