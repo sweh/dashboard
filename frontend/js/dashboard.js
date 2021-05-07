@@ -319,6 +319,7 @@
                     'fa-caret-' + data[key + '_tendency']
                 );
             });
+            /*
             $( "#helios_stufe" ).empty();
             $("#helios_stufe").append('<div style="height:70px; margin-left: 20px"></div>');
             $( "#helios_stufe div" ).slider({
@@ -333,6 +334,8 @@
                   );
               }
             });
+            */
+            $('#helios_stufe').text(data.stufe);
         };
 
         var handle_corona = function (data) {
@@ -581,7 +584,7 @@
             deactivate_light(8, window.hue_lights['8'].bri);
             window.socket.send(JSON.stringify({'hue': {'id': 7, 'on': true}}));
             activate_light(7);
-            window.socket.send(JSON.stringify({'helios': {'stufe': 1}}));
+            //window.socket.send(JSON.stringify({'helios': {'stufe': 1}}));
         };
 
         window.switch_pv_charts = function () {
