@@ -61,10 +61,20 @@ class Client(BaseClient):
             'Power from grid'
         ):
             sums.setdefault(key, 0)
-            sums[key] += result[key] / 3600 * seconds
+            if not last_item:
+                r = result[key]
+            else:
+                r = ((result[key] + last_item[key]) / 2)
+            sums[key] += r / 3600 * seconds
         sums.setdefault('AC Power Battery', 0)
         sums.setdefault('Power from battery', 0)
-        battery_power = 0 - result['AC Power Battery']
+
+        if not last_item:
+            battery_power = 0 - result['AC Power Battery']
+        else:
+            battery_power = 0 - ((
+                result['AC Power Battery'] + last_item['AC Power Battery']
+            ) / 2)
         if battery_power > 0:
             sums['AC Power Battery'] += (
                 battery_power / 3600 * seconds
