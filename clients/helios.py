@@ -10,7 +10,12 @@ class Client(BaseClient):
     conn_active_filename = '/tmp/helios_client_active'
 
     def activate_conn(self):
+        self.slept = 0
         while os.path.exists(self.conn_active_filename):
+            if self.slept >= 5:
+                os.remove(self.conn_active_filename)
+                break
+            self.slept += 1
             time.sleep(1)
         open(self.conn_active_filename, 'w')
 
