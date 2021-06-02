@@ -54,6 +54,8 @@ class Client(BaseClient):
                 seconds = current - last
                 seconds = float(f'{seconds.seconds}.{seconds.microseconds}')
                 sums = last_item['sums'].copy()
+        if seconds == 0:
+            seconds = 1
         for key in (
             'Consumption',
             'AC Power Solar',
@@ -141,6 +143,10 @@ class Client(BaseClient):
         result['BatteryChargeWatt'] = (
             self.max_battery * (result['BatteryCharge'] / 100)
         )
+        if result['AC Power Battery'] == 0:
+            amount_to_charge = self.max_battery
+            hours = 24
+            minutes = 0
         if result['AC Power Battery'] < 0:
             # charge
             amount_to_charge = self.max_battery - result['BatteryChargeWatt']
