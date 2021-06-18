@@ -83,11 +83,56 @@ class BaseClient:
                 f'to {len(self.websockets)} clients.'
             )
 
+    def prepare_influx_result(self, result):
+        keep = dict(
+            Helios=[
+                'stufe', 'aussenluft', 'zuluft', 'fortluft', 'abluft',
+                'abluft_feuchte'
+            ],
+            PV=[
+                'Power from grid', 'Power to grid', 'AC Power Solar',
+                'AC Power Battery', 'Consumption'
+            ],
+            Weather=['out_temp'],
+            ViCare=[
+                'hot_water_current', 'hot_water_config',
+                'solar_collector_temp'
+            ],
+            Corona=['inzidenz'],
+        )
+
+        if self.type_ == 'Gardena':
+            return dict(
+                Lufttemperatur=result['Hochbeet']['Lufttemperatur'],
+                Helligkeit=result['Hochbeet']['Helligkeit'],
+                Bodenfeuchte=result['Hochbeet']['Bodenfeuchte'],
+                Bodentemperatur=result['Hochbeet']['Bodentemperatur']
+            )
+        if self.type_ == 'Tado':
+            result.pop('DeviceClass')
+            new = {}
+            for k, v in result.items():
+                new[f'{v["name"]} Temperatur'] = v['curr_temp']
+                new[f'{v["name"]} Luftfeuchtigkeit'] = v['curr_humi']
+                new[f'{v["name"]} Zieltemperatur'] = v['dest_temp']
+                new[f'{v["name"]} Heizlevel'] = v['heating_power']
+            return new
+        if self.type_ not in keep:
+            return
+
+        new = {}
+        for i in keep.get(self.type_, []):
+            if '/' in i:
+                j, i = i.split('/')
+                result = result['j']
+            if i in result:
+                new[i] = result[i]
+        return new
+
     def save_to_influx(self, result):
-        remove_fields = ['Feed-in_Time', 'Operating_Time']
-        for field in remove_fields:
-            if field in result:
-                result.pop(field)
+        result = self.prepare_influx_result(result)
+        if result is None:
+            return
 
         if not bool(int(self.config.get('FEATURE-influxdb', 'enabled'))):
             return
