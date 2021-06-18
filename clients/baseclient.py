@@ -109,9 +109,10 @@ class BaseClient:
                 Bodentemperatur=result['Hochbeet']['Bodentemperatur']
             )
         if self.type_ == 'Tado':
-            result.pop('DeviceClass')
             new = {}
             for k, v in result.items():
+                if k == 'DeviceClass':
+                    continue
                 new[f'{v["name"]} Temperatur'] = v['curr_temp']
                 new[f'{v["name"]} Luftfeuchtigkeit'] = v['curr_humi']
                 new[f'{v["name"]} Zieltemperatur'] = v['dest_temp']
@@ -136,7 +137,7 @@ class BaseClient:
 
         if not bool(int(self.config.get('FEATURE-influxdb', 'enabled'))):
             return
-        db = self.config.get('FEATURE-influxdb', 'db')
+        db = 'dashboard'
         host = self.config.get('FEATURE-influxdb', 'host')
         port = int(self.config.get('FEATURE-influxdb', 'port'))
         ssl = False
@@ -190,18 +191,14 @@ class BaseClient:
             log.error('InfluxDBError: %s' % (format(e)))
             log.error(
                 "InfluxDB failed data:" +
-                format(time.strftime("%H:%M:%S", time.localtime(
-                    influx_data['time']))
-                ),
+                influx_data['time'],
                 format(points)
             )
         else:
             log.info("InfluxDB: new data published %s:%s" % (
-                format(time.strftime(
-                    "%H:%M:%S", time.localtime(influx_data['time']))
-                ),
-                format(points))
-            )
+                influx_data['time'],
+                format(points)
+            ))
 
     async def run(self, once=False):
         while True:
