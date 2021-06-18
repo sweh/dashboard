@@ -84,6 +84,11 @@ class BaseClient:
             )
 
     def save_to_influx(self, result):
+        remove_fields = ['Feed-in_Time', 'Operating_Time']
+        for field in remove_fields:
+            if field in result:
+                result.pop(field)
+
         if not bool(int(self.config.get('FEATURE-influxdb', 'enabled'))):
             return
         db = self.config.get('FEATURE-influxdb', 'db')
@@ -129,7 +134,7 @@ class BaseClient:
 
         influx_data = {}
         influx_data['measurement'] = self.type_
-        influx_data['time'] = datetime.datetime.now()
+        influx_data['time'] = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
         influx_data['tags'] = {}
         influx_data['fields'] = result
 
