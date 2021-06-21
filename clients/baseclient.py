@@ -91,7 +91,8 @@ class BaseClient:
             ],
             PV=[
                 'Power from grid', 'Power to grid', 'AC Power Solar',
-                'AC Power Battery', 'Consumption'
+                'BatteryCharge', 'BatteryTemp', 'AC Power Battery',
+                'Consumption',
             ],
             Weather=['out_temp'],
             ViCare=[
@@ -127,7 +128,11 @@ class BaseClient:
                 j, i = i.split('/')
                 result = result['j']
             if i in result:
-                new[i] = result[i]
+                if self.type_ in ('Weather', 'ViCare'):
+                    newi = float(result[i])
+                else:
+                    newi = result[i]
+                new[i] = newi
         return new
 
     def save_to_influx(self, result):
