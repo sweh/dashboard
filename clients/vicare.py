@@ -18,6 +18,7 @@ class Client(BaseClient):
     def __init__(self, config):
         self.username = config.get("VICARE", "username")
         self.password = config.get("VICARE", "password")
+        self.client_key = config.get("VICARE", "client_key")
         super(Client, self).__init__(config)
 
     @gocept.cache.method.Memoize(900)
@@ -26,7 +27,11 @@ class Client(BaseClient):
             return GazBoiler(
                 self.username,
                 self.password,
-                token_file="token.save"
+                "token.save",
+                0,
+                60,
+                client_id=self.client_key,
+                useV2=True
             )
         except KeyError:
             raise RuntimeError('Limit exceeded')
