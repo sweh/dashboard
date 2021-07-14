@@ -6,8 +6,8 @@ from clients.baseclient import BaseClient
 class Client(BaseClient):
 
     type_ = 'Weather'
-    external = True
-    sleep_time = 600
+    external = False
+    sleep_time = 900
 
     user = None
     password = None

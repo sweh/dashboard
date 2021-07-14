@@ -7,8 +7,8 @@ import asyncio
 class Client(BaseClient):
 
     type_ = 'Tado'
-    sleep_time = 60
-    external = True
+    sleep_time = 120
+    external = False
 
     def __init__(self, config):
         self.username = config.get("TADO", "username")
