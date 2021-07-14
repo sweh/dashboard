@@ -12,4 +12,4 @@ libtado==3.2.1
 gocept.cache==4.0
 sqlalchemy==1.4.0
 psycopg2-binary==2.8.6
--egit+https://github.com/sweh/PyViCare.git@2988e31#egg=PyViCare
+-egit+https://github.com/somm15/PyViCare.git@69fcbbd#egg=PyViCare
