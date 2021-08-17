@@ -1,5 +1,5 @@
 from clients.baseclient import BaseClient
-from PyViCare.PyViCareGazBoiler import GazBoiler
+from PyViCare.PyViCare import PyViCare
 import gocept.cache.method
 import asyncio
 
@@ -24,15 +24,11 @@ class Client(BaseClient):
     @gocept.cache.method.Memoize(900)
     def boiler(self):
         try:
-            return GazBoiler(
-                self.username,
-                self.password,
-                "token.save",
-                0,
-                60,
-                client_id=self.client_key,
-                useV2=True
+            vicare = PyViCare()
+            vicare.initWithCredentials(
+                self.username, self.password, self.client_key, "token.save"
             )
+            return vicare.devices[0].asAutoDetectDevice()
         except KeyError:
             raise RuntimeError('Limit exceeded')
 
