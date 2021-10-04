@@ -12,7 +12,8 @@ class Client(BaseClient):
 
     type_ = 'ViCare'
     # sleep_time = 300  # 17h * 12 runs * 6 requests + 68 inits = 1292 requests
-    sleep_time = 3600
+    # sleep_time = 3600
+    sleep_time = 10
     external = True
 
     def __init__(self, config):
@@ -21,16 +22,12 @@ class Client(BaseClient):
         self.client_key = config.get("VICARE", "client_key")
         super(Client, self).__init__(config)
 
-    @gocept.cache.method.Memoize(900)
     def boiler(self):
-        try:
-            vicare = PyViCare()
-            vicare.initWithCredentials(
-                self.username, self.password, self.client_key, "token.save"
-            )
-            return vicare.devices[0].asAutoDetectDevice()
-        except KeyError:
-            raise RuntimeError('Limit exceeded')
+        vicare = PyViCare()
+        vicare.initWithCredentials(
+            self.username, self.password, self.client_key, "token.save"
+        )
+        return vicare.devices[0].asAutoDetectDevice()
 
     async def set_status(self, data):
         if 'hot_water' in data:
@@ -47,7 +44,7 @@ class Client(BaseClient):
         water_temp = boiler.getDomesticHotWaterStorageTemperature()
         water_temp_config = boiler.getDomesticHotWaterConfiguredTemperature()
         water_charging = boiler.getDomesticHotWaterChargingActive()
-        burner_active = boiler.getBurnerActive()
+        burner_active = boiler.burners[0].getActive()
         solar_collector_temp = boiler.getSolarCollectorTemperature()
         solar_pump_active = boiler.getSolarPumpActive()
         # circulation_active = boiler.getCirculationPumpActive()
