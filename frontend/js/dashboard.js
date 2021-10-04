@@ -240,9 +240,11 @@
             if ($('#pvchart-history').is(":visible")) {
                 $('.pvhistory_pagination').remove();
                 $('#pvchart-history').after(
-                    '<div class="pvhistory_pagination" style="text-align: center; margin-top: -5px;"><div class="btn-group pages"></div></div>'
+                    '<div class="pvhistory_pagination" style="text-align: center; margin-top: -5px;"><div class="dropdown-menu ml-auto ajax-dropdown"><div class="btn-group pages"></div></div></div>'
                 );
-
+                $('.pvhistory_pagination').append(
+                    '<button class="btn btn-default btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Auswählen</button>'
+                );
                 for (var i = 1; i<=Object.keys(pages).length; i++) {
                     var type = 'default';
                     if (i == pvsums_page) {
