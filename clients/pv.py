@@ -147,7 +147,7 @@ class Client(BaseClient):
             amount_to_charge = self.max_battery
             hours = 24
             minutes = 0
-        if result['AC Power Battery'] < 0:
+        elif result['AC Power Battery'] < 0:
             # charge
             amount_to_charge = self.max_battery - result['BatteryChargeWatt']
             time = amount_to_charge / (0 - result['AC Power Battery'])
@@ -156,10 +156,8 @@ class Client(BaseClient):
         else:
             # discharge
             amount_to_discharge = result['BatteryChargeWatt']
-            if result['AC Power Battery'] <= 0:
-                time = amount_to_discharge
-            else:
-                time = amount_to_discharge / result['AC Power Battery']
+            time = amount_to_discharge / result['AC Power Battery']
+            hours = int(time)
             minutes = int(60 * (time - hours))
         if hours > 23:
             result['BatteryChargeTime'] = '∞'
