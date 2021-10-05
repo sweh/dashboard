@@ -156,8 +156,10 @@ class Client(BaseClient):
         else:
             # discharge
             amount_to_discharge = result['BatteryChargeWatt']
-            time = amount_to_discharge / result['AC Power Battery']
-            hours = int(time)
+            if result['AC Power Battery'] <= 0:
+                time = amount_to_discharge
+            else:
+                time = amount_to_discharge / result['AC Power Battery']
             minutes = int(60 * (time - hours))
         if hours > 23:
             result['BatteryChargeTime'] = '∞'
