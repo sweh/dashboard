@@ -15,7 +15,7 @@ class Client(BaseClient):
 
     @property
     def data(self):
-        result = requests.get(self.corona_url).json()
+        result = requests.get(self.corona_url, timeout=5).json()
         dtstand = datetime.datetime.fromisoformat(
             result['meta']['lastUpdate'].replace('T', ' ').replace('Z', '')
         ).date()

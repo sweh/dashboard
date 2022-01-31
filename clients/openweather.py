@@ -31,43 +31,72 @@ class Client(BaseClient):
         )
         return lnetatmo.WeatherStationData(authorization)
 
-    @property
-    def netatmoWeatherData(self):
+    def get_outside_temperature(self, weatherData):
         result = dict()
-        weatherData = self.authenticate()
 
         station = weatherData.stationByName('Am Wachtelberg 14 (Wohnzimmer)')
         for module in station['modules']:
             if module['type'] == 'NAModule1':
-                # result['out_temp_battery'] = module['battery_percent']
                 result['out_temp'] = module['dashboard_data']['Temperature']
-                # result['out_temp_min'] = module['dashboard_data']['min_temp']
-                # result['out_temp_max'] = module['dashboard_data']['max_temp']
-                # result['out_humi'] = module['dashboard_data']['Humidity']
-                # temp_trend = module['dashboard_data']['temp_trend']
-                # temp_trend = (
-                #     'right' if temp_trend == 'stable' else temp_trend
-                # )
-                # result['out_temp_trend'] = temp_trend
-            # elif module['type'] == 'NAModule3':
-            #     result['rain_battery'] = module['battery_percent']
-            #     result['rain'] = module['dashboard_data']['Rain']
-            #     result['rain_1'] = module['dashboard_data']['sum_rain_1']
-            #     result['rain_24'] = module['dashboard_data']['sum_rain_24']
-            # elif module['type'] == 'NAModule2':
-            #     result['wind_battery'] = module['battery_percent']
-            #     result['wind_str'] = module['dashboard_data']['WindStrength']
-            #     result['wind_angle'] = module['dashboard_data']['WindAngle']
-            # elif module['type'] == 'NAModule4':
-            #     result['temp_in_battery'] = module['battery_percent']
-            #     result['in_temp'] = module['dashboard_data']['Temperature']
-            #     result['in_humi'] = module['dashboard_data']['Humidity']
-            #     result['in_co2'] = module['dashboard_data']['CO2']
+
         return result
+
+    def save_weather_to_influx(self, weatherData):
+        client = self.get_influx_client(db='netatmo')
+        if not client:
+            return
+
+        for station in weatherData.stations:
+            station_data = []
+            module_data = []
+            station = weatherData.stationById(station)
+            station_name = station['station_name']
+            altitude = station['place']['altitude']
+            country= station['place']['country']
+            timezone = station['place']['timezone']
+            longitude = station['place']['location'][0]
+            latitude = station['place']['location'][1]
+            for module, moduleData in weatherData.lastData(station=station_name, exclude=3600).items():
+                for measurement in ['altitude', 'country', 'longitude', 'latitude', 'timezone']:
+                    value = eval(measurement)
+                    if type(value) == int:
+                        value = float(value)
+                    station_data.append({
+                        "measurement": measurement,
+                        "tags": {
+                            "station": station_name,
+                            "module": module
+                        },
+                        "time": moduleData['When'],
+                        "fields": {
+                            "value": value
+                        }
+                    })
+
+                for sensor, value in moduleData.items():
+                    if sensor.lower() != 'when':
+                        if type(value) == int:
+                            value = float(value)
+                        module_data.append({
+                            "measurement": sensor.lower(),
+                            "tags": {
+                                "station": station_name,
+                                "module": module
+                            },
+                            "time": moduleData['When'],
+                            "fields": {
+                                "value": value
+                            }
+                        })
+
+            client.write_points(station_data, time_precision='s')
+            client.write_points(module_data, time_precision='s')
 
     @property
     def data(self):
-        result = self.netatmoWeatherData
+        weatherData = self.authenticate()
+        self.save_weather_to_influx(weatherData)
+        result = self.get_outside_temperature(weatherData)
         api_key = self.config.get("WEATHER", 'openweather_api_key')
         if api_key:
             url = (
@@ -76,6 +105,6 @@ class Client(BaseClient):
                 'lat=51.888689135586574&lon=12.647285179149327&'
                 f'appid={api_key}'
             )
-            data = requests.get(url).json()
+            data = requests.get(url, timeout=5).json()
             result.update(data)
         return result

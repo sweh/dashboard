@@ -4,7 +4,6 @@ from influxdb.client import InfluxDBClientError
 from datetime import datetime
 from history import History
 import json
-import time
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
@@ -135,14 +134,9 @@ class BaseClient:
                 new[i] = newi
         return new
 
-    def save_to_influx(self, result):
-        result = self.prepare_influx_result(result)
-        if result is None:
-            return
-
+    def get_influx_client(self, db='dashboard'):
         if not bool(int(self.config.get('FEATURE-influxdb', 'enabled'))):
             return
-        db = 'dashboard'
         host = self.config.get('FEATURE-influxdb', 'host')
         port = int(self.config.get('FEATURE-influxdb', 'port'))
         ssl = False
@@ -181,6 +175,15 @@ class BaseClient:
                     str(user), host, db)
             )
             log.error(e)
+            return
+
+    def save_to_influx(self, result):
+        result = self.prepare_influx_result(result)
+        if result is None:
+            return
+
+        influx = self.get_influx_client()
+        if not influx:
             return
 
         influx_data = {}
