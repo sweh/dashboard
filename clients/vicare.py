@@ -11,9 +11,9 @@ class Client(BaseClient):
     # 1450 calls for a time window of 24 hours
 
     type_ = 'ViCare'
-    # sleep_time = 300  # 17h * 12 runs * 6 requests + 68 inits = 1292 requests
+    sleep_time = 300  # 17h * 12 runs * 6 requests + 68 inits = 1292 requests
     # sleep_time = 3600
-    sleep_time = 10
+    # sleep_time = 10
     external = True
 
     def __init__(self, config):

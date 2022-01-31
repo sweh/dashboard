@@ -49,16 +49,16 @@ if __name__ == "__main__":
     clients = dict(
         pvclient=PVClient(smadaemon, hueclient),
         pvsumsclient=PVSumsClient(smadaemon.config),
-        openweatherclient=OpenWeatherClient(smadaemon.config),
         coronaclient=CoronaClient(smadaemon.config),
         heliosclient=HeliosClient(smadaemon.config),
-        rssclient=RSSClient(smadaemon.config),
-        motdclient=MotdClient(smadaemon.config),
+        # rssclient=RSSClient(smadaemon.config),
+        # motdclient=MotdClient(smadaemon.config),
         wificlient=WifiClient(smadaemon.config),
         hueclient=hueclient,
         tadoclient=TadoClient(smadaemon.config),
         vicareclient=ViCareClient(smadaemon.config),
         gardenaclient=GardenaClient(smadaemon.config),
+        openweatherclient=OpenWeatherClient(smadaemon.config),
     )
 
     async def server(websocket, path):
