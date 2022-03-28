@@ -124,7 +124,7 @@ class Client(BaseClient):
         result = {}
         emparts = decode_speedwire(self.sock.recv(608))
         for serial in self.smadaemon.serials:
-            if serial == format(emparts["serial"]):
+            if "serial" in emparts and serial == format(emparts["serial"]):
                 for items in self.run_features(emparts):
                     for item in items:
                         if item['DeviceClass'] == 'Solar Inverter':
