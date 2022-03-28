@@ -27,7 +27,7 @@ class Client(BaseClient):
             if value not in inzidenzen:
                 inzidenzen.append(value)
         today = (self.tage[dtstand.weekday()], inzidenz)
-        if today != inzidenzen[-1]:
+        if not inzidenzen or today != inzidenzen[-1]:
             inzidenzen.append(today)
         inzidenzen = inzidenzen[-5:]
         return dict(

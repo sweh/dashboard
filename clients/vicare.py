@@ -11,10 +11,11 @@ class Client(BaseClient):
     # 1450 calls for a time window of 24 hours
 
     type_ = 'ViCare'
-    sleep_time = 300  # 17h * 12 runs * 6 requests + 68 inits = 1292 requests
+    # sleep_time = 300  # 17h * 12 runs * 6 requests + 68 inits = 1292 requests
     # sleep_time = 3600
     # sleep_time = 10
-    external = True
+    sleep_time = 60
+    external = False
 
     def __init__(self, config):
         self.username = config.get("VICARE", "username")
@@ -22,6 +23,7 @@ class Client(BaseClient):
         self.client_key = config.get("VICARE", "client_key")
         super(Client, self).__init__(config)
 
+    @gocept.cache.method.Memoize(86400)
     def boiler(self):
         vicare = PyViCare()
         vicare.initWithCredentials(
@@ -42,22 +44,52 @@ class Client(BaseClient):
 
         # Single requests to the ViCareApi
         water_temp = boiler.getDomesticHotWaterStorageTemperature()
-        water_temp_config = boiler.getDomesticHotWaterConfiguredTemperature()
-        water_charging = boiler.getDomesticHotWaterChargingActive()
-        burner_active = boiler.burners[0].getActive()
+        water_temp_config = boiler.getDomesticHotWaterDesiredTemperature()
+        outside_temp = boiler.getOutsideTemperature()
+
         solar_collector_temp = boiler.getSolarCollectorTemperature()
         solar_pump_active = boiler.getSolarPumpActive()
-        # circulation_active = boiler.getCirculationPumpActive()
-        # hot_water_pump_active = boiler.getDomesticHotWaterPumpActive()
+
+        burner_active = boiler.burners[0].getActive()
+        water_charging_active = boiler.getDomesticHotWaterChargingActive()
+        hot_water_pump_active = boiler.getDomesticHotWaterPumpActive()
+
+        hk0 = boiler.getCircuit(0)
+        supply_temp_hk1 = hk0.getSupplyTemperature()
+        target_supply_temp_hk1 = hk0.getTargetSupplyTemperature()
+        circulation_active = hk0.getCirculationPumpActive()
+
+        hk1 = boiler.getCircuit(1)
+        supply_temp_hk2 = hk1.getSupplyTemperature()
+        target_supply_temp_hk2 = (
+            hk1.getTargetSupplyTemperature() or supply_temp_hk2
+        )
+
+        gas_consumption_hot_water_today = (
+            boiler.getGasConsumptionDomesticHotWaterToday()
+        )
+        gas_consumption_heating_today = boiler.getGasConsumptionHeatingToday()
+        solar_power_production_today = boiler.getSolarPowerProductionToday()
 
         result = dict(
+            outside_temp=outside_temp,
             hot_water_current=water_temp,
             hot_water_current_tendency='right',
             hot_water_config=water_temp_config,
             burner_active=burner_active,
-            hot_water_charging=water_charging,
+            hot_water_charging=water_charging_active,
             solar_collector_temp=solar_collector_temp,
             solar_pump_active=solar_pump_active,
+            circulation_active=circulation_active,
+            hot_water_pump_active=hot_water_pump_active,
+            supply_temp_hk1=supply_temp_hk1,
+            target_supply_temp_hk1=target_supply_temp_hk1,
+            supply_temp_hk2=supply_temp_hk2,
+            target_supply_temp_hk2=target_supply_temp_hk2,
+            gas_consumption_hot_water_today=gas_consumption_hot_water_today,
+            gas_consumption_heating_today=gas_consumption_heating_today,
+            solar_power_production_today=solar_power_production_today,
+
         )
         if not result:
             return

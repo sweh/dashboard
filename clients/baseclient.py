@@ -96,7 +96,13 @@ class BaseClient:
             Weather=['out_temp'],
             ViCare=[
                 'hot_water_current', 'hot_water_config',
-                'solar_collector_temp'
+                'solar_collector_temp', 'burner_active', 'hot_water_charging',
+                'solar_pump_active', 'outside_temp', 'circulation_active',
+                'hot_water_pump_active', 'supply_temp_hk1',
+                'target_supply_temp_hk1', 'supply_temp_hk2',
+                'target_supply_temp_hk2', 'gas_consumption_hot_water_today',
+                'gas_consumption_heating_today',
+                'solar_power_production_today',
             ],
             Corona=['inzidenz'],
         )
@@ -128,6 +134,8 @@ class BaseClient:
                 result = result['j']
             if i in result:
                 if self.type_ in ('Weather', 'ViCare'):
+                    if result[i] is None:
+                        result[i] = 0
                     newi = float(result[i])
                 else:
                     newi = result[i]
@@ -176,6 +184,7 @@ class BaseClient:
             )
             log.error(e)
             return
+        return influx
 
     def save_to_influx(self, result):
         result = self.prepare_influx_result(result)
@@ -214,8 +223,8 @@ class BaseClient:
             try:
                 self.assert_operation_time()
                 result = self.data
-            except Exception as e:
-                log.error(f'Exception while fetching {self.type_} data: {e}')
+            except Exception:
+                log.exception(f'Exception while fetching {self.type_} data')
             else:
                 if result:
                     result['DeviceClass'] = self.type_

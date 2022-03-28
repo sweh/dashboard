@@ -89,5 +89,6 @@ if __name__ == "__main__":
         [c.run() for c in clients.values() if c.enabled]
     )
 
-    asyncio.get_event_loop().run_until_complete(asyncio.wait(tasks))
-    asyncio.get_event_loop().run_forever()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(asyncio.wait(tasks))
+    loop.run_forever()

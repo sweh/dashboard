@@ -133,13 +133,18 @@ class Client(BaseClient):
                         if item['DeviceClass'] == 'Battery Inverter':
                             item['AC Power Battery'] = item['AC Power'] or 0
                         result.update(item)
-        result['Power to grid'] = result['Power to grid'] or 0
+        result['Power to grid'] = result.get('Power to grid', 0) or 0
+        result['AC Power Solar'] = result.get('AC Power Solar', 0) or 0
+        result['AC Power Battery'] = result.get('AC Power Battery', 0) or 0
+        result['Power from grid'] = result.get('Power from grid', 0) or 0
         result['Consumption'] = (
             result['AC Power Solar'] +
             result['AC Power Battery'] +
             result['Power from grid'] -
             result['Power to grid']
         )
+        if (result['Consumption'] == 0):
+            return
         result['BatteryChargeWatt'] = (
             self.max_battery * (result['BatteryCharge'] / 100)
         )
