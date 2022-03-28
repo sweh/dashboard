@@ -64,3 +64,6 @@ config
 src/
 token.save
 history_*
+include/
+lib64
+share
