@@ -59,11 +59,13 @@ class Client(BaseClient):
         target_supply_temp_hk1 = hk0.getTargetSupplyTemperature()
         circulation_active = hk0.getCirculationPumpActive()
 
-        hk1 = boiler.getCircuit(1)
-        supply_temp_hk2 = hk1.getSupplyTemperature()
-        target_supply_temp_hk2 = (
-            hk1.getTargetSupplyTemperature() or supply_temp_hk2
-        )
+        # hk1 = boiler.getCircuit(1)
+        # supply_temp_hk2 = hk1.getSupplyTemperature()
+        # target_supply_temp_hk2 = (
+        #     hk1.getTargetSupplyTemperature() or supply_temp_hk2
+        # )
+        supply_temp_hk2 = 0
+        target_supply_temp_hk2 = 0
 
         gas_consumption_hot_water_today = (
             boiler.getGasConsumptionDomesticHotWaterToday()
