@@ -1,7 +1,15 @@
 import json
+import requests
 from datetime import datetime, timedelta
 from speedwiredecoder import decode_speedwire
 from clients.baseclient import BaseClient
+
+
+EVCHARGERKEYMAP = {
+    'Measurement.Metering.GridMs.TotWIn.ChaSta': 'AC Power Wallbox',
+    'Measurement.Operation.Health': 'WallboxHealth',
+    'Measurement.Operation.EVeh.ChaStt': 'WallboxState',
+}
 
 
 class Client(BaseClient):
@@ -16,6 +24,11 @@ class Client(BaseClient):
 
     def __init__(self, smadaemon, hueclient):
         self.smadaemon = smadaemon
+        self.ev_charger_ip = hueclient.config.get("PV", 'ev_charger_ip')
+        self.ev_charger_user = hueclient.config.get("PV", 'ev_charger_user')
+        self.ev_charger_passsword = hueclient.config.get(
+            "PV", 'ev_charger_password'
+        )
         if hueclient.enabled:
             self.hueclient = hueclient
         super(Client, self).__init__(smadaemon.config)
@@ -119,6 +132,47 @@ class Client(BaseClient):
         ) / 1000 * self.kw_price
         result['costs_per_hour'] = costs_per_hour
 
+    def get_ev_charger_data(self):
+        if not self.ev_charger_ip:
+            return {}
+        try:
+            resp = requests.post(
+                f'http://{self.ev_charger_ip}/api/v1/token',
+                data=dict(
+                    grant_type='password',
+                    username=self.ev_charger_user,
+                    password=self.ev_charger_password,
+                )
+            )
+            token = resp.json()['access_token']
+
+            resp = requests.post(
+                f'http://{self.ev_charger_ip}/api/v1/measurements/live/',
+                json=[dict(componentId='IGULD:SELF')],
+                headers=dict(Authorization=f'Bearer {token}')
+            )
+
+            result = {}
+            for item in resp.json():
+                key = EVCHARGERKEYMAP.get(item['channelId'])
+                if key is None:
+                    continue
+                value = item['values'][0]['value']
+
+                if key == 'WallboxState':
+                    value = {
+                        200111: 'nicht verbunden',
+                        200112: 'verbunden',
+                        200113: 'lädt'
+                    }.get(value)
+                if key == 'WallboxHealth':
+                    value = 'Ok' if value == 307 else 'NA'
+
+                result[key] = value
+            return result
+        except Exception:
+            return {}
+
     @property
     def data(self):
         result = {}
@@ -133,13 +187,16 @@ class Client(BaseClient):
                         if item['DeviceClass'] == 'Battery Inverter':
                             item['AC Power Battery'] = item['AC Power'] or 0
                         result.update(item)
+                result.update(self.get_ev_charger_data())
         result['Power to grid'] = result.get('Power to grid', 0) or 0
         result['AC Power Solar'] = result.get('AC Power Solar', 0) or 0
+        result['AC Power Wallbox'] = result.get('AC Power Wallbox', 0) or 0
         result['AC Power Battery'] = result.get('AC Power Battery', 0) or 0
         result['Power from grid'] = result.get('Power from grid', 0) or 0
         result['Consumption'] = (
             result['AC Power Solar'] +
             result['AC Power Battery'] +
+            result['AC Power Wallbox'] +
             result['Power from grid'] -
             result['Power to grid']
         )
