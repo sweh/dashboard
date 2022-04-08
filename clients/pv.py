@@ -142,14 +142,16 @@ class Client(BaseClient):
                     grant_type='password',
                     username=self.ev_charger_user,
                     password=self.ev_charger_password,
-                )
+                ),
+                timeout=5
             )
             token = resp.json()['access_token']
 
             resp = requests.post(
                 f'http://{self.ev_charger_ip}/api/v1/measurements/live/',
                 json=[dict(componentId='IGULD:SELF')],
-                headers=dict(Authorization=f'Bearer {token}')
+                headers=dict(Authorization=f'Bearer {token}'),
+                timeout=5
             )
 
             result = {}
