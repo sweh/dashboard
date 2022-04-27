@@ -90,8 +90,8 @@ class BaseClient:
             ],
             PV=[
                 'Power from grid', 'Power to grid', 'AC Power Solar',
-                'BatteryCharge', 'BatteryTemp', 'AC Power Battery',
-                'Consumption', 'AC Power Wallbox'
+                'BatteryCharge', 'BatteryChargeWatt', 'BatteryTemp',
+                'AC Power Battery', 'Consumption', 'AC Power Wallbox',
             ],
             Weather=['out_temp'],
             ViCare=[

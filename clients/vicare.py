@@ -54,7 +54,7 @@ class Client(BaseClient):
         water_charging_active = boiler.getDomesticHotWaterChargingActive()
         hot_water_pump_active = boiler.getDomesticHotWaterPumpActive()
 
-        hk0 = boiler.getCircuit(0)
+        hk0 = boiler.getCircuit(1)
         supply_temp_hk1 = hk0.getSupplyTemperature()
         target_supply_temp_hk1 = hk0.getTargetSupplyTemperature()
         circulation_active = hk0.getCirculationPumpActive()
