@@ -167,10 +167,8 @@ class Client(BaseClient):
                         200112: 'verbunden',
                         200113: 'lädt'
                     }.get(value)
-                elif key == 'WallboxHealth':
+                if key == 'WallboxHealth':
                     value = 'Ok' if value == 307 else 'NA'
-                else:
-                    value = int(value)
 
                 result[key] = value
             return result
