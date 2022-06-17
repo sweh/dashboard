@@ -42,9 +42,10 @@
         var $chrt_third = "#FF9F01";        /* orange    */
         var $chrt_fourth = "#4c4f53";       /* blueDark  */
         var $chrt_fifth = "#a90329";        /* red       */
+        var $chrt_sixth = "#B877D9";        /* lila       */
         var $chrt_mono = "#000";
 
-        var d = [], e = [], f = [], g = [], h = [];
+        var d = [], e = [], f = [], g = [], h = [], i = [];
 
         var tooltip_content = "%x Uhr<br /><span>%y Wh</span>";
         var pvchart = function() {
@@ -84,10 +85,10 @@
                     points: { show: false },
                     shadowSize : 0
                 },
-                colors : [$chrt_main, $chrt_second, $chrt_third, $chrt_fourth, $chrt_fifth],
+                colors : [$chrt_main, $chrt_second, $chrt_third, $chrt_fourth, $chrt_fifth, $chrt_sixth],
             };
             if ($('#pvchart').is(":visible")) {
-                plot_1 = $.plot($("#pvchart"), [d,e,f,g,h], options);
+                plot_1 = $.plot($("#pvchart"), [d,e,f,g,h,i], options);
             }
         };
 
@@ -479,6 +480,7 @@
             var batterychargetime = data.BatteryChargeTime;
 
             var consumption = data.Consumption;
+            var wallbox = data['AC Power Wallbox'];
             batterypower = 0 - batterypower;
 
             d.push([timestamp, panelpower]); /* Solar Dach */
@@ -486,6 +488,7 @@
             f.push([timestamp, batterypower]); /* Batterie */
             g.push([timestamp, 0 - consumption]); /* Verbrauch */
             h.push([timestamp, 0 - power_from_grid]); /* Netzbezug */
+            i.push([timestamp, wallbox]); /* Wallbox */
             pvchart();
 
             $('#panelacpower').text(panelpower);
@@ -493,6 +496,7 @@
             $('#batteryacpower').text(batterypower);
             $('#batterycapacity').text(round(batterycapacitywatts/1000, 2));
             $('#consumption').text(consumption);
+            $('#wallbox').text(wallbox);
 
             $('#batterycharging').find('i').removeClass('fa-caret-up');
             $('#batterycharging').find('i').removeClass('fa-caret-down');

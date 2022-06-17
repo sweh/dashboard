@@ -199,7 +199,7 @@ class Client(BaseClient):
         result['Power from grid'] = result.get('Power from grid', 0) or 0
         result['Consumption'] = (
             result['AC Power Solar'] +
-            result['AC Power Battery'] +
+            result['AC Power Battery'] -
             result['AC Power Wallbox'] +
             result['Power from grid'] -
             result['Power to grid']
