@@ -26,7 +26,7 @@ class Client(BaseClient):
         self.smadaemon = smadaemon
         self.ev_charger_ip = hueclient.config.get("PV", 'ev_charger_ip')
         self.ev_charger_user = hueclient.config.get("PV", 'ev_charger_user')
-        self.ev_charger_passsword = hueclient.config.get(
+        self.ev_charger_password = hueclient.config.get(
             "PV", 'ev_charger_password'
         )
         if hueclient.enabled:
@@ -167,8 +167,10 @@ class Client(BaseClient):
                         200112: 'verbunden',
                         200113: 'lädt'
                     }.get(value)
-                if key == 'WallboxHealth':
+                elif key == 'WallboxHealth':
                     value = 'Ok' if value == 307 else 'NA'
+                else:
+                    value = int(value)
 
                 result[key] = value
             return result
