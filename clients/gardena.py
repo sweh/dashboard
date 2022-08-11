@@ -48,16 +48,20 @@ class Client(BaseClient):
             password=config.get("GARDENA", "password"),
             client_id=config.get("GARDENA", "client_id")
         )
-        smart_system.authenticate()
-        smart_system.update_locations()
-        for location in smart_system.locations.values():
-            self.loc_id = location.id
-            smart_system.update_devices(location)
-            pprint.pprint(location)
-            for device in location.devices.values():
-                pprint.pprint(device)
-                device.add_callback(update_callback)
-        smart_system.start_ws(smart_system.locations[self.loc_id])
+        try:
+            smart_system.authenticate()
+        except Exception:
+            pass
+        else:
+            smart_system.update_locations()
+            for location in smart_system.locations.values():
+                self.loc_id = location.id
+                smart_system.update_devices(location)
+                pprint.pprint(location)
+                for device in location.devices.values():
+                    pprint.pprint(device)
+                    device.add_callback(update_callback)
+            smart_system.start_ws(smart_system.locations[self.loc_id])
         super(Client, self).__init__(config)
 
     @property

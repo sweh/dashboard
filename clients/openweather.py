@@ -57,29 +57,15 @@ class Client(BaseClient):
             longitude = station['place']['location'][0]
             latitude = station['place']['location'][1]
             weatherData.default_station_data = weatherData.stationByName(station_name)
-            for module, moduleData in weatherData.lastData(exclude=3600).items():
-                for measurement in ['altitude', 'country', 'longitude', 'latitude', 'timezone']:
-                    value = eval(measurement)
-                    if type(value) == int:
-                        value = float(value)
-                    station_data.append({
-                        "measurement": measurement,
-                        "tags": {
-                            "station": station_name,
-                            "module": module
-                        },
-                        "time": moduleData['When'],
-                        "fields": {
-                            "value": value
-                        }
-                    })
-
-                for sensor, value in moduleData.items():
-                    if sensor.lower() != 'when':
+            weatherData_ = weatherData.lastData(exclude=3600)
+            if weatherData_:
+                for module, moduleData in weatherData_.items():
+                    for measurement in ['altitude', 'country', 'longitude', 'latitude', 'timezone']:
+                        value = eval(measurement)
                         if type(value) == int:
                             value = float(value)
-                        module_data.append({
-                            "measurement": sensor.lower(),
+                        station_data.append({
+                            "measurement": measurement,
                             "tags": {
                                 "station": station_name,
                                 "module": module
@@ -89,6 +75,22 @@ class Client(BaseClient):
                                 "value": value
                             }
                         })
+
+                    for sensor, value in moduleData.items():
+                        if sensor.lower() != 'when':
+                            if type(value) == int:
+                                value = float(value)
+                            module_data.append({
+                                "measurement": sensor.lower(),
+                                "tags": {
+                                    "station": station_name,
+                                    "module": module
+                                },
+                                "time": moduleData['When'],
+                                "fields": {
+                                    "value": value
+                                }
+                            })
 
             client.write_points(station_data, time_precision='s')
             client.write_points(module_data, time_precision='s')

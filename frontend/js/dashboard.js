@@ -479,8 +479,8 @@
             var batterycapacitywatts = data.BatteryChargeWatt || 0;
             var batterychargetime = data.BatteryChargeTime;
 
-            var consumption = data.Consumption;
-            var wallbox = data['AC Power Wallbox'];
+            var consumption = Math.floor(data.Consumption);
+            var wallbox = Math.floor(data['AC Power Wallbox']);
             batterypower = 0 - batterypower;
 
             d.push([timestamp, panelpower]); /* Solar Dach */

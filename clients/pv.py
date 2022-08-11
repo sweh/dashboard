@@ -192,7 +192,9 @@ class Client(BaseClient):
                 result.update(self.get_ev_charger_data())
         result['Power to grid'] = result.get('Power to grid', 0) or 0
         result['AC Power Solar'] = result.get('AC Power Solar', 0) or 0
-        result['AC Power Wallbox'] = result.get('AC Power Wallbox', 0) or 0
+        result['AC Power Wallbox'] = int(
+            result.get('AC Power Wallbox', 0) or 0
+        )
         result['AC Power Battery'] = result.get('AC Power Battery', 0) or 0
         result['Power from grid'] = result.get('Power from grid', 0) or 0
         result['Consumption'] = (
