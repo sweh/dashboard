@@ -204,7 +204,7 @@ class Client(BaseClient):
             result['Power from grid'] -
             result['Power to grid']
         )
-        if (result['Consumption'] == 0):
+        if (result['Consumption'] == 0) or 'BatteryCharge' not in result:
             return
         result['BatteryChargeWatt'] = (
             self.max_battery * (result['BatteryCharge'] / 100)

@@ -422,7 +422,14 @@ def get_device_class(host, port, modbusid):
          print(thiserrormessage)
          return None
 
-     message = BinaryPayloadDecoder.fromRegisters(received.registers, byteorder=Endian.Big, wordorder=Endian.Big)
+     try:
+         message = BinaryPayloadDecoder.fromRegisters(received.registers, byteorder=Endian.Big, wordorder=Endian.Big)
+     except AttributeError as e:
+         thisdate = str(datetime.datetime.now()).partition('.')[0]
+         thiserrormessage = thisdate + 'Modbus: Connection (temporarily?) not possible.'
+         print(thiserrormessage)
+         print(traceback.format_exc())
+         return None  ## prevent further execution of this function
      interpreted = message.decode_32bit_uint()
      dclass = pvenums["DeviceClass"].get(interpreted)
 
@@ -455,7 +462,15 @@ def get_pv_data(host, port, modbusid, registers):
             return None  ## prevent further execution of this function
 
         name = myreg[3]
-        message = BinaryPayloadDecoder.fromRegisters(received.registers, byteorder=Endian.Big, wordorder=Endian.Big)
+        try:
+            message = BinaryPayloadDecoder.fromRegisters(received.registers, byteorder=Endian.Big, wordorder=Endian.Big)
+        except AttributeError as e:
+            thisdate = str(datetime.datetime.now()).partition('.')[0]
+            thiserrormessage = thisdate + 'Modbus: Connection (temporarily?) not possible.'
+            print(thiserrormessage)
+            print(traceback.format_exc())
+            return None  ## prevent further execution of this function
+
         ## provide the correct result depending on the defined datatype
         if myreg[1] == 'S32':
             interpreted = message.decode_32bit_int()

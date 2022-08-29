@@ -104,6 +104,8 @@ def run(emparts, config):
     ) + 'Z'
     result = []
     for i in pv_data:
+        if i is None:
+            continue
         i['timestamp'] = timestamp
         if pv_debug > 0:
             print("PV:" + format(i))
