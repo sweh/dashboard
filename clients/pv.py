@@ -16,7 +16,7 @@ class Client(BaseClient):
 
     sleep_time = 5
     type_ = 'PV'
-    keep_items = 1000
+    keep_items = 1
     kw_price = 0.2769
     max_battery = 9600
     hueclient = None

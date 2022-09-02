@@ -33,10 +33,8 @@ class BaseClient:
 
     async def register(self, websocket):
         self.websockets[websocket] = []
-        # for item in self.history:
-        #     await self.send(websocket, item)
-        if self.history:
-            await self.send(websocket, self.history[-1])
+        for item in self.history:
+            await self.send(websocket, item)
 
     async def send(self, websocket, data):
         if data in self.websockets[websocket]:
