@@ -1,10 +1,12 @@
 (function($) {
 
     function startWebsocket() {
-        window.socket = new WebSocket('ws://' + window.location.hostname + ':6790/');
+        window.socket = new WebSocket('wss://' + window.location.hostname + '/wsapp/');
 
         window.socket.onopen = function(e) {
             console.log("[open] Connection established, send -> server");
+            $('body').addClass('pace-done').removeClass('pace-running');
+            $('.pace').addClass('pace-inactive').removeClass('pace-active');
         };
 
         window.socket.onmessage = function(event) {
@@ -42,6 +44,8 @@
         };
 
         window.socket.onclose = function(event) {
+            $('body').addClass('pace-running').removeClass('pace-done');
+            $('.pace').addClass('pace-active').removeClass('pace-inactive');
             window.socket = null;
             if (event.wasClean) {
                 console.log('[close] Connection closed cleanly, retry in 5s');
@@ -54,6 +58,8 @@
         };
 
         window.socket.onerror = function(error) {
+            $('body').addClass('pace-running').removeClass('pace-done');
+            $('.pace').addClass('pace-active').removeClass('pace-inactive');
             console.log('[error] ' + error.message);
         };
     };
@@ -851,6 +857,6 @@
         );
     };
 
-    window.socket = startWebsocket();
+    startWebsocket();
 
 }(jQuery));
