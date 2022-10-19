@@ -70,6 +70,11 @@
             .pv_costs {
                 display: none;
             }
+            .wallbox_sums {
+                position: absolute;
+                top: 74px;
+                left: 50px;
+            }
             .battery_percent {
                 position: absolute;
                 top: 74px;
@@ -97,6 +102,7 @@
                     display: block;
                 }
                 .pv_sums,
+                .wallbox_sums,
                 .battery_percent {
                     position: inherit;
                     top: inherit;
@@ -276,7 +282,7 @@
                                                 </li>
                                             </ul>
                                             </div>
-                                            <div class="col-xs-12 col-sm-2 col-md-2 text-center">
+                                            <div class="col-xs-12 col-sm-2 col-md-2 text-center wallbox_sums">
                                             <ul class="smaller-stat" style="margin-top: -8px; display: inline-block">
                                                 <li>
                                                     <span class="label bg-color-red  pull-left text-center" style="font-size: 9px; background-color: #B877D9!important;">
