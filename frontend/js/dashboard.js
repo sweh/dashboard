@@ -96,6 +96,9 @@
             }
             result = result[0] + '.' + result[1];
         }
+        if (!precision) {
+            result = result.split('.')[0];
+        }
         return result;
     }
 
@@ -507,6 +510,8 @@
             if (value > 1000) {
                 value = round(value / 1000, 1);
                 unit = 'kW';
+            } else {
+                value = round(value);
             }
             elem.text(value + ' ' + unit);
         });
