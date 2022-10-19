@@ -13,3 +13,4 @@ requests~=2.24.0
 rss_parser==0.1.1
 sqlalchemy==1.4.0
 websockets==8.1
+chump==1.6.0

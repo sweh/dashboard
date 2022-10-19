@@ -1,15 +1,16 @@
 from clients.corona import Client as CoronaClient
 from clients.helios import Client as HeliosClient
 from clients.hue import Client as HueClient
-from clients.motd import Client as MotdClient
+# from clients.motd import Client as MotdClient
 from clients.openweather import Client as OpenWeatherClient
 from clients.pv import Client as PVClient
 from clients.pvsums import Client as PVSumsClient
-from clients.rss import Client as RSSClient
+# from clients.rss import Client as RSSClient
 from clients.tado import Client as TadoClient
 from clients.vicare import Client as ViCareClient
 from clients.gardena import Client as GardenaClient
 from clients.wifi import Client as WifiClient
+from chump import Application
 from sma_daemon import MyDaemon
 from sqlalchemy import create_engine
 import argparse
@@ -44,6 +45,11 @@ if __name__ == "__main__":
     if smadaemon.config.engine:
         smadaemon.config.engine = create_engine(smadaemon.config.engine)
         model.Base.metadata.create_all(smadaemon.config.engine)
+
+    pushover = Application(smadaemon.config.get("PUSHOVER", "apptoken"))
+    smadaemon.config.pushoveruser = pushover.get_user(
+        smadaemon.config.get("PUSHOVER", "usertoken")
+    )
 
     hueclient = HueClient(smadaemon.config)
     clients = dict(

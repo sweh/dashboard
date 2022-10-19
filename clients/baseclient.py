@@ -233,3 +233,9 @@ class BaseClient:
                 if once:
                     return
                 await asyncio.sleep(self.sleep_time)
+
+    def notify_pushover(self, message, title=None):
+        message = self.config.pushoveruser.create_message(
+            title=title, message=message
+        )
+        message.send()

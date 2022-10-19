@@ -21,6 +21,7 @@ class Client(BaseClient):
     max_battery = 9600
     hueclient = None
     windrad_running = False
+    wallbox_charging = False
 
     def __init__(self, smadaemon, hueclient):
         self.smadaemon = smadaemon
@@ -73,13 +74,14 @@ class Client(BaseClient):
             'Consumption',
             'AC Power Solar',
             'Power to grid',
-            'Power from grid'
+            'Power from grid',
+            'AC Power Wallbox'
         ):
             sums.setdefault(key, 0)
             if not last_item:
                 r = result[key]
             else:
-                r = ((result[key] + last_item[key]) / 2)
+                r = ((result[key] + last_item.get(key, 0)) / 2)
             sums[key] += r / 3600 * seconds
         sums.setdefault('AC Power Battery', 0)
         sums.setdefault('Power from battery', 0)
@@ -237,6 +239,7 @@ class Client(BaseClient):
         self.calculate_costs(result)
         self.calculate_costs_per_hour(result)
         self.check_windrad(result)
+        self.check_wallbox(result)
         return result
 
     def check_windrad(self, result):
@@ -249,6 +252,21 @@ class Client(BaseClient):
         elif self.windrad_running:
             self.hueclient.api.turn_off([9])
             self.windrad_running = False
+
+    def check_wallbox(self, result):
+        if result['AC Power Wallbox'] > 0:
+            amount = result['AC Power Wallbox']
+            if not self.wallbox_charging:
+                self.notify_pushover(f'Auto lädt mit {amount} kWh.')
+                self.wallbox_charging = True
+        else:
+            if self.wallbox_charging:
+                sums = result['sums']['AC Power Wallbox']
+                result['sums']['AC Power Wallbox'] = 0
+                self.notify_pushover(
+                    f'Auto lädt nicht mehr. Gesamtladung: {sums} kWh'
+                )
+                self.wallbox_charging = False
 
     def run_features(self, emparts):
         # running all enabled features
