@@ -255,13 +255,13 @@ class Client(BaseClient):
 
     def check_wallbox(self, result):
         if result['AC Power Wallbox'] > 0:
-            amount = result['AC Power Wallbox']
+            amount = round(result['AC Power Wallbox'] / 1000, 2)
             if not self.wallbox_charging:
                 self.notify_pushover(f'Auto lädt mit {amount} kWh.')
                 self.wallbox_charging = True
         else:
             if self.wallbox_charging:
-                sums = result['sums']['AC Power Wallbox']
+                sums = round(result['sums']['AC Power Wallbox'] / 1000, 2)
                 result['sums']['AC Power Wallbox'] = 0
                 self.notify_pushover(
                     f'Auto lädt nicht mehr. Gesamtladung: {sums} kWh'
