@@ -497,7 +497,7 @@
             'panell1': round(data.sums['AC Power Solar'], 1),
             'panell2': round(data.sums['Power to grid'], 1),
             'panell3': round(data.sums.Consumption, 1),
-            'panell4': round(data.sums['Power from grid'], 1)
+            'panell4': round(data.sums['Power from grid'], 1),
             'panell5': round(data.sums['AC Power Wallbox'], 1)
         };
 
