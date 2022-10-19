@@ -498,6 +498,7 @@
             'panell2': round(data.sums['Power to grid'], 1),
             'panell3': round(data.sums.Consumption, 1),
             'panell4': round(data.sums['Power from grid'], 1)
+            'panell5': round(data.sums['AC Power Wallbox'], 1)
         };
 
         $.each(consume, function (key, value) {
@@ -514,16 +515,16 @@
             unit = '';
         if ((window.ticks % 2) === 0) {
             costs = {
-                'panell5': round(data.costs['Power to grid'], 2),
-                'panell6': round(data.costs['Power saving'], 2),
-                'panell7': round(data.costs['Power from grid'], 2)
+                'panell6': round(data.costs['Power to grid'], 2),
+                'panell7': round(data.costs['Power saving'], 2),
+                'panell8': round(data.costs['Power from grid'], 2)
                };
             unit = '€';
         } else {
             costs = {
-                'panell5': round(data.costs_per_hour['Power to grid'], 2),
-                'panell6': round(data.costs_per_hour['Power saving'], 2),
-                'panell7': round(data.costs_per_hour['Power from grid'], 2)
+                'panell6': round(data.costs_per_hour['Power to grid'], 2),
+                'panell7': round(data.costs_per_hour['Power saving'], 2),
+                'panell8': round(data.costs_per_hour['Power from grid'], 2)
            };
            unit = '€/h';
         }

@@ -22,6 +22,7 @@ class Client(BaseClient):
     hueclient = None
     windrad_running = False
     wallbox_charging = False
+    wallbox_charged = 0
 
     def __init__(self, smadaemon, hueclient):
         self.smadaemon = smadaemon
@@ -261,10 +262,11 @@ class Client(BaseClient):
                 self.wallbox_charging = True
         else:
             if self.wallbox_charging:
-                sums = round(result['sums']['AC Power Wallbox'] / 1000, 2)
-                result['sums']['AC Power Wallbox'] = 0
+                charged = round(result['sums']['AC Power Wallbox'] / 1000, 2)
+                charged_current = round(charged - self.wallbox_charged, 2)
+                self.wallbox_charged = charged
                 self.notify_pushover(
-                    f'Auto lädt nicht mehr. Gesamtladung: {sums} kWh'
+                    f'Auto lädt nicht mehr. Gesamtladung {charged_current} kWh'
                 )
                 self.wallbox_charging = False
 
