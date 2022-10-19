@@ -255,7 +255,7 @@ class Client(BaseClient):
             self.windrad_running = False
 
     def check_wallbox(self, result):
-        if result['AC Power Wallbox'] > 0:
+        if result['AC Power Wallbox'] > 1000:
             amount = round(result['AC Power Wallbox'] / 1000, 2)
             if not self.wallbox_charging:
                 self.notify_pushover(f'Auto lädt mit {amount} kWh.')
