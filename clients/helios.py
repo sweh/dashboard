@@ -17,7 +17,8 @@ class Client(BaseClient):
                 break
             self.slept += 1
             time.sleep(1)
-        open(self.conn_active_filename, 'w')
+        with open(self.conn_active_filename, 'w') as f:
+            f.write('')
 
     async def set_status(self, data):
         value = data['stufe']

@@ -2,6 +2,7 @@
 
     function startWebsocket() {
         window.socket = new WebSocket('wss://' + window.location.hostname + '/wsapp/');
+        //window.socket = new WebSocket('ws://' + window.location.hostname + ':6790/');
 
         window.socket.onopen = function(e) {
             console.log("[open] Connection established, send -> server");
@@ -390,7 +391,6 @@
                 'fa-caret-' + data[key + '_tendency']
             );
         });
-        /*
         $( "#helios_stufe" ).empty();
         $("#helios_stufe").append('<div style="height:70px; margin-left: 20px"></div>');
         $( "#helios_stufe div" ).slider({
@@ -405,8 +405,7 @@
               );
           }
         });
-        */
-        $('#helios_stufe').text(data.stufe);
+        //$('#helios_stufe').text(data.stufe);
     };
 
     var handle_corona = function (data) {
