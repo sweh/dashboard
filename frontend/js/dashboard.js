@@ -710,6 +710,10 @@
             $('#solarpumpactive').parent().addClass('bg-color-red');
         }
         $('#solarcollecttemp').text(round(data.solar_collector_temp, 1));
+        $('#solarpumpkwh').text(round(data['solar_power_production_today'], 1));
+        $('#heaterkwh   ').text(round(
+            data['gas_consumption_heating_today'] +
+            data['gas_consumption_hot_water_today'], 1));
 
     };
 
