@@ -711,10 +711,11 @@
         }
         $('#solarcollecttemp').text(round(data.solar_collector_temp, 1));
         $('#solarpumpkwh').text(round(data['solar_power_production_today'], 1));
-        $('#heaterkwh   ').text(round(
+        $('#heaterkwh').text(round(
             data['gas_consumption_heating_today'] +
             data['gas_consumption_hot_water_today'], 1));
-
+        $('#supply_temp').text(round(data['supply_temp_hk1'], 0));
+        $('#target_supply_temp').text(round(data['target_supply_temp_hk1'], 1));
     };
 
     var handle_tado = function (data) {
