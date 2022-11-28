@@ -659,7 +659,12 @@
         deactivate_light(8, window.hue_lights['8'].bri);
         window.socket.send(JSON.stringify({'hue': {'id': 7, 'on': true}}));
         activate_light(7);
-        //window.socket.send(JSON.stringify({'helios': {'stufe': 1}}));
+        window.socket.send(JSON.stringify({'helios': {'stufe': 1}}));
+    };
+
+    window.open_jalousie = function () {
+        window.socket.send(JSON.stringify({'enet': {'action': 'open'}}));
+        window.socket.send(JSON.stringify({'helios': {'stufe': 2}}));
     };
 
     window.switch_pv_charts = function () {

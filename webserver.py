@@ -1,3 +1,4 @@
+from clients.enet import Client as EnetClient
 from clients.corona import Client as CoronaClient
 from clients.helios import Client as HeliosClient
 from clients.hue import Client as HueClient
@@ -53,6 +54,7 @@ if __name__ == "__main__":
 
     hueclient = HueClient(smadaemon.config)
     clients = dict(
+        enetclient=EnetClient(smadaemon.config),
         pvclient=PVClient(smadaemon, hueclient),
         pvsumsclient=PVSumsClient(smadaemon.config),
         coronaclient=CoronaClient(smadaemon.config),
