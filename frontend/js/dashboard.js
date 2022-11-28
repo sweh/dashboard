@@ -725,6 +725,9 @@
             if (key === 'DeviceClass') {
                 return;
             }
+            if (v.name === 'Bad') {
+                return;
+            }
             var color = '#999999';
             if (v.heating_power > 50) {
                 color = '#BD362F';
@@ -756,6 +759,9 @@
         $('#hue_container').empty();
         $.each(data, function (key, v) {
             if (key === 'DeviceClass') {
+                return;
+            }
+            if (v.name === 'Windrad') {
                 return;
             }
             var bulb = '<div class="col-xs-4 col-sm-4 col-md-4  text-center" style="height: 94px">';
