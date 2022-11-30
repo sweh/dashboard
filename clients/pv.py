@@ -25,6 +25,8 @@ class Client(BaseClient):
     wallbox_charged = 0
 
     def __init__(self, smadaemon, hueclient):
+        if not self.enabled:
+            return
         self.smadaemon = smadaemon
         self.ev_charger_ip = hueclient.config.get("PV", 'ev_charger_ip')
         self.ev_charger_user = hueclient.config.get("PV", 'ev_charger_user')
