@@ -769,6 +769,9 @@
             if (v.name === 'Windrad') {
                 return;
             }
+            if (v.name === 'Kleines Bad Stecker') {
+                return;
+            }
             var bulb = '<div class="col-xs-4 col-sm-4 col-md-4  text-center" style="height: 94px">';
             bulb += '<span id="hue_' + key + '" style="position: relative; display: inline-grid; width: 80px" class="">';
             if (!isUndefinedOrNull(v.bri)) {
