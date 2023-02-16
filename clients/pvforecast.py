@@ -19,19 +19,16 @@ class Client(BaseClient):
     @property
     def data(self):
         forecast_raw = []
+        forecast_raw_day = []
         for url in self.api_urls:
             r = requests.get(url, timeout=5).json()
             if r['result'] is None:
                 raise ValueError(r['message'])
             forecast_raw.append(r['result']['watts'])
+            forecast_raw_day.append(r['result']['watt_hours_day'])
         forecast = []
         today = datetime.date.today().isoformat()
-        now = datetime.datetime.now().strftime('%Y-%m-%d %H:')
-        start = False
         for ts in forecast_raw[0].keys():
-            if not start and not ts.startswith(now):
-                continue
-            start = True
             if not ts.startswith(today):
                 continue
             watts = (
@@ -44,6 +41,10 @@ class Client(BaseClient):
             # 2023-02-16T09:16:24.882Z
             ts = utc_dt.isoformat()[:19] + '.000Z'
             forecast.append(dict(timestamp=ts, value=watts))
+        forecast_day = 0
+        for item in forecast_raw_day:
+            forecast_day += item[today]
         return dict(
-            forecast=forecast
+            forecast=forecast,
+            forecast_day=forecast_day
         )
