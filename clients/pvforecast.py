@@ -20,12 +20,10 @@ class Client(BaseClient):
     def data(self):
         forecast_raw = []
         for url in self.api_urls:
-            try:
-                forecast_raw.append(
-                    requests.get(url, timeout=5).json()['result']['watts']
-                )
-            except Exception:
-                return
+            r = requests.get(url, timeout=5).json()
+            if r['result'] is None:
+                raise ValueError(r['message'])
+            forecast_raw.append(r['result']['watts'])
         forecast = []
         today = datetime.date.today().isoformat()
         now = datetime.datetime.now().strftime('%Y-%m-%d %H:')
@@ -44,7 +42,7 @@ class Client(BaseClient):
             local_dt = local.localize(naive, is_dst=None)
             utc_dt = local_dt.astimezone(pytz.utc)
             # 2023-02-16T09:16:24.882Z
-            ts = utc_dt.isoformat() + '.000Z'
+            ts = utc_dt.isoformat()[:19] + '.000Z'
             forecast.append(dict(timestamp=ts, value=watts))
         return dict(
             forecast=forecast
