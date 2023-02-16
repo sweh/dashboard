@@ -25,6 +25,8 @@ class Client(BaseClient):
     wallbox_charged = 0
 
     def __init__(self, smadaemon, hueclient):
+        if not int(hueclient.config.get("PV", 'enabled')):
+            return
         self.smadaemon = smadaemon
         self.ev_charger_ip = hueclient.config.get("PV", 'ev_charger_ip')
         self.ev_charger_user = hueclient.config.get("PV", 'ev_charger_user')
@@ -34,8 +36,6 @@ class Client(BaseClient):
         if hueclient.enabled:
             self.hueclient = hueclient
         super(Client, self).__init__(smadaemon.config)
-        if not self.enabled:
-            return
         self.sock = smadaemon.connect_to_socket()
 
     def save_result_to_file(self, data):
