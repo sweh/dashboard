@@ -1,4 +1,5 @@
 import requests
+import pytz
 import datetime
 from clients.baseclient import BaseClient
 
@@ -11,8 +12,8 @@ class Client(BaseClient):
         'https://api.forecast.solar/estimate/51.8887/12.6473/22/70/3.9',
     )
     external = True
-    sleep_time = 900
-    keep_items = 0
+    sleep_time = 3600
+    keep_items = 1
     type_ = 'PVForecast'
 
     @property
@@ -38,6 +39,12 @@ class Client(BaseClient):
             watts = (
                 forecast_raw[0][ts] + forecast_raw[1][ts] + forecast_raw[2][ts]
             )
+            local = pytz.timezone("Europe/Berlin")
+            naive = datetime.datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
+            local_dt = local.localize(naive, is_dst=None)
+            utc_dt = local_dt.astimezone(pytz.utc)
+            # 2023-02-16T09:16:24.882Z
+            ts = utc_dt.isoformat() + '.000Z'
             forecast.append(dict(timestamp=ts, value=watts))
         return dict(
             forecast=forecast
