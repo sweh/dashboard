@@ -22,6 +22,8 @@
                 handle_helios(data);
             } else if (data.DeviceClass === 'RSS') {
                 handle_rss(data);
+            } else if (data.DeviceClass === 'PVForecast') {
+                handle_pv_forecast(data);
             } else if (data.DeviceClass === 'PV') {
                 handle_pv(data);
             } else if (data.DeviceClass === 'PVSums') {
@@ -112,9 +114,10 @@
     var $chrt_fourth = "#4c4f53";       /* blueDark  */
     var $chrt_fifth = "#a90329";        /* red       */
     var $chrt_sixth = "#B877D9";        /* lila       */
+    var $chrt_seventh = "#D3D3D3";        /* lila       */
     var $chrt_mono = "#000";
 
-    var d = [], e = [], f = [], g = [], h = [], i = [];
+    var d = [], e = [], f = [], g = [], h = [], i = [], v = [];
 
     var tooltip_content = "%x Uhr<br /><span>%y Wh</span>";
     var pvchart = function() {
@@ -152,12 +155,17 @@
                     }
                 },
                 points: { show: false },
-                shadowSize : 0
+                shadowSize : 0,
+                curvedLines: {
+                    apply: true,
+                    monotonicFit: true,
+                    active: true
+                }
             },
-            colors : [$chrt_main, $chrt_second, $chrt_third, $chrt_fourth, $chrt_fifth, $chrt_sixth],
+            colors : [$chrt_main, $chrt_second, $chrt_third, $chrt_fourth, $chrt_fifth, $chrt_sixth, $chrt_seventh],
         };
         if ($('#pvchart').is(":visible")) {
-            plot_1 = $.plot($("#pvchart"), [d,e,f,g,h,i], options);
+            plot_1 = $.plot($("#pvchart"), [d,e,f,g,h,i,v], options);
         }
     };
 
@@ -489,6 +497,13 @@
         if (data.day == today) {
             pvhistory();
         }
+    };
+
+    var handle_pv_forecast = function (data) {
+        v = [];
+        $.each(data.forecast, function (key, value) {
+            v.push([new Date(value.timestamp), value.value]);
+        });
     };
 
     var handle_pv = function (data) {
