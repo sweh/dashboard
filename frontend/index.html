@@ -42,6 +42,10 @@
                 font-size: 20px;
                 margin-top: 6px;
             }
+            .bg-color-gray {
+                background-color: lightgray !important;
+                color: black;
+            }
             .pv_fixed_height .label {
                 width: auto !important;
             }
@@ -203,6 +207,17 @@
                                 </header>
                                 <div class="pv_fixed_height">
                                     <div class="widget-body no-padding">
+                                        <div class="row" style="position: absolute; left: 5px; top: -2px;">
+                                          <div class="col-sm-12 col-md-12 text-center">
+                                              <ul class="smaller-stat" style="">
+                                                  <li>
+                                                      <span class="label bg-color-gray" style="width: auto;">
+                                                          <i id="pvforecast" class="fas fa-sun"></i> <span id="pvforecastday">0 W</span>
+                                                      </span>
+                                                  </li>
+                                              </ul>
+                                          </div>
+                                        </div>
                                         <div class="row">
                                             <div class="col-xs-4 col-sm-4 col-md-2 text-center">
                                                 <h3 class="margin-bottom-0">

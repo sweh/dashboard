@@ -499,7 +499,19 @@
         }
     };
 
+    var fmt_watts = function (value) {
+      var unit = 'W';
+      if (value > 1000) {
+          value = round(value / 1000, 1);
+          unit = 'kW';
+      } else {
+          value = round(value);
+      }
+      return value + ' ' + unit;
+    };
+
     var handle_pv_forecast = function (data) {
+        $('#pvforecastday').text(fmt_watts(data.forecast_day));
         v = [];
         $.each(data.forecast, function (key, value) {
             v.push([new Date(value.timestamp), value.value]);
@@ -520,14 +532,8 @@
 
         $.each(consume, function (key, value) {
             var elem = $('#' + key),
-                unit = 'W';
-            if (value > 1000) {
-                value = round(value / 1000, 1);
-                unit = 'kW';
-            } else {
-                value = round(value);
-            }
-            elem.text(value + ' ' + unit);
+                value = fmt_watts(value);
+            elem.text(value);
         });
 
         var costs = {},

@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 
 class BaseClient:
 
-    sleep_time = 60
+    sleep_time = 60  # seconds
     keep_items = 1
     history = None
     websockets = None
