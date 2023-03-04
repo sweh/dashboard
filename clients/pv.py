@@ -16,8 +16,8 @@ class Client(BaseClient):
 
     sleep_time = 5
     type_ = 'PV'
-    keep_items = 1
-    kw_price = 0.2769
+    keep_items = 10000
+    kw_price = 0.3000
     max_battery = 9600
     hueclient = None
     windrad_running = False
@@ -37,6 +37,20 @@ class Client(BaseClient):
             self.hueclient = hueclient
         super(Client, self).__init__(smadaemon.config)
         self.sock = smadaemon.connect_to_socket()
+
+    async def register(self, websocket):
+        self.websockets[websocket] = []
+        history = []
+        for item in self.history._data:
+            if item['timestamp'] < datetime.now().strftime(
+                '%Y-%m-%dT06:00:00.000Z'
+            ):
+                continue
+            history.append(item)
+
+        while len(history) > 100:
+            del history[::2]
+        await self.send(websocket, history)
 
     def save_result_to_file(self, data):
         data = dict(

@@ -40,6 +40,8 @@
                 handle_vicare(data);
             } else if (data.DeviceClass === 'WIFI') {
                 handle_wifi(data);
+            } else if (data[0] && (data[0].DeviceClass === 'PV')) {
+                handle_pv_history(data);
             } else {
                 console.log('ERROR: Unknown DeviceClass ' + data.DeviceClass);
                 console.log(data);
@@ -518,6 +520,26 @@
         });
     };
 
+    var handle_pv_history = function (data) {
+        $(data).each(function (index, item) {
+            var timestamp = new Date(item.timestamp);
+            var power_from_grid = item['Power from grid'];
+            var panelpower = item['AC Power Solar'] || 0;
+            var batterypower = item['AC Power Battery'] || 0;
+            var power_to_grid = item['Power to grid'] || 0;
+            var consumption = Math.floor(item.Consumption);
+            var wallbox = Math.floor(item['AC Power Wallbox']) || 0;
+            batterypower = 0 - batterypower;
+
+            d.push([timestamp, panelpower]); /* Solar Dach */
+            e.push([timestamp, power_to_grid]); /* Einspeisung */
+            f.push([timestamp, batterypower]); /* Batterie */
+            g.push([timestamp, 0 - consumption]); /* Verbrauch */
+            h.push([timestamp, 0 - power_from_grid]); /* Netzbezug */
+            i.push([timestamp, wallbox]); /* Wallbox */
+        });
+    };
+
     var handle_pv = function (data) {
         tick();
         timestamp = new Date(data.timestamp);
@@ -570,7 +592,7 @@
         var batterychargetime = data.BatteryChargeTime;
 
         var consumption = Math.floor(data.Consumption);
-        var wallbox = Math.floor(data['AC Power Wallbox']);
+        var wallbox = Math.floor(data['AC Power Wallbox']) || 0;
         batterypower = 0 - batterypower;
 
         d.push([timestamp, panelpower]); /* Solar Dach */
