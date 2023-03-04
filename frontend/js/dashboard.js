@@ -10,6 +10,8 @@
             $('.pace').addClass('pace-inactive').removeClass('pace-active');
         };
 
+        d = [], e = [], f = [], g = [], h = [], i = [], v = [];
+
         window.socket.onmessage = function(event) {
             var timestamp = Date.now(),
                 data = JSON.parse(event.data);

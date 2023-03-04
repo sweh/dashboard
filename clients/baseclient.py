@@ -14,6 +14,7 @@ class BaseClient:
 
     sleep_time = 60  # seconds
     keep_items = 1
+    keep_datetime = None
     history = None
     websockets = None
     external = False
@@ -27,7 +28,8 @@ class BaseClient:
         self.history = History(
             self.type_,
             config.engine,
-            max_items=self.keep_items
+            max_items=self.keep_items,
+            max_datetime=self.keep_datetime,
         )
         self.websockets = {}
 

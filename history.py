@@ -21,11 +21,12 @@ class History:
     db_class = None
     session = None
 
-    def __init__(self, name, engine, max_items=None):
+    def __init__(self, name, engine, max_items=None, max_datetime=None):
         self.db_class = getattr(model, name, None)
         self.session = sessionmaker(bind=engine)()
         self.name = f'history_{name}.bin'
         self.max_items = max_items
+        self.max_datetime = max_datetime
         self.load()
 
     def append(self, item):
@@ -52,11 +53,13 @@ class History:
 
     def _load_from_db(self):
         self._data = []
-        for item in (
-            self.session.query(self.db_class)
-            .order_by(self.db_class._timestamp.desc())
-            .limit(self.max_items)
-        ):
+        query = self.session.query(self.db_class)
+        if self.max_datetime:
+            query = query.filter(self.db_class._timestamp >= self.max_datetime)
+        query = query.order_by(self.db_class._timestamp.desc())
+        if self.max_items:
+            query = query.limit(self.max_items)
+        for item in query:
             item = sqlalchemy_encode(item)
             item['DeviceClass'] = self.db_class.__name__
             self._data.append(item)

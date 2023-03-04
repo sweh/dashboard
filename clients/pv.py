@@ -1,4 +1,5 @@
 import json
+import copy
 import requests
 from datetime import datetime, timedelta
 from speedwiredecoder import decode_speedwire
@@ -16,7 +17,7 @@ class Client(BaseClient):
 
     sleep_time = 5
     type_ = 'PV'
-    keep_items = 10000
+    keep_items = None
     kw_price = 0.3000
     max_battery = 9600
     hueclient = None
@@ -35,19 +36,15 @@ class Client(BaseClient):
         )
         if hueclient.enabled:
             self.hueclient = hueclient
+        self.keep_datetime = datetime.strptime(datetime.now().strftime(
+            '%Y-%m-%dT06:00:00.000Z'
+            )[:19], '%Y-%m-%dT%H:%M:%S')
         super(Client, self).__init__(smadaemon.config)
         self.sock = smadaemon.connect_to_socket()
 
     async def register(self, websocket):
         self.websockets[websocket] = []
-        history = []
-        for item in self.history._data:
-            if item['timestamp'] < datetime.now().strftime(
-                '%Y-%m-%dT06:00:00.000Z'
-            ):
-                continue
-            history.append(item)
-
+        history = copy.deepcopy(self.history._data)
         while len(history) > 100:
             del history[::2]
         await self.send(websocket, history)
