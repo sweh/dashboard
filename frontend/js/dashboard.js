@@ -10,8 +10,6 @@
             $('.pace').addClass('pace-inactive').removeClass('pace-active');
         };
 
-        d = [], e = [], f = [], g = [], h = [], i = [], v = [];
-
         window.socket.onmessage = function(event) {
             var timestamp = Date.now(),
                 data = JSON.parse(event.data);
@@ -523,6 +521,8 @@
     };
 
     var handle_pv_history = function (data) {
+        d = [], e = [], f = [], g = [], h = [], i = [], v = [];
+
         $(data).each(function (index, item) {
             var timestamp = new Date(item.timestamp);
             var power_from_grid = item['Power from grid'];
@@ -540,6 +540,7 @@
             h.push([timestamp, 0 - power_from_grid]); /* Netzbezug */
             i.push([timestamp, wallbox]); /* Wallbox */
         });
+        pvchart();
     };
 
     var handle_pv = function (data) {
@@ -597,14 +598,6 @@
         var wallbox = Math.floor(data['AC Power Wallbox']) || 0;
         batterypower = 0 - batterypower;
 
-        d.push([timestamp, panelpower]); /* Solar Dach */
-        e.push([timestamp, power_to_grid]); /* Einspeisung */
-        f.push([timestamp, batterypower]); /* Batterie */
-        g.push([timestamp, 0 - consumption]); /* Verbrauch */
-        h.push([timestamp, 0 - power_from_grid]); /* Netzbezug */
-        i.push([timestamp, wallbox]); /* Wallbox */
-        pvchart();
-
         $('#panelacpower').text(panelpower);
         $('#powertogrid').text(power_to_grid);
         $('#batteryacpower').text(batterypower);
@@ -637,6 +630,18 @@
         } else {
             $('#panelstatus').addClass('glyphicon-remove-circle');
         }
+
+        if (!d) {
+            return;
+        }
+        d.push([timestamp, panelpower]); /* Solar Dach */
+        e.push([timestamp, power_to_grid]); /* Einspeisung */
+        f.push([timestamp, batterypower]); /* Batterie */
+        g.push([timestamp, 0 - consumption]); /* Verbrauch */
+        h.push([timestamp, 0 - power_from_grid]); /* Netzbezug */
+        i.push([timestamp, wallbox]); /* Wallbox */
+        pvchart();
+
     };
 
     var activate_water_control = function () {

@@ -17,7 +17,7 @@ class Client(BaseClient):
 
     sleep_time = 5
     type_ = 'PV'
-    keep_items = None
+    keep_items = 0
     kw_price = 0.3000
     max_battery = 9600
     hueclient = None
@@ -44,10 +44,8 @@ class Client(BaseClient):
 
     async def register(self, websocket):
         self.websockets[websocket] = []
-        history = copy.deepcopy(self.history._data)
-        while len(history) > 100:
-            del history[::2]
-        await self.send(websocket, history)
+        await self.send(websocket, self.history._data[-1])
+        await self.send(websocket, self.history._data)
 
     def save_result_to_file(self, data):
         data = dict(
