@@ -37,7 +37,7 @@ class Client(BaseClient):
         if hueclient.enabled:
             self.hueclient = hueclient
         self.keep_datetime = datetime.strptime(datetime.now().strftime(
-            '%Y-%m-%dT06:00:00.000Z'
+            '%Y-%m-%dT05:00:00.000Z'
             )[:19], '%Y-%m-%dT%H:%M:%S')
         super(Client, self).__init__(smadaemon.config)
         self.sock = smadaemon.connect_to_socket()
