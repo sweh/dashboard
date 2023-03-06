@@ -31,13 +31,17 @@ class Client(BaseClient):
         )
         return lnetatmo.WeatherStationData(authorization)
 
-    def get_outside_temperature(self, weatherData):
+    def get_update_with_netatmo_data(self, weatherData):
         result = dict()
 
         station = weatherData.stationByName('Am Wachtelberg 14 (Wohnzimmer)')
         for module in station['modules']:
             if module['type'] == 'NAModule1':
                 result['out_temp'] = module['dashboard_data']['Temperature']
+            if module['type'] == 'NAModule3':
+                result['rain'] = module['dashboard_data']['sum_rain_24']
+            if module['type'] == 'NAModule2':
+                result['wind'] = module['dashboard_data']['WindStrength']
 
         return result
 
@@ -99,7 +103,7 @@ class Client(BaseClient):
     def data(self):
         weatherData = self.authenticate()
         self.save_weather_to_influx(weatherData)
-        result = self.get_outside_temperature(weatherData)
+        result = self.get_update_with_netatmo_data(weatherData)
         api_key = self.config.get("WEATHER", 'openweather_api_key')
         if api_key:
             url = (
