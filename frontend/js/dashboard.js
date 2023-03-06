@@ -4,6 +4,7 @@
         window.socket = new WebSocket('wss://' + window.location.hostname + '/wsapp/');
         //window.socket = new WebSocket('ws://' + window.location.hostname + ':6790/');
 
+
         window.socket.onopen = function(e) {
             console.log("[open] Connection established, send -> server");
             $('body').addClass('pace-done').removeClass('pace-running');
@@ -320,7 +321,7 @@
         if ($('#pvchart-history').is(":visible")) {
             $('.pvhistory_pagination').remove();
             $('#pvchart-history').after(
-                '<div class="pvhistory_pagination" style="text-align: center; margin-top: -5px;"><div class="dropdown-menu ml-auto ajax-dropdown"><div class="btn-group pages"></div></div></div>'
+                '<div class="pvhistory_pagination" style="text-align: center; margin-top: -5px;"><div class="dropdown-menu ml-auto"><div class="btn-group pages"></div></div></div>'
             );
             $('.pvhistory_pagination').append(
                 '<button class="btn btn-default btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Auswählen</button>'
@@ -331,7 +332,7 @@
                     type = 'primary';
                 }
                 $('.pvhistory_pagination .btn-group').append(
-                    '<button type="button" class="btn btn-' + type + ' btn-xs" data-page="'+ i +'">' + page_labels[i] + '</button>'
+                    '<button type="button" class="btn btn-' + type + '" data-page="'+ i +'">' + page_labels[i] + '</button>'
                 );
             }
             $('.pvhistory_pagination').append(
@@ -448,6 +449,8 @@
             weather_alerts = data.alerts;
 
         $('#current_temp').text(current_temp);
+        $('#current_rain').text(round(data.rain, 1));
+        $('#current_wind').text(round(data.wind, 1));
         $("#current_weather_icon").removeClass (function (index, className) {
             return (className.match (/(^|\s)owi-\S+/g) || []).join(' ');
         });
@@ -721,6 +724,7 @@
         $('.pvhistory_pagination').toggle();
         $('#pvchart-history').toggle();
         $('#pvchart').toggle();
+        pvchart();
     };
 
     var handle_vicare = function (data) {
