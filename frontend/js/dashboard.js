@@ -119,7 +119,7 @@
     var $chrt_seventh = "#D3D3D3";        /* lila       */
     var $chrt_mono = "#000";
 
-    var d = [], e = [], f = [], g = [], h = [], i = [];
+    var d = [], e = [], f = [], g = [], h = [], i = [], v = [];
 
     var tooltip_content = "%x Uhr<br /><span>%y Wh</span>";
     var pvchart = function() {
@@ -521,7 +521,7 @@
     };
 
     var handle_pv_history = function (data) {
-        d = [], e = [], f = [], g = [], h = [], i = [], v = [];
+        d = [], e = [], f = [], g = [], h = [], i = [];
 
         $(data).each(function (index, item) {
             var timestamp = new Date(item.timestamp);
