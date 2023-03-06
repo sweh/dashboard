@@ -119,7 +119,7 @@
     var $chrt_seventh = "#D3D3D3";        /* lila       */
     var $chrt_mono = "#000";
 
-    var d = [], e = [], f = [], g = [], h = [], i = [], v = [];
+    var d = [], e = [], f = [], g = [], h = [], i = [];
 
     var tooltip_content = "%x Uhr<br /><span>%y Wh</span>";
     var pvchart = function() {
