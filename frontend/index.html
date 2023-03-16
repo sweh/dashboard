@@ -224,6 +224,16 @@
                                                     <br>
                                                     <small class="font-xs"><sup><span class="badge bg-color-green">Erzeugung</span></sup></small>
                                                 </h3>
+                                                <ul class="smaller-stat" style="margin-top: -8px; display: inline-block">
+                                                    <li>
+                                                        <span class="label bg-color-green pull-left text-center pv_sums" style="font-size: 9px;">
+                                                            <span id="panell1">0.0 kW</span>
+                                                        </span>
+                                                        <span class="label bg-color-green pull-left text-center pv_costs" style="font-size: 9px;">
+                                                            <span id="panell7">0.00 €</span>
+                                                        </span>
+                                                    </li>
+                                                </ul>
                                             </div>
                                             <div class="col-xs-4 col-sm-4 col-md-2 text-center">
                                                 <h3 class="margin-bottom-0">
@@ -232,6 +242,16 @@
                                                     <small
                                                         class="font-xs"><sup><span class="badge bg-color-blue">Einspeisung</span></sup></small>
                                                 </h3>
+                                                <ul class="smaller-stat" style="margin-top: -8px; display: inline-block">
+                                                    <li>
+                                                        <span class="label bg-color-blue pull-left text-center pvsums" style="font-size: 9px;">
+                                                            <span id="panell2">0.0 kW</span>
+                                                        </span>
+                                                        <span class="label bg-color-blue pull-left text-center pv_costs" style="font-size: 9px;">
+                                                            <span id="panell6">0.00 €</span>
+                                                        </span>
+                                                    </li>
+                                                </ul>
                                             </div>
                                             <div class="col-xs-4 col-sm-4 col-md-2 text-center">
                                                 <h3 class="margin-bottom-0">
@@ -240,6 +260,17 @@
                                                     <small
                                                         class="font-xs"><sup><span class="badge bg-color-orange">Batterie</span></sup></small>
                                                 </h3>
+                                                <ul class="smaller-stat battery_percent" style="margin-top: -8px; width: 92px; display: inline-block">
+                                                    <li>
+                                                        <span class="label pull-right" style="font-size: 10px; color: black">
+                                                            <span id="batterytemp">00:00</span>
+                                                        </span>
+                                                        <span id="batterycharging" class="label pull-left bg-color-orange" style="font-size: 9px;">
+                                                            <i class="fa fa-caret-up"></i>
+                                                            <span id="batterycapacity">0.0</span> kW
+                                                        </span>
+                                                    </li>
+                                                </ul>
                                             </div>
                                             <div class="col-xs-4 col-sm-4 col-md-2 text-center">
                                                 <h3 class="margin-bottom-0">
@@ -247,6 +278,13 @@
                                                     <br>
                                                     <small class="font-xs"><sup><span class="badge" style="background-color: #B877D9!important;">Wallbox</span></sup></small>
                                                 </h3>
+                                                <ul class="smaller-stat wallbox_sums" style="margin-top: -8px; display: inline-block">
+                                                    <li>
+                                                        <span class="label bg-color-red  pull-left text-center" style="font-size: 9px; background-color: #B877D9!important;">
+                                                            <span id="panell5">0.0 kW</span>
+                                                        </span>
+                                                    </li>
+                                                </ul>
                                             </div>
                                             <div class="col-xs-4 col-sm-4 col-md-2 text-center">
                                                 <h3 class="margin-bottom-0">
@@ -254,6 +292,13 @@
                                                     <br>
                                                     <small class="font-xs"><sup><span class="badge bg-color-blueDark">Verbrauch</span></sup></small>
                                                 </h3>
+                                                <ul class="smaller-stat pvsums" style="margin-top: -8px; display: inline-block">
+                                                    <li>
+                                                        <span class="label bg-color-blueDark pull-left text-center" style="font-size: 9px;">
+                                                            <span id="panell3">0.0 kW</span>
+                                                        </span>
+                                                    </li>
+                                                </ul>
                                             </div>
                                             <div class="col-xs-4 col-sm-4 col-md-2 text-center">
                                                 <h3 class="margin-bottom-0">
@@ -261,64 +306,16 @@
                                                     <br>
                                                     <small class="font-xs"><sup><span class="badge bg-color-red">Netzbezug</span></sup></small>
                                                 </h3>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-xs-12 col-sm-4 col-md-4 text-center pv_sums">
-                                            <ul class="smaller-stat" style="margin-top: -8px; display: inline-block">
-                                                <li>
-                                                    <span class="label bg-color-green pull-left text-center" style="font-size: 9px;">
-                                                        <span id="panell1">0</span>
-                                                    </span>
-                                                    <span class="label bg-color-blue pull-left text-center" style="font-size: 9px;">
-                                                        <span id="panell2">0</span>
-                                                    </span>
-                                                    <span class="label bg-color-blueDark pull-left text-center" style="font-size: 9px;">
-                                                        <span id="panell3">0</span>
-                                                    </span>
-                                                    <span class="label bg-color-red  pull-left text-center" style="font-size: 9px;">
-                                                        <span id="panell4">0</span>
-                                                    </span>
-                                                </li>
-                                            </ul>
-                                            </div>
-                                            <div class="col-xs-12 col-sm-2 col-md-2 text-center battery_percent">
-                                            <ul class="smaller-stat" style="margin-top: -8px; width: 92px; display: inline-block">
-                                                <li>
-                                                    <span class="label pull-right" style="font-size: 10px; color: black">
-                                                        <span id="batterytemp">0</span>
-                                                    </span>
-                                                    <span id="batterycharging" class="label bg-color-red pull-left" style="font-size: 9px;">
-                                                        <i class="fa
-                                                            fa-caret-down"></i>
-                                                        <span id="batterycapacity">0</span> kW
-                                                    </span>
-                                                </li>
-                                            </ul>
-                                            </div>
-                                            <div class="col-xs-12 col-sm-2 col-md-2 text-center wallbox_sums">
-                                            <ul class="smaller-stat" style="margin-top: -8px; display: inline-block">
-                                                <li>
-                                                    <span class="label bg-color-red  pull-left text-center" style="font-size: 9px; background-color: #B877D9!important;">
-                                                        <span id="panell5">0</span>
-                                                    </span>
-                                                </li>
-                                            </ul>
-                                            </div>
-                                            <div class="col-xs-12 col-sm-6 col-md-4 text-center pv_costs">
-                                            <ul class="smaller-stat" style="margin-top: -8px; display: inline-block">
-                                                <li>
-                                                    <span class="label bg-color-blue pull-left text-center" style="font-size: 9px;">
-                                                        <span id="panell6">0</span>
-                                                    </span>
-                                                    <span class="label bg-color-green pull-left text-center" style="font-size: 9px;">
-                                                        <span id="panell7">0</span>
-                                                    </span>
-                                                    <span class="label bg-color-red  pull-left text-center" style="font-size: 9px;">
-                                                        <span id="panell8">0</span>
-                                                    </span>
-                                                </li>
-                                            </ul>
+                                                <ul class="smaller-stat" style="margin-top: -8px; display: inline-block">
+                                                    <li>
+                                                        <span class="label bg-color-red  pull-left text-center pvsums" style="font-size: 9px;">
+                                                            <span id="panell4">0.0 kW</span>
+                                                        </span>
+                                                        <span class="label bg-color-red  pull-left text-center pv_costs" style="font-size: 9px;">
+                                                            <span id="panell8">0.00 €</span>
+                                                        </span>
+                                                    </li>
+                                                </ul>
                                             </div>
                                         </div>
 
