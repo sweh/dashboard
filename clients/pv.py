@@ -259,10 +259,10 @@ class Client(BaseClient):
             return
         if result['BatteryCharge'] == 100:
             if not self.windrad_running:
-                self.hueclient.api.turn_on([9])
+                # self.hueclient.api.turn_on([9])
                 self.windrad_running = True
         elif self.windrad_running:
-            self.hueclient.api.turn_off([9])
+            # self.hueclient.api.turn_off([9])
             self.windrad_running = False
 
     def check_wallbox(self, result):
