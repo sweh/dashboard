@@ -9,7 +9,12 @@ from clients.baseclient import BaseClient
 EVCHARGERKEYMAP = {
     'Measurement.Metering.GridMs.TotWIn.ChaSta': 'AC Power Wallbox',
     'Measurement.Operation.Health': 'WallboxHealth',
+    'Measurement.Operation.Evt.Msg': 'WallboxLastLog',
     'Measurement.Operation.EVeh.ChaStt': 'WallboxState',
+}
+
+WALLBOXLOG = {
+    302: ''
 }
 
 
@@ -183,7 +188,8 @@ class Client(BaseClient):
                     }.get(value)
                 if key == 'WallboxHealth':
                     value = 'Ok' if value == 307 else 'NA'
-
+                elif key == 'WallboxLastLog':
+                    value = WALLBOXLOG.get(value, str(value))
                 result[key] = value
             return result
         except Exception:

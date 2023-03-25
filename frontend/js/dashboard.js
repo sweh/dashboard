@@ -607,6 +607,9 @@
         $('#batterycapacity').text(round(batterycapacitywatts/1000, 2));
         $('#consumption').text(consumption);
         $('#wallbox').text(wallbox);
+        if (data['WallboxLastLog']) {
+            $('#panell5').text(data['WallboxLastLog']);
+        }
 
         $('#batterycharging').find('i').removeClass('fa-caret-up');
         $('#batterycharging').find('i').removeClass('fa-caret-down');
