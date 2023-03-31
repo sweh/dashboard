@@ -1,7 +1,6 @@
 import json
-import copy
 import requests
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from speedwiredecoder import decode_speedwire
 from clients.baseclient import BaseClient
 
@@ -9,12 +8,12 @@ from clients.baseclient import BaseClient
 EVCHARGERKEYMAP = {
     'Measurement.Metering.GridMs.TotWIn.ChaSta': 'AC Power Wallbox',
     'Measurement.Operation.Health': 'WallboxHealth',
-    'Measurement.Operation.Evt.Msg': 'WallboxLastLog',
     'Measurement.Operation.EVeh.ChaStt': 'WallboxState',
 }
 
 WALLBOXLOG = {
-    302: ''
+    7605: 'Kommunikationsfehler Leistungsteil',
+    7619: 'Störung der Kommunikation zur Zählereinrichtung',
 }
 
 
@@ -156,20 +155,22 @@ class Client(BaseClient):
             return {}
         try:
             resp = requests.post(
-                f'http://{self.ev_charger_ip}/api/v1/token',
+                f'https://{self.ev_charger_ip}/api/v1/token',
                 data=dict(
                     grant_type='password',
                     username=self.ev_charger_user,
                     password=self.ev_charger_password,
                 ),
+                verify=False,
                 timeout=5
             )
             token = resp.json()['access_token']
 
             resp = requests.post(
-                f'http://{self.ev_charger_ip}/api/v1/measurements/live/',
+                f'https://{self.ev_charger_ip}/api/v1/measurements/live/',
                 json=[dict(componentId='IGULD:SELF')],
                 headers=dict(Authorization=f'Bearer {token}'),
+                verify=False,
                 timeout=5
             )
 
@@ -188,9 +189,41 @@ class Client(BaseClient):
                     }.get(value)
                 if key == 'WallboxHealth':
                     value = 'Ok' if value == 307 else 'NA'
-                elif key == 'WallboxLastLog':
-                    value = WALLBOXLOG.get(value, str(value))
                 result[key] = value
+
+            from_ = (
+                datetime.now(timezone.utc) - timedelta(hours=2)
+            ).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            resp = requests.post(
+                f'https://{self.ev_charger_ip}/api/v1/customermessages/search',
+                json={
+                    "componentId": "Plant:1",
+                    "until": None,
+                    "messageGroupTags": [],
+                    "traceLevels": ["Error"],
+                    "deviceIds": [],
+                    "deviceProductGroupTagIds": [],
+                    "from": from_,
+                },
+                headers=dict(
+                    Authorization=f'Bearer {token}',
+                    Referer=(
+                        f'https://{self.ev_charger_ip}/webui/Plant:1/'
+                        f'monitoring/view-customer-messages'
+                    )
+                ),
+                verify=False,
+                timeout=5
+            )
+
+            result['WallboxLastLog'] = ''
+            if len(resp.json()):
+                lastlog = resp.json()[0]
+                if lastlog['timestamp'] > from_:
+                    result['WallboxLastLog'] = WALLBOXLOG.get(
+                        lastlog['messageId'], lastlog['messageId']
+                    )
+
             return result
         except Exception:
             return {}
