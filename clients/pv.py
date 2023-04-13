@@ -226,6 +226,7 @@ class Client(BaseClient):
                     result['WallboxLastLog'] = WALLBOXLOG.get(
                         lastlog['messageId'], lastlog['messageId']
                     )
+                    self.notify_pushover(result['WallboxLastLog'])
 
             return result
         except Exception:
@@ -311,16 +312,16 @@ class Client(BaseClient):
         if result['AC Power Wallbox'] > 1000:
             amount = round(result['AC Power Wallbox'] / 1000, 2)
             if not self.wallbox_charging:
-                self.notify_pushover(f'Auto lädt mit {amount} kWh.')
+                # self.notify_pushover(f'Auto lädt mit {amount} kWh.')
                 self.wallbox_charging = True
         else:
             if self.wallbox_charging:
                 charged = round(result['sums']['AC Power Wallbox'] / 1000, 2)
                 charged_current = round(charged - self.wallbox_charged, 2)
                 self.wallbox_charged = charged
-                self.notify_pushover(
-                    f'Auto lädt nicht mehr. Gesamtladung {charged_current} kWh'
-                )
+                # self.notify_pushover(
+                #     f'Auto lädt nicht mehr. Gesamtladung {charged_current} kWh'
+                # )
                 self.wallbox_charging = False
 
     def run_features(self, emparts):
