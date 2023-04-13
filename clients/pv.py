@@ -1,6 +1,7 @@
 import json
 import requests
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, date, timedelta
+from pytz import timezone
 from speedwiredecoder import decode_speedwire
 from clients.baseclient import BaseClient
 
@@ -192,7 +193,7 @@ class Client(BaseClient):
                 result[key] = value
 
             from_ = (
-                datetime.now(timezone.utc) - timedelta(hours=2)
+                datetime.now(timezone('Europe/Berlin')) + timedelta(hours=1)
             ).strftime("%Y-%m-%dT%H:%M:%S.000Z")
             resp = requests.post(
                 f'https://{self.ev_charger_ip}/api/v1/customermessages/search',
@@ -219,7 +220,9 @@ class Client(BaseClient):
             result['WallboxLastLog'] = ''
             if len(resp.json()):
                 lastlog = resp.json()[0]
-                if lastlog['timestamp'] > from_:
+                if lastlog['timestamp'] > (
+                    datetime.now(timezone('UTC')) - timedelta(hours=2)
+                ).strftime("%Y-%m-%dT%H:%M:%S.000Z"):
                     result['WallboxLastLog'] = WALLBOXLOG.get(
                         lastlog['messageId'], lastlog['messageId']
                     )
