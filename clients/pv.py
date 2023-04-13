@@ -221,7 +221,7 @@ class Client(BaseClient):
             if len(resp.json()):
                 lastlog = resp.json()[0]
                 if lastlog['timestamp'] > (
-                    datetime.now(timezone('UTC')) - timedelta(hours=2)
+                    datetime.now(timezone('UTC')) - timedelta(seconds=900)
                 ).strftime("%Y-%m-%dT%H:%M:%S.000Z"):
                     result['WallboxLastLog'] = WALLBOXLOG.get(
                         lastlog['messageId'], lastlog['messageId']
