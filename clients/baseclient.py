@@ -1,7 +1,7 @@
 import asyncio
 from influxdb import InfluxDBClient
 from influxdb.client import InfluxDBClientError
-from datetime import datetime
+from datetime import datetime, timedelta
 from history import History
 import json
 import logging
@@ -21,6 +21,7 @@ class BaseClient:
     enabled = False
     external_operation_time = ('05:30', '22:30')
     type_ = None
+    pushover_sent_messages = None
 
     def __init__(self, config):
         self.config = config
@@ -31,6 +32,7 @@ class BaseClient:
             max_items=self.keep_items,
             max_datetime=self.keep_datetime,
         )
+        self.pushover_sent_messages = {}
         self.websockets = {}
 
     async def register(self, websocket):
@@ -237,7 +239,14 @@ class BaseClient:
                 await asyncio.sleep(self.sleep_time)
 
     def notify_pushover(self, message, title=None):
-        message = self.config.pushoveruser.create_message(
-            title=title, message=message
-        )
-        message.send()
+        if message not in self.pushover_sent_messages:
+            pomessage = self.config.pushoveruser.create_message(
+                title=title, message=message
+            )
+            pomessage.send()
+            self.pushover_sent_messages[message] = datetime.now()
+        for message in self.pushover_sent_messages:
+            if self.pushover_sent_messages[message] < (
+                datetime.now() - timedelta(minutes=5)
+            ):
+                del self.pushover_sent_messages[message]
