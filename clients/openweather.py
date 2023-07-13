@@ -15,8 +15,7 @@ class Client(BaseClient):
     client_secret = None
 
     def __init__(self, config):
-        self.user = config.get("WEATHER", 'netatmo_user')
-        self.password = config.get("WEATHER", 'netatmo_password')
+        self.refresh_token = config.get("WEATHER", 'netatmo_refresh_token')
         self.client_id = config.get("WEATHER", 'netatmo_client_id')
         self.client_secret = config.get("WEATHER", 'netatmo_client_secret')
         super(Client, self).__init__(config)
@@ -25,9 +24,7 @@ class Client(BaseClient):
         authorization = lnetatmo.ClientAuth(
             self.client_id,
             self.client_secret,
-            self.user,
-            self.password,
-            scope="read_station"
+            self.refresh_token,
         )
         return lnetatmo.WeatherStationData(authorization)
 
