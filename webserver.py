@@ -18,13 +18,14 @@ from sqlalchemy import create_engine
 import argparse
 import asyncio
 import json
+import structlog
 import logging
 import model
 import websockets
 
-logging.basicConfig(level=logging.WARN)
-logging.getLogger().setLevel(logging.WARN)
-log = logging.getLogger(__name__)
+root_logger = logging.getLogger()
+root_logger.setLevel(logging.INFO)
+log = structlog.get_logger(__name__)
 
 
 def parse_arguments():
