@@ -128,11 +128,14 @@
         if (userAgent.match(/iPhone/i)) {
             $('.left-zero-padding').css('paddingLeft', '13px');
             $('#header').hide();
+            $('.pv_fixed_height').css('height', '480px');
         }
         if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i)) {
-           $('.pv_fixed_height').height('180px');
-           $('.fa-chart-bar').hide();
-           return;
+            if (!$('#pvchart-history').is(':visible')) {
+                $('.pvhistory_pagination').toggle();
+                $('#pvchart-history').toggle();
+                $('#pvchart').toggle();
+            }
         }
         var options = {
             xaxis : { mode : "time", tickLength : 5, timezone: "browser" },
