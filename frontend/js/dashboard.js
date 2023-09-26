@@ -125,9 +125,13 @@
     var tooltip_content = "%x Uhr<br /><span>%y Wh</span>";
     var pvchart = function() {
         var userAgent = window.navigator.userAgent;
+        if (userAgent.match(/iPhone/i)) {
+            $('.left-zero-padding').css('paddingLeft', '13px');
+        }
         if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i)) {
            $('.pv_fixed_height').height('180px');
            $('.fa-chart-bar').hide();
+           return;
         }
         var options = {
             xaxis : { mode : "time", tickLength : 5, timezone: "browser" },
@@ -834,7 +838,7 @@
             if (v.name === 'Kleines Bad Stecker') {
                 return;
             }
-            var bulb = '<div class="col-xs-4 col-sm-4 col-md-4  text-center" style="height: 94px">';
+            var bulb = '<div class="col-xs-3 col-sm-3 col-md-3 text-center" style="height: 94px">';
             bulb += '<span id="hue_' + key + '" style="position: relative; display: inline-grid; width: 80px" class="">';
             if (!isUndefinedOrNull(v.bri)) {
                 bulb += '<input style="width: 80px; visibility: hidden; height: 80px;" id="hue_'+ key + '_knob" class="knob" data-width="80" data-height="80" data-min="0" data-max="254" data-fgColor="#FF9F01" data-angleOffset=-125 data-angleArc=250 value="' + v.bri + '" data-thickness=.3>';
