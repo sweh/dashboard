@@ -124,6 +124,11 @@
 
     var tooltip_content = "%x Uhr<br /><span>%y Wh</span>";
     var pvchart = function() {
+        var userAgent = window.navigator.userAgent;
+        if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i)) {
+           $('.pv_fixed_height').height('180px');
+           $('.fa-chart-bar').hide();
+        }
         var options = {
             xaxis : { mode : "time", tickLength : 5, timezone: "browser" },
             grid : {
