@@ -127,6 +127,7 @@
         var userAgent = window.navigator.userAgent;
         if (userAgent.match(/iPhone/i)) {
             $('.left-zero-padding').css('paddingLeft', '13px');
+            $('#header').hide();
         }
         if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i)) {
            $('.pv_fixed_height').height('180px');
