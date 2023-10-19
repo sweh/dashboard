@@ -120,7 +120,7 @@
     var $chrt_seventh = "#D3D3D3";        /* lila       */
     var $chrt_mono = "#000";
 
-    var d = [], e = [], f = [], g = [], h = [], i = [];
+    var d = [], e = [], f = [], g = [], h = [], i = [], v = [];
 
     var tooltip_content = "%x Uhr<br /><span>%y Wh</span>";
     var pvchart = function() {
@@ -181,7 +181,7 @@
             colors : [$chrt_main, $chrt_second, $chrt_third, $chrt_fourth, $chrt_fifth, $chrt_sixth, $chrt_seventh],
         };
         if ($('#pvchart').is(":visible")) {
-            plot_1 = $.plot($("#pvchart"), [d,e,f,g,h,i], options);
+            plot_1 = $.plot($("#pvchart"), [d,e,f,g,h,i,v], options);
         }
     };
 
@@ -530,6 +530,10 @@
 
     var handle_pv_forecast = function (data) {
         $('#pvforecastday').text(fmt_watts(data.forecast_day));
+        v = [];
+        $.each(data.forecast, function (key, value) {
+            v.push([new Date(value.timestamp), value.value]);
+        });
     };
 
     var handle_pv_history = function (data) {
