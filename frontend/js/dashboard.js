@@ -164,12 +164,7 @@
                     }
                 },
                 points: { show: false },
-                shadowSize : 0,
-                curvedLines: {
-                    apply: true,
-                    monotonicFit: true,
-                    active: true
-                }
+                shadowSize : 0
             },
             colors : [$chrt_main, $chrt_second, $chrt_third, $chrt_fourth, $chrt_fifth, $chrt_sixth, $chrt_seventh],
         };
