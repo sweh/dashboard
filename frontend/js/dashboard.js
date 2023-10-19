@@ -127,15 +127,8 @@
         var userAgent = window.navigator.userAgent;
         if (userAgent.match(/iPhone/i)) {
             $('.left-zero-padding').css('paddingLeft', '13px');
-            $('#header').hide();
+            $('#header').empty();
             $('.pv_fixed_height').css('height', '480px');
-        }
-        if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i)) {
-            if (!$('#pvchart-history').is(':visible')) {
-                $('.pvhistory_pagination').toggle();
-                $('#pvchart-history').toggle();
-                $('#pvchart').toggle();
-            }
         }
         var options = {
             xaxis : { mode : "time", tickLength : 5, timezone: "browser" },
