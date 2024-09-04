@@ -12,7 +12,7 @@ class Client(BaseClient):
         'https://api.forecast.solar/estimate/51.8887/12.6473/22/70/3.9',
     )
     external = True
-    sleep_time = 3600
+    sleep_time = 10800
     keep_items = 1
     type_ = 'PVForecast'
 
@@ -31,9 +31,12 @@ class Client(BaseClient):
         for ts in forecast_raw[0].keys():
             if not ts.startswith(today):
                 continue
-            watts = (
-                forecast_raw[0][ts] + forecast_raw[1][ts] + forecast_raw[2][ts]
-            )
+            try:
+                watts = (
+                    forecast_raw[0][ts] + forecast_raw[1][ts] + forecast_raw[2][ts]
+                )
+            except:
+                continue
             local = pytz.timezone("Europe/Berlin")
             naive = datetime.datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
             local_dt = local.localize(naive, is_dst=None)

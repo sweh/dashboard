@@ -14,18 +14,8 @@ class Client(BaseClient):
     client_id = None
     client_secret = None
 
-    def __init__(self, config):
-        self.refresh_token = config.get("WEATHER", 'netatmo_refresh_token')
-        self.client_id = config.get("WEATHER", 'netatmo_client_id')
-        self.client_secret = config.get("WEATHER", 'netatmo_client_secret')
-        super(Client, self).__init__(config)
-
     def authenticate(self):
-        authorization = lnetatmo.ClientAuth(
-            self.client_id,
-            self.client_secret,
-            self.refresh_token,
-        )
+        authorization = lnetatmo.ClientAuth()
         return lnetatmo.WeatherStationData(authorization)
 
     def get_update_with_netatmo_data(self, weatherData):
@@ -98,17 +88,22 @@ class Client(BaseClient):
 
     @property
     def data(self):
-        weatherData = self.authenticate()
-        self.save_weather_to_influx(weatherData)
-        result = self.get_update_with_netatmo_data(weatherData)
+        try:
+            weatherData = self.authenticate()
+            self.save_weather_to_influx(weatherData)
+            result = self.get_update_with_netatmo_data(weatherData)
+        except Exception:
+            result = {'rain': 0, 'wind': 0}
         api_key = self.config.get("WEATHER", 'openweather_api_key')
         if api_key:
             url = (
-                f'https://api.openweathermap.org/data/2.5/onecall?'
+                f'https://api.openweathermap.org/data/3.0/onecall?'
                 'units=metric&lang=de&'
                 'lat=51.888689135586574&lon=12.647285179149327&'
                 f'appid={api_key}'
             )
             data = requests.get(url, timeout=5).json()
+            if 'out_temp' not in result:
+                result['out_temp'] = data['current']['temp']
             result.update(data)
         return result

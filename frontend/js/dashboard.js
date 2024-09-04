@@ -445,8 +445,14 @@
     };
 
     var handle_weather = function (data) {
-        var current_temp = round(data.out_temp, 1),
-            weather_icon = data.current.weather[0].icon,
+        var current_temp = round(data.out_temp, 1);
+        $('#current_temp').text(current_temp);
+        $('#current_rain').text(round(data.rain, 1));
+        $('#current_wind').text(round(data.wind, 1));
+        if (data.cod === 401) {
+            return;
+        }
+        var weather_icon = data.current.weather[0].icon,
             weather_alerts = data.alerts;
 
         $('#current_temp').text(current_temp);
@@ -455,7 +461,7 @@
         $("#current_weather_icon").removeClass (function (index, className) {
             return (className.match (/(^|\s)owi-\S+/g) || []).join(' ');
         });
-        $('#current_weather_icon').addClass('owi-' + weather_icon);
+        $('#current_weather_icon').addClass('owi-' + data.current.weather[0].icon);
         if (weather_alerts && weather_alerts.length) {
             $('#weather_alert').text(
                 weather_alerts[0].event + ': ' + weather_alerts[0].description
