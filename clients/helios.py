@@ -6,6 +6,7 @@ import time
 
 class Client(BaseClient):
 
+    sleep_time = 900  # seconds
     type_ = 'Helios'
     conn_active_filename = '/tmp/helios_client_active'
 

@@ -482,77 +482,15 @@
                                  data-widget-collapsed="false"
                                  data-widget-sortable="false">
                                 <header>
-                                    <span class="widget-icon"> <i class="fa fa-shower txt-color-blue"></i> </span>
-                                    <h2>Warmwasser</h2>
+                                    <span class="widget-icon"> <i class="fa fa-wifi txt-color-blue"></i> </span>
+                                    <h2>Gäste-Wifi</h2>
                                 </header>
                                 <div role="content">
                                 <div class="widget-body no-padding" style="height: 201px">
-                                    <div class="row" style="position: absolute; left: 5px; top: -2px;">
-                                        <div class="col-sm-12 col-md-12 text-center">
-                                            <ul class="smaller-stat" style="">
-                                                <li>
-                                                    <span class="label bg-color-red" style="width: auto;">
-                                                        <i id="solarpumpactive" class="fas fa-sun"></i> <span id="solarcollecttemp">0.0</span> °C
-                                                    </span>
-                                                </li>
-                                            </ul>
+                                    <div class="row" style="position: absolute; left: 14px; top: 35px;">
+                                        <div class="col-sm-12 col-md-12 text-center" id="qrcode">
                                         </div>
                                     </div>
-                                    <div class="row" style="position: absolute; right: 5px; top: -2px;">
-                                        <div class="col-sm-12 col-md-12 text-center">
-                                            <ul class="smaller-stat" style="">
-                                                <li>
-                                                    <span class="label bg-color-red" style="width: auto;">
-                                                        <i class="fas fa-fire"></i> <span id="supply_temp">0.0</span> °C <br />
-                                                        <i class="fa fa-caret-up"></i> <span id="target_supply_temp">0.0</span> °C
-                                                    </span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="row" style="position: absolute; left: 5px; bottom: 5px;">
-                                        <div class="col-sm-12 col-md-12 text-center">
-                                            <ul class="smaller-stat" style="">
-                                                <li>
-                                                    <span class="label bg-color-green" style="width: auto;">
-                                                        <i class="fas fa-sun"></i> <span id="solarpumpkwh">0.0</span> kWh
-                                                    </span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="row" style="position: absolute; right: 5px; bottom: 5px;">
-                                        <div class="col-sm-12 col-md-12 text-center">
-                                            <ul class="smaller-stat" style="">
-                                                <li>
-                                                    <span class="label bg-color-red" style="width: auto;">
-                                                        <i class="fa fa-shower"></i> <span id="heaterkwh">0.0</span> kWh
-                                                    </span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-sm-12 col-md-12 text-center">
-                                            <h3 class="margin-bottom-0">
-                                                <span id="hot_water_current">0.0</span> °C <i class="fa fa-caret-right" id="hot_water_current_tendency" style="color: #6595b4"></i>
-                                            <br>
-                                            <small class="font-xs"><sup style="top: 0em;">
-                                                <span class="badge" style="background-color: #6595b4">
-                                                Trinkwasser
-                                                </span>
-                                            </sup></small>
-                                            </h3>
-                                        </div>
-                                    </div>
-                                    <hr class="margin-5" />
-                                    <div class="row">
-                                        <div class="col-sm-12 col-md-12 text-center">
-                                            <h3 class="margin-bottom-0 margin-top-0" id="vicare_warm_water"></h3>
-                                        </div>
-                                    </div>
-                                </div>
                                 </div>
                             </div>
                         </article>
@@ -598,7 +536,7 @@
                             guests.wehrmann.it<br /><b><i id="wifi_password"></i></b>
                         </span>
                     </span>
-                </div>
+		</div>
             </div>
             </div>
         </div>
@@ -634,8 +572,17 @@
         <script src="js/plugin/flot/jquery.flot.pie.min.js"></script>
         <script src="js/plugin/flot/jquery.flot.time.min.js"></script>
         <script src="js/plugin/flot/jquery.flot.tooltip.min.js"></script>
+        <script src="js/qrcode.min.js"></script>
         <script src="js/dashboard.js"></script>
         <script>
+var qrcode = new QRCode("qrcode", {
+    text: "WIFI:S:guests.wehrmann.it;T:WPA;P:Wehrmann010814;H:false;",
+    width: 128,
+    height: 128,
+    colorDark : "#000000",
+    colorLight : "#ffffff",
+    correctLevel : QRCode.CorrectLevel.H
+});
         </script>
     </body>
 </html>
