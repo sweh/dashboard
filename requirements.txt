@@ -9,8 +9,8 @@ paho-mqtt~=1.5.0
 psycopg2-binary==2.8.6
 py-smart-gardena==0.7.10
 pymodbus~=2.4.0
-requests~=2.24.0
-rss_parser==0.1.1
+requests~=2.31.0
+rss_parser==2.1.0
 sqlalchemy==1.4.0
 websockets==8.1
 chump==1.6.0

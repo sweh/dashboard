@@ -29,7 +29,7 @@ class Client(BaseClient):
         vicare.initWithCredentials(
             self.username, self.password, self.client_key, "token.save"
         )
-        return vicare.devices[0].asAutoDetectDevice()
+        return vicare.devices[1].asAutoDetectDevice()
 
     async def set_status(self, data):
         if 'hot_water' in data:

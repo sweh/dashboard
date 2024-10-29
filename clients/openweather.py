@@ -1,5 +1,4 @@
 import requests
-import lnetatmo
 from clients.baseclient import BaseClient
 
 
@@ -15,6 +14,7 @@ class Client(BaseClient):
     client_secret = None
 
     def authenticate(self):
+        import lnetatmo
         authorization = lnetatmo.ClientAuth()
         return lnetatmo.WeatherStationData(authorization)
 
