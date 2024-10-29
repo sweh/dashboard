@@ -15,6 +15,8 @@
             var timestamp = Date.now(),
                 data = JSON.parse(event.data);
 
+            console.log(data.DeviceClass);
+
             if (data.DeviceClass === 'Weather') {
                 handle_weather(data);
             } else if (data.DeviceClass === 'Corona') {

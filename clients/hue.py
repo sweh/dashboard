@@ -10,7 +10,7 @@ class Client(BaseClient):
     cache_file = None
 
     def __init__(self, config):
-        if not self.enabled:
+        if not int(config.get("HUE", "enabled")):
             return
         self.cache_file = config.get("HUE", "cache_file")
         self.ip = config.get("HUE", "ip")
