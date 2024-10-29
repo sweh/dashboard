@@ -37,7 +37,7 @@ class Client(BaseClient):
         for light in self.api.fetch_lights():
             if not light.state.reachable:
                 continue
-            if light.name == 'Papa':
+            if light.name in ('Papa', 'Aussen'):
                 continue
             result[light.id] = light.state.to_payload()
             result[light.id]['name'] = light.name
