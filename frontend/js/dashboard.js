@@ -832,13 +832,7 @@
             if (key === 'DeviceClass') {
                 return;
             }
-            if (v.name === 'Windrad') {
-                return;
-            }
-            if (v.name === 'Kleines Bad Stecker') {
-                return;
-            }
-            var bulb = '<div class="col-xs-3 col-sm-3 col-md-3 text-center" style="height: 94px">';
+            var bulb = '<div class="col-xs-2 col-sm-2 col-md-2 text-center" style="height: 94px">';
             bulb += '<span id="hue_' + key + '" style="position: relative; display: inline-grid; width: 80px" class="">';
             if (!isUndefinedOrNull(v.bri)) {
                 bulb += '<input style="width: 80px; visibility: hidden; height: 80px;" id="hue_'+ key + '_knob" class="knob" data-width="80" data-height="80" data-min="0" data-max="254" data-fgColor="#FF9F01" data-angleOffset=-125 data-angleArc=250 value="' + v.bri + '" data-thickness=.3>';
