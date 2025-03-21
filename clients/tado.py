@@ -11,14 +11,12 @@ class Client(BaseClient):
     external = False
 
     def __init__(self, config):
-        self.username = config.get("TADO", "username")
-        self.password = config.get("TADO", "password")
-        self.secret = config.get("TADO", "secret")
+        self.cred_file = config.get("TADO", "credentials_file")
         super(Client, self).__init__(config)
 
     @gocept.cache.method.Memoize(120)
     def api(self):
-        return libtado.api.Tado(self.username, self.password, self.secret)
+        return libtado.api.Tado(token_file_path=self.cred_file)
 
     async def set_status(self, data):
         if 'dest_temp' in data:
