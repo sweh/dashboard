@@ -19,17 +19,19 @@ class Client(BaseClient):
         return lnetatmo.WeatherStationData(authorization)
 
     def get_update_with_netatmo_data(self, weatherData):
-        result = dict()
+        result = dict(rain=0, wind=0)
 
         station = weatherData.stationByName('Am Wachtelberg 14 (Wohnzimmer)')
         for module in station['modules']:
-            if module['type'] == 'NAModule1':
-                result['out_temp'] = module['dashboard_data']['Temperature']
-            if module['type'] == 'NAModule3':
-                result['rain'] = module['dashboard_data']['sum_rain_24']
-            if module['type'] == 'NAModule2':
-                result['wind'] = module['dashboard_data']['WindStrength']
-
+            try:
+                if module['type'] == 'NAModule1':
+                    result['out_temp'] = module['dashboard_data']['Temperature']
+                if module['type'] == 'NAModule3':
+                    result['rain'] = module['dashboard_data']['sum_rain_24']
+                if module['type'] == 'NAModule2':
+                    result['wind'] = module['dashboard_data']['WindStrength']
+            except Exception:
+                pass
         return result
 
     def save_weather_to_influx(self, weatherData):
@@ -92,7 +94,7 @@ class Client(BaseClient):
             weatherData = self.authenticate()
             self.save_weather_to_influx(weatherData)
             result = self.get_update_with_netatmo_data(weatherData)
-        except Exception:
+        except Exception as e:
             result = {'rain': 0, 'wind': 0}
         api_key = self.config.get("WEATHER", 'openweather_api_key')
         if api_key:
