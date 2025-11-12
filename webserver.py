@@ -41,7 +41,7 @@ def parse_arguments():
     return parser.parse_args()
 
 
-if __name__ == "__main__":
+async def main():
     args = parse_arguments()
     smadaemon = MyDaemon(args.config)
     smadaemon.config.engine = smadaemon.config.get('DB', 'connect')
@@ -72,7 +72,7 @@ if __name__ == "__main__":
         openweatherclient=OpenWeatherClient(smadaemon.config),
     )
 
-    async def server(websocket, path):
+    async def server(websocket, *args, **kw):
         for client in clients.values():
             if client.enabled:
                 await client.register(websocket)
@@ -89,17 +89,19 @@ if __name__ == "__main__":
                         log.error(f'Exception while setting {key}: {e}')
             await asyncio.sleep(1)
 
-    tasks = [
-        websockets.serve(
-            server,
-            smadaemon.config.get("DAEMON", "ipbind"),
-            6790
-        ),
-    ]
-    tasks.extend(
-        [c.run() for c in clients.values() if c.enabled]
+    ws_server = await websockets.serve(
+        server,
+        smadaemon.config.get("DAEMON", "ipbind"),
+        6790
     )
 
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(asyncio.wait(tasks))
-    loop.run_forever()
+    # Launch client run tasks
+    tasks = [asyncio.create_task(c.run()) for c in clients.values() if c.enabled]
+
+    # Wait forever (until cancelled)
+    #await asyncio.gather(*tasks)
+    await asyncio.Future()
+
+
+if __name__ == '__main__':
+    asyncio.run(main())
