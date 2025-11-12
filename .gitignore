@@ -67,3 +67,5 @@ history_*
 include/
 lib64
 share
+
+.appenv/

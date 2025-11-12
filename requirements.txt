@@ -1,3 +1,4 @@
+# appenv-python-preference: 3.12
 EasyModbusSilaaCooling == 1.0.6
 PyViCare==2.54.0
 gocept.cache==4.0
